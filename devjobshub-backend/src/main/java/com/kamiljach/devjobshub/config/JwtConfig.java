@@ -54,6 +54,9 @@ public class JwtConfig {
         } catch (ExpiredJwtException e) {
             req.setAttribute("expired", e.getMessage());
             throw e;
+        } catch (Exception e) {
+            req.setAttribute("invalid", e.getMessage());
+            throw e;
         }
     }
 
