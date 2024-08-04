@@ -48,6 +48,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 System.out.println("email : "+email);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(email, "", new ArrayList<>());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                filterChain.doFilter(request, response);
             }
         } catch (Exception e) {
             errorDetails.put("message", "Authentication error");
