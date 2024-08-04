@@ -2,6 +2,7 @@ package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.config.JwtConfig;
 import com.kamiljach.devjobshub.errors.ApiError;
+import com.kamiljach.devjobshub.exceptions.AccountAlreadyExistsException;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.login.LoginRequest;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/auth")
@@ -59,7 +62,11 @@ public class AuthController {
     }}
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) throws AccountAlreadyExistsException {
+        Optional<User> optionalUser = userRepository.findByEmail(registerRequest.getEmail());
+        if(optionalUser.isPresent()){
+            throw new AccountAlreadyExistsException();
+        }
         try {
             User newUser = new User();
             newUser.setEmail(registerRequest.getEmail());
