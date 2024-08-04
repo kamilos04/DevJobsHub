@@ -23,4 +23,5 @@ public class Constants {
             "Stalowa Wola", "Pabianice", "Rybnik", "Zamość", "Jelenia Góra",
             "Hajnówka", "Łomża", "Włocławek"
     );
+    
 }

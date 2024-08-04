@@ -4,10 +4,6 @@ import com.kamiljach.devjobshub.model.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.naming.AuthenticationException;
@@ -19,19 +15,17 @@ import java.util.concurrent.TimeUnit;
 public class JwtConfig {
 
 
-    private String secretKey = JwtConstants.secretKey;
-    private long expirationTime = JwtConstants.expirationTime;
+    private String secretKey = Constants.secretKey;
+    private long expirationTime = Constants.expirationTime;
 
-    private final String TOKEN_HEADER = JwtConstants.header;
-    private final String TOKEN_PREFIX = JwtConstants.prefix;
+    private final String TOKEN_HEADER = Constants.header;
+    private final String TOKEN_PREFIX = Constants.prefix;
 
     private JwtParser jwtParser;
 
     private Key key;
     public JwtConfig() {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
-        System.out.println(secretKey);
-        System.out.println(expirationTime);
         this.jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
     }
 
