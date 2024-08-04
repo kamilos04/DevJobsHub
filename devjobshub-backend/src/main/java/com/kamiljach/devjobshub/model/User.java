@@ -1,5 +1,6 @@
 package com.kamiljach.devjobshub.model;
 
+import com.kamiljach.devjobshub.request.register.RegisterRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,4 +28,5 @@ public class User {
     private String password;
 
     private boolean isBanned = false;
+
 }

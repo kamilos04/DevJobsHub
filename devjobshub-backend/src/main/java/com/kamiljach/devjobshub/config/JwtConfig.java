@@ -2,31 +2,37 @@ package com.kamiljach.devjobshub.config;
 
 import com.kamiljach.devjobshub.model.User;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.naming.AuthenticationException;
+import java.security.Key;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtConfig {
-    @Value("${security.jwt.secret-key}")
-    private String secretKey;
 
-    @Value("${security.jwt.expiration-time}")
-    private long expirationTime;
 
-    private final String TOKEN_HEADER = "Authorization";
-    private final String TOKEN_PREFIX = "Bearer ";
+    private String secretKey = JwtConstants.secretKey;
+    private long expirationTime = JwtConstants.expirationTime;
+
+    private final String TOKEN_HEADER = JwtConstants.header;
+    private final String TOKEN_PREFIX = JwtConstants.prefix;
 
     private JwtParser jwtParser;
 
+    private Key key;
     public JwtConfig() {
-        this.jwtParser = Jwts.parserBuilder().setSigningKey(secretKey).build();
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        System.out.println(secretKey);
+        System.out.println(expirationTime);
+        this.jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
     }
 
     public String createToken(User user) {
@@ -36,7 +42,7 @@ public class JwtConfig {
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(tokenValidity)
-                .signWith(SignatureAlgorithm.ES256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
 
