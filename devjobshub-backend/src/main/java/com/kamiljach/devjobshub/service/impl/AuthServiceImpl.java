@@ -1,4 +1,6 @@
 package com.kamiljach.devjobshub.service.impl;
 
-public class AuthServiceImpl {
+import com.kamiljach.devjobshub.service.AuthService;
+
+public class AuthServiceImpl implements AuthService {
 }
