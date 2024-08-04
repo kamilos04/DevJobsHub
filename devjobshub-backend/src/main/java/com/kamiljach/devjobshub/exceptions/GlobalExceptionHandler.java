@@ -11,6 +11,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccountAlreadyExistsException.class)
     public ResponseEntity<ApiError> handleAccountAlreadyExistsException(AccountAlreadyExistsException ex) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Account already exists");
-        return new ResponseEntity<ApiError>(apiError, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(UserNotFoundByJwtException.class)
+    public ResponseEntity<ApiError> InvalidJwtExceptionException(UserNotFoundByJwtException ex) {
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "User not found, invalid jwt");
+        return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
     }
 }
