@@ -6,12 +6,15 @@ import com.kamiljach.devjobshub.exceptions.UserNotFoundByJwtException;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.service.impl.UserServiceImpl;
+import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,14 +29,22 @@ public class UserServiceImplTest {
     private UserServiceImpl underTest;
 
     @Test
-    public void testThatGetProfileByJwtReturnsSelectedProfile() throws UserNotFoundByJwtException {
+    public void testThatFindUserByJwtReturnsSelectedProfile() throws UserNotFoundByJwtException {
         String jwt = "validJwt";
-        final User findUserByJwtResult = TestDataUtil.createTestUserA();
+        Claims claims = mock(Claims.class);
+        String email = "test@gmail.com";
+        final User expectedUser = new User();
+        expectedUser.setEmail(email);
 
-//        when(underTest.findUserByJwt(jwt)).thenReturn(findUserByJwtResult);
-        doReturn(findUserByJwtResult).when(underTest).findUserByJwt(jwt);
-        final User getProfileByJwtResult = underTest.getProfileByJwt(jwt);
-        assertEquals(findUserByJwtResult, getProfileByJwtResult);
-        verify(underTest).getProfileByJwt(jwt);
+        doReturn(claims).when(jwtConfig).parseJwtClaims(jwt);
+        doReturn(email).when(jwtConfig).getEmail(claims);
+        doReturn(Optional.of(expectedUser)).when(userRepository).findByEmail(email);
+
+//        when(underTest.findUserByJwt(jwt)).thenReturn(expectedUser);
+//        doReturn(expectedUser).when(underTest).findUserByJwt(jwt);
+//        final User getProfileByJwtResult = underTest.getProfileByJwt(jwt);
+        final User findUserByJwtResult = underTest.findUserByJwt(jwt);
+        assertEquals(expectedUser, findUserByJwtResult);
+        verify(underTest).findUserByJwt(jwt);
     }
 }

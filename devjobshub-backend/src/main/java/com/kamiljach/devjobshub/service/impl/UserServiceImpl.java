@@ -33,8 +33,4 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundByJwtException();
         }
     }
-    @Override
-    public User getProfileByJwt(String jwt) throws UserNotFoundByJwtException {
-        return findUserByJwt(jwt);
-    }
 }

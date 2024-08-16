@@ -18,6 +18,6 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<User> getProfile(@RequestParam String token, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException {
-        return new ResponseEntity<>(userService.getProfileByJwt(token), HttpStatus.OK);
+        return new ResponseEntity<>(userService.findUserByJwt(token), HttpStatus.OK);
     }
 }
