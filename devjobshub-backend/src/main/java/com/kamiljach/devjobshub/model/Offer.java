@@ -50,11 +50,17 @@ public class Offer {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name="offer_technology",
+            name="offer_required_technology",
             joinColumns = @JoinColumn(name = "offer_id"),
-            inverseJoinColumns = @JoinColumn(name = "technology_id")
-    )
-    private List<Technology> technologies = new ArrayList<>();
+            inverseJoinColumns = @JoinColumn(name = "technology_id"))
+    private List<Technology> requiredTechnologies = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name="offer_nice_to_have_technology",
+            joinColumns = @JoinColumn(name = "offer_id"),
+            inverseJoinColumns = @JoinColumn(name = "technology_id"))
+    private List<Technology> niceToHaveTechnologies = new ArrayList<>();
 
     private String aboutProject;
 
