@@ -40,9 +40,6 @@ public class UserServiceImplTest {
         doReturn(email).when(jwtConfig).getEmail(claims);
         doReturn(Optional.of(expectedUser)).when(userRepository).findByEmail(email);
 
-//        when(underTest.findUserByJwt(jwt)).thenReturn(expectedUser);
-//        doReturn(expectedUser).when(underTest).findUserByJwt(jwt);
-//        final User getProfileByJwtResult = underTest.getProfileByJwt(jwt);
         final User findUserByJwtResult = underTest.findUserByJwt(jwt);
         assertEquals(expectedUser, findUserByJwtResult);
         verify(underTest).findUserByJwt(jwt);

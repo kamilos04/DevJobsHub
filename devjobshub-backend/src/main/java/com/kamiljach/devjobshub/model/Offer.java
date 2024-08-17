@@ -47,4 +47,12 @@ public class Offer {
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "likedOffers")
     private List<User> likedByUsers = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name="offer_technology",
+            joinColumns = @JoinColumn(name = "offer_id"),
+            inverseJoinColumns = @JoinColumn(name = "technology_id")
+    )
+    private List<Technology> technologies = new ArrayList<>();
 }
