@@ -15,8 +15,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundByJwtException.class)
-    public ResponseEntity<ApiError> InvalidJwtExceptionException(UserNotFoundByJwtException ex) {
+    public ResponseEntity<ApiError> handleInvalidJwtExceptionException(UserNotFoundByJwtException ex) {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "User not found, invalid jwt");
+        return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(OfferNotFoundByIdException.class)
+    public ResponseEntity<ApiError> handleOfferNotFoundByIdException(OfferNotFoundByIdException ex) {
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Offer not found, invalid ID");
         return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
     }
 }

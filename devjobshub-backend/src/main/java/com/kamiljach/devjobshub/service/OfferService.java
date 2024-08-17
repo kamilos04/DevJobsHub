@@ -6,5 +6,5 @@ import com.kamiljach.devjobshub.model.Offer;
 import java.util.ArrayList;
 
 public interface OfferService {
-    public ArrayList<Offer> getListOfOffersFromTheirIds(ArrayList<Long> list) throws OfferNotFoundByIdException;
+    public ArrayList<Offer> getListOfOffersFromTheirIds(ArrayList<Long> list) throws OfferNotFoundByIdException ;
 }
