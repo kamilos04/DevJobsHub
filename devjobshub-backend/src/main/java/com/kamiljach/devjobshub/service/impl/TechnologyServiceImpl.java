@@ -7,51 +7,41 @@ import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
+import com.kamiljach.devjobshub.service.OfferService;
+import com.kamiljach.devjobshub.service.TechnologyService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
-public class TechnologyServiceImpl {
+public class TechnologyServiceImpl implements TechnologyService {
 //    public Technology getTechnologyByName(String name){
 //
 //    }
 
     private TechnologyRepository technologyRepository;
-    private OfferRepository offerRepository;
+    private OfferService offerService;
 
 
-    public TechnologyServiceImpl(TechnologyRepository technologyRepository, OfferRepository offerRepository) {
+
+    public TechnologyServiceImpl(TechnologyRepository technologyRepository, OfferService offerService) {
         this.technologyRepository = technologyRepository;
-        this.offerRepository = offerRepository;
+        this.offerService = offerService;
     }
 
 
     public TechnologyDto createTechnology(String name, ArrayList<Long> assignedAsRequiredOffersListId, ArrayList<Long> assignedAsNiceToHaveOffersListId) throws OfferNotFoundByIdException {
         Technology newTechnology = new Technology();
         newTechnology.setName(name);
-        ArrayList<Offer> assignedAsRequiredOffersList = getListOfOffersFromTheirIds(assignedAsRequiredOffersListId);
-        ArrayList<Offer> assignedAsNiceToHaveOffersList = getListOfOffersFromTheirIds(assignedAsNiceToHaveOffersListId);
+        ArrayList<Offer> assignedAsRequiredOffersList = offerService.getListOfOffersFromTheirIds(assignedAsRequiredOffersListId);
+        ArrayList<Offer> assignedAsNiceToHaveOffersList = offerService.getListOfOffersFromTheirIds(assignedAsNiceToHaveOffersListId);
         newTechnology.setAssignedAsRequired(assignedAsRequiredOffersList);
         newTechnology.setAssignedAsNiceToHave(assignedAsNiceToHaveOffersList);
         technologyRepository.save(newTechnology);
         return new TechnologyDto(newTechnology);
     }
 
-    public ArrayList<Offer> getListOfOffersFromTheirIds(ArrayList<Long> list) throws OfferNotFoundByIdException {
-        ArrayList<Long> listWithIds = UtilityClass.removeRepetitionLong(list);
-        ArrayList<Offer> offerList = new ArrayList<>();
-        for(int i = 0; i < listWithIds.size(); i++) {
-            Optional<Offer> optionalOffer = offerRepository.findById(listWithIds.get(i));
-            if(optionalOffer.isPresent()){
-                offerList.add(optionalOffer.get());
-            }
-            else{
-                throw new OfferNotFoundByIdException();
-            }
-        }
-        return offerList;
-    }
+
 
 }
