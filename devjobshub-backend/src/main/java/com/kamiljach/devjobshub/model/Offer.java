@@ -55,4 +55,16 @@ public class Offer {
             inverseJoinColumns = @JoinColumn(name = "technology_id")
     )
     private List<Technology> technologies = new ArrayList<>();
+
+    private String aboutProject;
+
+    private String responsibilitiesText;
+
+    private List<String> responsibilities = new ArrayList<>();
+
+    private List<String> requirements = new ArrayList<>();
+
+    private List<String> niceToHave = new ArrayList<>();
+
+    private List <String> whatWeOffer = new ArrayList<>();
 }
