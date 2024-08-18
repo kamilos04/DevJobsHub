@@ -31,4 +31,10 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Technology with this name already exists");
         return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(TechnologyNotFoundByNameException.class)
+    public ResponseEntity<ApiError> handleTechnologyNotFoundByNameException(TechnologyNotFoundByNameException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Technology not found by name, invalid name");
+        return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
+    }
 }

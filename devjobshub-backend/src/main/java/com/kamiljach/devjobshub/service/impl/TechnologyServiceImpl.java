@@ -3,6 +3,7 @@ package com.kamiljach.devjobshub.service.impl;
 import com.kamiljach.devjobshub.UtilityClass;
 import com.kamiljach.devjobshub.dto.TechnologyDto;
 import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByNameException;
 import com.kamiljach.devjobshub.exceptions.TechnologyWithThisNameAlreadyExistsException;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
@@ -17,9 +18,6 @@ import java.util.Optional;
 
 @Service
 public class TechnologyServiceImpl implements TechnologyService {
-//    public Technology getTechnologyByName(String name){
-//
-//    }
 
     private TechnologyRepository technologyRepository;
     private OfferService offerService;
@@ -32,7 +30,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
 
-    public TechnologyDto createTechnology(String name, ArrayList<Long> assignedAsRequiredOffersListId, ArrayList<Long> assignedAsNiceToHaveOffersListId) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
+    public TechnologyDto createTechnology(String name, ArrayList<Long> assignedAsRequiredOffersListId, ArrayList<Long> assignedAsNiceToHaveOffersListId, String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
         Optional<Technology> optionalTechnology = technologyRepository.findByName(name);
         if(optionalTechnology.isPresent()){throw new TechnologyWithThisNameAlreadyExistsException();}
 
@@ -46,6 +44,12 @@ public class TechnologyServiceImpl implements TechnologyService {
         return new TechnologyDto(newTechnology);
     }
 
-
-
+    public void deleteTechnologyByName(String name, String jwt) throws TechnologyNotFoundByNameException {
+        Optional<Technology> optionalTechnology = technologyRepository.findByName(name);
+        if (optionalTechnology.isEmpty()) {
+            throw new TechnologyNotFoundByNameException();
+        }
+        Technology technology = optionalTechnology.get();
+        technologyRepository.delete(technology);
+    }
 }
