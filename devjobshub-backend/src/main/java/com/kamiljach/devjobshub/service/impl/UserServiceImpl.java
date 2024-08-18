@@ -1,11 +1,18 @@
 package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.config.JwtConfig;
+import com.kamiljach.devjobshub.errors.ApiError;
 import com.kamiljach.devjobshub.exceptions.UserNotFoundByJwtException;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.UserRepository;
+import com.kamiljach.devjobshub.response.login.LoginResponse;
 import com.kamiljach.devjobshub.service.UserService;
 import io.jsonwebtoken.Claims;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -33,4 +40,5 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundByJwtException();
         }
     }
+
 }

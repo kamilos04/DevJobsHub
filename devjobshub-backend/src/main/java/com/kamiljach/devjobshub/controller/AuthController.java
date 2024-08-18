@@ -8,6 +8,7 @@ import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.login.LoginRequest;
 import com.kamiljach.devjobshub.request.register.RegisterRequest;
 import com.kamiljach.devjobshub.response.login.LoginResponse;
+import com.kamiljach.devjobshub.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,27 +33,20 @@ public class AuthController {
 
     private PasswordEncoder passwordEncoder;
 
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, JwtConfig jwtConfig, PasswordEncoder passwordEncoder) {
+    private AuthService authService;
+
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, JwtConfig jwtConfig, PasswordEncoder passwordEncoder, AuthService authService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.jwtConfig = jwtConfig;
         this.passwordEncoder = passwordEncoder;
+        this.authService = authService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
         try{
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-            String email = authentication.getName();
-            User user = new User();
-            user.setEmail(email);
-            user.setPassword(passwordEncoder.encode(loginRequest.getPassword()));
-
-            String token = jwtConfig.createToken(user);
-
-            LoginResponse loginResponse = new LoginResponse();
-            loginResponse.setEmail(user.getEmail());
-            loginResponse.setToken(token);
+            LoginResponse loginResponse = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
             return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
         } catch (BadCredentialsException ex){
         ApiError errorResponse = new ApiError(HttpStatus.FORBIDDEN,"Invalid username or password", ex);
