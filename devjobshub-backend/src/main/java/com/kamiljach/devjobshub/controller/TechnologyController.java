@@ -2,6 +2,7 @@ package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.dto.TechnologyDto;
 import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.TechnologyWithThisNameAlreadyExistsException;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.service.TechnologyService;
 import org.apache.coyote.Response;
@@ -19,7 +20,7 @@ public class TechnologyController {
     }
 
     @PostMapping("/technology")
-    public ResponseEntity<TechnologyDto> createTechnology(@RequestBody CreateTechnologyRequest createTechnologyRequest, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException {
+    public ResponseEntity<TechnologyDto> createTechnology(@RequestBody CreateTechnologyRequest createTechnologyRequest, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
         TechnologyDto createdTechnologyDto = technologyService.createTechnology(createTechnologyRequest.getName(), createTechnologyRequest.getAssignedAsRequiredIds(), createTechnologyRequest.getAssignedAsNiceToHaveIds());
         return new ResponseEntity<>(createdTechnologyDto, HttpStatus.OK);
     }

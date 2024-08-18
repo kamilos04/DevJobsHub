@@ -3,6 +3,7 @@ package com.kamiljach.devjobshub.service.impl;
 import com.kamiljach.devjobshub.UtilityClass;
 import com.kamiljach.devjobshub.dto.TechnologyDto;
 import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.TechnologyWithThisNameAlreadyExistsException;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.repository.OfferRepository;
@@ -31,7 +32,10 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
 
-    public TechnologyDto createTechnology(String name, ArrayList<Long> assignedAsRequiredOffersListId, ArrayList<Long> assignedAsNiceToHaveOffersListId) throws OfferNotFoundByIdException {
+    public TechnologyDto createTechnology(String name, ArrayList<Long> assignedAsRequiredOffersListId, ArrayList<Long> assignedAsNiceToHaveOffersListId) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
+        Optional<Technology> optionalTechnology = technologyRepository.findByName(name);
+        if(optionalTechnology.isPresent()){throw new TechnologyWithThisNameAlreadyExistsException();}
+
         Technology newTechnology = new Technology();
         newTechnology.setName(name);
         ArrayList<Offer> assignedAsRequiredOffersList = offerService.getListOfOffersFromTheirIds(assignedAsRequiredOffersListId);

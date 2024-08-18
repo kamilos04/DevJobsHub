@@ -25,4 +25,10 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Offer not found, invalid ID");
         return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(TechnologyWithThisNameAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleTechnologyWithThisNameAlreadyExistsException(TechnologyWithThisNameAlreadyExistsException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Technology with this name already exists");
+        return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
+    }
 }
