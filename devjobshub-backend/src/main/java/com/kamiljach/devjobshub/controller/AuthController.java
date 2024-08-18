@@ -58,31 +58,8 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) throws AccountAlreadyExistsException {
-        Optional<User> optionalUser = userRepository.findByEmail(registerRequest.getEmail());
-        if(optionalUser.isPresent()){
-            throw new AccountAlreadyExistsException();
-        }
         try {
-            User newUser = new User();
-            newUser.setEmail(registerRequest.getEmail());
-            newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-            newUser.setName(registerRequest.getName());
-            newUser.setSurname(registerRequest.getSurname());
-
-            userRepository.save(newUser);
-
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(registerRequest.getEmail(), registerRequest.getPassword()));
-
-            String email = authentication.getName();
-            User user = new User();
-            user.setEmail(email);
-            user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-
-            String token = jwtConfig.createToken(user);
-
-            LoginResponse loginResponse = new LoginResponse();
-            loginResponse.setEmail(user.getEmail());
-            loginResponse.setToken(token);
+            LoginResponse loginResponse = authService.register(registerRequest.getEmail(), registerRequest.getPassword(), registerRequest.getName(), registerRequest.getSurname());
             return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
         }catch (Exception ex){
             ApiError errorResponse = new ApiError(HttpStatus.FORBIDDEN,"Something went wrong", ex);
