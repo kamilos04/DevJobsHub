@@ -3,12 +3,14 @@ package com.kamiljach.devjobshub.service.impl;
 import com.kamiljach.devjobshub.UtilityClass;
 import com.kamiljach.devjobshub.dto.TechnologyDto;
 import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByNameException;
 import com.kamiljach.devjobshub.exceptions.TechnologyWithThisNameAlreadyExistsException;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
+import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.service.OfferService;
 import com.kamiljach.devjobshub.service.TechnologyService;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,13 @@ public class TechnologyServiceImpl implements TechnologyService {
         ArrayList<Offer> assignedAsNiceToHaveOffersList = offerService.getListOfOffersFromTheirIds(assignedAsNiceToHaveOffersListId);
         newTechnology.setAssignedAsRequired(assignedAsRequiredOffersList);
         newTechnology.setAssignedAsNiceToHave(assignedAsNiceToHaveOffersList);
+        for(int i = 0; i < assignedAsRequiredOffersList.size(); i++){
+            offerService.addTechnologyToRequiredTechnologies(assignedAsRequiredOffersList.get(i), newTechnology);
+        }
+        for(int i = 0; i < assignedAsNiceToHaveOffersList.size(); i++){
+            offerService.addTechnologyToNiceToHaveTechnologies(assignedAsNiceToHaveOffersList.get(i), newTechnology);
+        }
+
         technologyRepository.save(newTechnology);
         return new TechnologyDto(newTechnology);
     }
@@ -52,4 +61,11 @@ public class TechnologyServiceImpl implements TechnologyService {
         Technology technology = optionalTechnology.get();
         technologyRepository.delete(technology);
     }
+
+//    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException {
+//        Optional<Technology> optionalTechnology = technologyRepository.findById(id);
+//        if(optionalTechnology.isEmpty()){throw new TechnologyNotFoundByIdException();}
+//        Technology technology = optionalTechnology.get();
+//        technology.setName(technologyRequest.getName());
+//
 }
