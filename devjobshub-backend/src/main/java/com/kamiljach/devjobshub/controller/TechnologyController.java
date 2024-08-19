@@ -2,6 +2,7 @@ package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.dto.TechnologyDto;
 import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByNameException;
 import com.kamiljach.devjobshub.exceptions.TechnologyWithThisNameAlreadyExistsException;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
@@ -27,8 +28,8 @@ public class TechnologyController {
     }
 
     @DeleteMapping("/technology")
-    public ResponseEntity<MessageResponse> deleteTechnologyByName(@RequestParam String name, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByNameException {
-        technologyService.deleteTechnologyByName(name, jwt);
+    public ResponseEntity<MessageResponse> deleteTechnologyById(@RequestParam Long id, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException {
+        technologyService.deleteTechnologyById(id, jwt);
         MessageResponse messageResponse = new MessageResponse();
         messageResponse.setMessage("Technology deleted");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);

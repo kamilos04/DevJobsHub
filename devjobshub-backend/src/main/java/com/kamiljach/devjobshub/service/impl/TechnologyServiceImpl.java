@@ -51,10 +51,10 @@ public class TechnologyServiceImpl implements TechnologyService {
         return new TechnologyDto(newTechnology);
     }
 
-    public void deleteTechnologyByName(String name, String jwt) throws TechnologyNotFoundByNameException {
-        Optional<Technology> optionalTechnology = technologyRepository.findByName(name);
+    public void deleteTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException {
+        Optional<Technology> optionalTechnology = technologyRepository.findById(id);
         if (optionalTechnology.isEmpty()) {
-            throw new TechnologyNotFoundByNameException();
+            throw new TechnologyNotFoundByIdException();
         }
         Technology technology = optionalTechnology.get();
         technologyRepository.delete(technology);
