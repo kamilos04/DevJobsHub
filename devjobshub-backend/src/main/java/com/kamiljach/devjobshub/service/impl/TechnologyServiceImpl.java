@@ -32,21 +32,19 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
 
-    public TechnologyDto createTechnology(String name, ArrayList<Long> assignedAsRequiredOffersListId, ArrayList<Long> assignedAsNiceToHaveOffersListId, String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
-        Optional<Technology> optionalTechnology = technologyRepository.findByName(name);
+    public TechnologyDto createTechnology(CreateTechnologyRequest technologyRequest, String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
+        Optional<Technology> optionalTechnology = technologyRepository.findByName(technologyRequest.getName());
         if(optionalTechnology.isPresent()){throw new TechnologyWithThisNameAlreadyExistsException();}
 
         Technology newTechnology = new Technology();
-        newTechnology.setName(name);
-        ArrayList<Offer> assignedAsRequiredOffersList = offerService.getListOfOffersFromTheirIds(assignedAsRequiredOffersListId);
-        ArrayList<Offer> assignedAsNiceToHaveOffersList = offerService.getListOfOffersFromTheirIds(assignedAsNiceToHaveOffersListId);
-        newTechnology.setAssignedAsRequired(assignedAsRequiredOffersList);
-        newTechnology.setAssignedAsNiceToHave(assignedAsNiceToHaveOffersList);
-        for(int i = 0; i < assignedAsRequiredOffersList.size(); i++){
-            offerService.addTechnologyToRequiredTechnologies(assignedAsRequiredOffersList.get(i), newTechnology);
+        newTechnology.setName(technologyRequest.getName());
+        if(technologyRequest.getAssignedAsNiceToHaveIds() != null ){
+            ArrayList<Offer> assignedAsRequiredOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsRequiredIds());
+            assignedAsRequiredOffersList.forEach(offer -> newTechnology.addToAssignedAsRequired(offer));
         }
-        for(int i = 0; i < assignedAsNiceToHaveOffersList.size(); i++){
-            offerService.addTechnologyToNiceToHaveTechnologies(assignedAsNiceToHaveOffersList.get(i), newTechnology);
+        if(technologyRequest.getAssignedAsNiceToHaveIds() != null){
+            ArrayList<Offer> assignedAsNiceToHaveOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsNiceToHaveIds());
+            assignedAsNiceToHaveOffersList.forEach(offer -> newTechnology.addToAssignedAsNiceToHave(offer));
         }
 
         technologyRepository.save(newTechnology);

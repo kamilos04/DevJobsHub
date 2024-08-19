@@ -22,7 +22,7 @@ public class TechnologyController {
 
     @PostMapping("/technology")
     public ResponseEntity<TechnologyDto> createTechnology(@RequestBody CreateTechnologyRequest createTechnologyRequest, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
-        TechnologyDto createdTechnologyDto = technologyService.createTechnology(createTechnologyRequest.getName(), createTechnologyRequest.getAssignedAsRequiredIds(), createTechnologyRequest.getAssignedAsNiceToHaveIds(), jwt);
+        TechnologyDto createdTechnologyDto = technologyService.createTechnology(createTechnologyRequest, jwt);
         return new ResponseEntity<>(createdTechnologyDto, HttpStatus.OK);
     }
 
