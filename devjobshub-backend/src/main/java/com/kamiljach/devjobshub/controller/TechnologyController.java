@@ -27,12 +27,19 @@ public class TechnologyController {
         return new ResponseEntity<>(createdTechnologyDto, HttpStatus.OK);
     }
 
-    @DeleteMapping("/technology")
-    public ResponseEntity<MessageResponse> deleteTechnologyById(@RequestParam Long id, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException {
+    @DeleteMapping("/technology/{id}")
+    public ResponseEntity<MessageResponse> deleteTechnologyById(@PathVariable("id") Long id, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException {
         technologyService.deleteTechnologyById(id, jwt);
         MessageResponse messageResponse = new MessageResponse();
         messageResponse.setMessage("Technology deleted");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
+
+    @GetMapping("/technology/{id}")
+    public ResponseEntity<TechnologyDto> getTechnologyById(@PathVariable("id") Long id, @RequestHeader("Authorization") String jwt) throws TechnologyNotFoundByIdException {
+        return new ResponseEntity<>(technologyService.getTechnologyById(id, jwt), HttpStatus.OK);
+    }
+
+
 
 }

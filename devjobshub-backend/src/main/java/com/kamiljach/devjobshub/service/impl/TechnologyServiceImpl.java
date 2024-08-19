@@ -80,4 +80,10 @@ public class TechnologyServiceImpl implements TechnologyService {
         return new TechnologyDto(technology);
 
     }
+
+    public TechnologyDto getTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException {
+        Optional<Technology> optionalTechnology = technologyRepository.findById(id);
+        if(optionalTechnology.isEmpty()){throw new TechnologyNotFoundByIdException();}
+        return new TechnologyDto(optionalTechnology.get());
+    }
 }

@@ -11,4 +11,6 @@ public interface TechnologyService {
 //    public Technology getTechnologyByName(String name);
     public TechnologyDto createTechnology(CreateTechnologyRequest technologyRequest, String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException;
     public void deleteTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException;
+
+    public TechnologyDto getTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException;
 }
