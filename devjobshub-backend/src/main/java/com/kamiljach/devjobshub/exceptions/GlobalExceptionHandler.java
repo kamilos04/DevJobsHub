@@ -37,4 +37,10 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Technology not found by name, invalid name");
         return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(TechnologyNotFoundByIdException.class)
+    public ResponseEntity<ApiError> handleTechnologyNotFoundByIdException(TechnologyNotFoundByIdException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Technology not found by ID, invalid ID");
+        return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
+    }
 }

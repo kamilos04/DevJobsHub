@@ -62,10 +62,24 @@ public class TechnologyServiceImpl implements TechnologyService {
         technologyRepository.delete(technology);
     }
 
-//    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException {
-//        Optional<Technology> optionalTechnology = technologyRepository.findById(id);
-//        if(optionalTechnology.isEmpty()){throw new TechnologyNotFoundByIdException();}
-//        Technology technology = optionalTechnology.get();
-//        technology.setName(technologyRequest.getName());
-//
+    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException, OfferNotFoundByIdException {
+        Optional<Technology> optionalTechnology = technologyRepository.findById(id);
+        if (optionalTechnology.isEmpty()) {
+            throw new TechnologyNotFoundByIdException();
+        }
+        Technology technology = optionalTechnology.get();
+        technology.setName(technologyRequest.getName());
+
+        if(technologyRequest.getAssignedAsNiceToHaveIds() != null ){
+            ArrayList<Offer> assignedAsRequiredOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsRequiredIds());
+            assignedAsRequiredOffersList.forEach(offer -> technology.addToAssignedAsRequired(offer));
+        }
+        if(technologyRequest.getAssignedAsNiceToHaveIds() != null){
+            ArrayList<Offer> assignedAsNiceToHaveOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsNiceToHaveIds());
+            assignedAsNiceToHaveOffersList.forEach(offer -> technology.addToAssignedAsNiceToHave(offer));
+        }
+        technologyRepository.save(technology);
+        return new TechnologyDto(technology);
+
+    }
 }

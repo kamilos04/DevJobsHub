@@ -20,9 +20,23 @@ public class Technology {
     @Column(length = 100)
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "requiredTechnologies")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "requiredTechnologies", cascade = CascadeType.ALL)
     private List<Offer> assignedAsRequired = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "niceToHaveTechnologies")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "niceToHaveTechnologies", cascade = CascadeType.ALL)
     private List<Offer> assignedAsNiceToHave = new ArrayList<>();
+
+    public void addToAssignedAsRequired(Offer offer){
+        if(!assignedAsRequired.contains(offer)){
+            assignedAsRequired.add(offer);
+            offer.getRequiredTechnologies().add(this);
+        }
+    }
+
+    public void addToAssignedAsNiceToHave(Offer offer){
+        if(!assignedAsNiceToHave.contains(offer)){
+            assignedAsNiceToHave.add(offer);
+            offer.getNiceToHaveTechnologies().add(this);
+        }
+    }
 }

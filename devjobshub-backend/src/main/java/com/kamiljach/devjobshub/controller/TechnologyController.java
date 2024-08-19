@@ -33,4 +33,5 @@ public class TechnologyController {
         messageResponse.setMessage("Technology deleted");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
+
 }
