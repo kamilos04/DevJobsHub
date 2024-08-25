@@ -16,8 +16,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/profile")
-    public ResponseEntity<User> getProfile(@RequestParam String token, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException {
-        return new ResponseEntity<>(userService.findUserByJwt(token), HttpStatus.OK);
+    @GetMapping("/myprofile")
+    public ResponseEntity<User> getMyProfile(@RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException {
+        System.out.println("Testtt");
+        return new ResponseEntity<>(userService.findUserByJwt(jwt), HttpStatus.OK);
     }
 }
