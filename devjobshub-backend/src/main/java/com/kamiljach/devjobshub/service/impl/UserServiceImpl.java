@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByJwt(String jwt) throws UserNotFoundByJwtException {
+        jwt = jwt.substring(7);
         Claims claims = jwtConfig.parseJwtClaims(jwt);
         String email = jwtConfig.getEmail(claims);
         Optional<User> optionalUser = userRepository.findByEmail(email);
