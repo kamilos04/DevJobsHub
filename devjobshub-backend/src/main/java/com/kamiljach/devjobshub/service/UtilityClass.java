@@ -1,4 +1,4 @@
-package com.kamiljach.devjobshub;
+package com.kamiljach.devjobshub.service;
 
 import java.util.ArrayList;
 
