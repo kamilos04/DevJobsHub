@@ -1,18 +1,16 @@
 package com.kamiljach.devjobshub.service.impl;
 
-import com.kamiljach.devjobshub.UtilityClass;
 import com.kamiljach.devjobshub.dto.TechnologyDto;
 import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByNameException;
 import com.kamiljach.devjobshub.exceptions.TechnologyWithThisNameAlreadyExistsException;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
-import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.service.OfferService;
 import com.kamiljach.devjobshub.service.TechnologyService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,7 +29,7 @@ public class TechnologyServiceImpl implements TechnologyService {
         this.offerService = offerService;
     }
 
-
+    @Transactional(rollbackOn = Exception.class)
     public TechnologyDto createTechnology(CreateTechnologyRequest technologyRequest, String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
         Optional<Technology> optionalTechnology = technologyRepository.findByName(technologyRequest.getName());
         if(optionalTechnology.isPresent()){throw new TechnologyWithThisNameAlreadyExistsException();}
@@ -51,6 +49,7 @@ public class TechnologyServiceImpl implements TechnologyService {
         return new TechnologyDto(newTechnology);
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public void deleteTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException {
         Optional<Technology> optionalTechnology = technologyRepository.findById(id);
         if (optionalTechnology.isEmpty()) {
@@ -60,6 +59,7 @@ public class TechnologyServiceImpl implements TechnologyService {
         technologyRepository.delete(technology);
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException, OfferNotFoundByIdException {
         Optional<Technology> optionalTechnology = technologyRepository.findById(id);
         if (optionalTechnology.isEmpty()) {

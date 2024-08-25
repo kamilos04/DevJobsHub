@@ -1,10 +1,9 @@
 package com.kamiljach.devjobshub.service.impl;
 
 
-import com.kamiljach.devjobshub.UtilityClass;
+import com.kamiljach.devjobshub.service.UtilityClass;
 import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.model.Offer;
-import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.service.OfferService;
 import org.springframework.stereotype.Service;
@@ -36,13 +35,13 @@ public class OfferServiceImpl implements OfferService {
         return offerList;
     }
 
-    public void addTechnologyToRequiredTechnologies(Offer offer ,Technology technology){
-        offer.getRequiredTechnologies().add(technology);
-        offerRepository.save(offer);
-    }
-
-    public void addTechnologyToNiceToHaveTechnologies(Offer offer, Technology technology){
-        offer.getNiceToHaveTechnologies().add(technology);
-        offerRepository.save(offer);
-    }
+//    public void addTechnologyToRequiredTechnologies(Offer offer ,Technology technology){
+//        offer.getRequiredTechnologies().add(technology);
+//        offerRepository.save(offer);
+//    }
+//
+//    public void addTechnologyToNiceToHaveTechnologies(Offer offer, Technology technology){
+//        offer.getNiceToHaveTechnologies().add(technology);
+//        offerRepository.save(offer);
+//    }
 }

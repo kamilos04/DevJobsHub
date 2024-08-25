@@ -6,6 +6,7 @@ import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.response.login.LoginResponse;
 import com.kamiljach.devjobshub.service.AuthService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,7 @@ public class AuthServiceImpl implements AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public LoginResponse login(String emailFromRequest, String passwordFromRequest){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(emailFromRequest, passwordFromRequest));
         String email = authentication.getName();
@@ -44,6 +46,7 @@ public class AuthServiceImpl implements AuthService {
         return loginResponse;
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public LoginResponse register(String emailFromRequest, String passwordFromRequest, String name, String surname) throws AccountAlreadyExistsException {
         Optional<User> optionalUser = userRepository.findByEmail(emailFromRequest);
         if(optionalUser.isPresent()){
