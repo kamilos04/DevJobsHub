@@ -3,11 +3,14 @@ package com.kamiljach.devjobshub.service.impl;
 import com.kamiljach.devjobshub.config.JwtConfig;
 import com.kamiljach.devjobshub.errors.ApiError;
 import com.kamiljach.devjobshub.exceptions.UserNotFoundByJwtException;
+import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.User;
+import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.response.login.LoginResponse;
 import com.kamiljach.devjobshub.service.UserService;
 import io.jsonwebtoken.Claims;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,10 +25,13 @@ public class UserServiceImpl implements UserService {
     private JwtConfig jwtConfig;
     private UserRepository userRepository;
 
+    private OfferRepository offerRepository;
 
-    public UserServiceImpl(JwtConfig jwtConfig, UserRepository userRepository) {
+
+    public UserServiceImpl(JwtConfig jwtConfig, UserRepository userRepository, OfferRepository offerRepository) {
         this.jwtConfig = jwtConfig;
         this.userRepository = userRepository;
+        this.offerRepository = offerRepository;
     }
 
     @Override
@@ -40,6 +46,20 @@ public class UserServiceImpl implements UserService {
         else{
             throw new UserNotFoundByJwtException();
         }
+    }
+
+    @Transactional
+    public void addLikedOffer(User user, Offer offer){
+        user.addLikedOffer(offer);
+        userRepository.save(user);
+        offerRepository.save(offer);
+    }
+
+    @Transactional
+    public void addAppliedOffer(User user, Offer offer){
+        user.addAppliedOffer(offer);
+        userRepository.save(user);
+        offerRepository.save(offer);
     }
 
 }
