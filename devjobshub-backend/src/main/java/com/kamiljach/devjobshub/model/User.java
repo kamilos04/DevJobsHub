@@ -34,6 +34,7 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @Builder.Default
     private Boolean isBanned = false;
 
     private Boolean isFirm;
@@ -50,4 +51,18 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "offer_id")
     )
     private List<Offer> likedOffers = new ArrayList<>();
+
+    public void addLikedOffer(Offer offer){
+        if(!likedOffers.contains(offer)){
+            likedOffers.add(offer);
+            offer.getLikedByUsers().add(this);
+        }
+    }
+
+    public void addAppliedOffer(Offer offer){
+        if(!appliedOffers.contains(offer)){
+            appliedOffers.add(offer);
+            offer.getCandidates().add(this);
+        }
+    }
 }
