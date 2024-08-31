@@ -6,6 +6,7 @@ import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.TechnologyWithThisNameAlreadyExistsException;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
+import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.service.OfferService;
@@ -22,11 +23,13 @@ public class TechnologyServiceImpl implements TechnologyService {
     private TechnologyRepository technologyRepository;
     private OfferService offerService;
 
+    private OfferRepository offerRepository;
 
 
-    public TechnologyServiceImpl(TechnologyRepository technologyRepository, OfferService offerService) {
+    public TechnologyServiceImpl(TechnologyRepository technologyRepository, OfferService offerService, OfferRepository offerRepository) {
         this.technologyRepository = technologyRepository;
         this.offerService = offerService;
+        this.offerRepository = offerRepository;
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -85,5 +88,19 @@ public class TechnologyServiceImpl implements TechnologyService {
         Optional<Technology> optionalTechnology = technologyRepository.findById(id);
         if(optionalTechnology.isEmpty()){throw new TechnologyNotFoundByIdException();}
         return new TechnologyDto(optionalTechnology.get());
+    }
+
+    @Transactional
+    public void addAssignedAsNiceToHave(Technology technology ,Offer offer){
+        technology.addToAssignedAsNiceToHave(offer);
+        technologyRepository.save(technology);
+        offerRepository.save(offer);
+    }
+
+    @Transactional
+    public void addAssignedAsRequired(Technology technology, Offer offer){
+        technology.addToAssignedAsRequired(offer);
+        technologyRepository.save(technology);
+        offerRepository.save(offer);
     }
 }
