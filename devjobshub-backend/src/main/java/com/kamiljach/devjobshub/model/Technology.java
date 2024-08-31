@@ -20,10 +20,10 @@ public class Technology {
     @Column(length = 100)
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "requiredTechnologies", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "requiredTechnologies")
     private List<Offer> assignedAsRequired = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "niceToHaveTechnologies", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "niceToHaveTechnologies")
     private List<Offer> assignedAsNiceToHave = new ArrayList<>();
 
     public void addToAssignedAsRequired(Offer offer){

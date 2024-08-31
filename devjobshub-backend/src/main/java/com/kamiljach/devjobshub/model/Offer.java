@@ -48,14 +48,14 @@ public class Offer {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "likedOffers")
     private List<User> likedByUsers = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name="offer_required_technology",
             joinColumns = @JoinColumn(name = "offer_id"),
             inverseJoinColumns = @JoinColumn(name = "technology_id"))
     private List<Technology> requiredTechnologies = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name="offer_nice_to_have_technology",
             joinColumns = @JoinColumn(name = "offer_id"),
@@ -85,6 +85,20 @@ public class Offer {
         if(!niceToHaveTechnologies.contains(technology)){
             niceToHaveTechnologies.add(technology);
             technology.getAssignedAsNiceToHave().add(this);
+        }
+    }
+
+    public void addCandidate(User user){
+        if(!candidates.contains(user)){
+            candidates.add(user);
+            user.getAppliedOffers().add(this);
+        }
+    }
+
+    public void addLikedByUser(User user){
+        if(!likedByUsers.contains(user)){
+            likedByUsers.add(user);
+            user.getLikedOffers().add(this);
         }
     }
 }
