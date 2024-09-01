@@ -9,8 +9,10 @@ import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
-import com.kamiljach.devjobshub.service.OfferService;
+import com.kamiljach.devjobshub.service.UtilityService;
 import com.kamiljach.devjobshub.service.TechnologyService;
+import com.kamiljach.devjobshub.service.UtilityClass;
+import com.kamiljach.devjobshub.service.UtilityService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +23,16 @@ import java.util.Optional;
 public class TechnologyServiceImpl implements TechnologyService {
 
     private TechnologyRepository technologyRepository;
-    private OfferService offerService;
 
     private OfferRepository offerRepository;
+    
+    private UtilityService utilityService;
 
 
-    public TechnologyServiceImpl(TechnologyRepository technologyRepository, OfferService offerService, OfferRepository offerRepository) {
+    public TechnologyServiceImpl(TechnologyRepository technologyRepository, OfferRepository offerRepository, UtilityService utilityService) {
         this.technologyRepository = technologyRepository;
-        this.offerService = offerService;
         this.offerRepository = offerRepository;
+        this.utilityService = utilityService;
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -40,11 +43,11 @@ public class TechnologyServiceImpl implements TechnologyService {
         Technology newTechnology = new Technology();
         newTechnology.setName(technologyRequest.getName());
         if(technologyRequest.getAssignedAsNiceToHaveIds() != null ){
-            ArrayList<Offer> assignedAsRequiredOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsRequiredIds());
+            ArrayList<Offer> assignedAsRequiredOffersList = utilityService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsRequiredIds());
             assignedAsRequiredOffersList.forEach(offer -> addAssignedAsRequired(newTechnology ,offer));
         }
         if(technologyRequest.getAssignedAsNiceToHaveIds() != null){
-            ArrayList<Offer> assignedAsNiceToHaveOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsNiceToHaveIds());
+            ArrayList<Offer> assignedAsNiceToHaveOffersList = utilityService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsNiceToHaveIds());
             assignedAsNiceToHaveOffersList.forEach(offer -> addAssignedAsNiceToHave(newTechnology, offer));
         }
 
@@ -72,11 +75,11 @@ public class TechnologyServiceImpl implements TechnologyService {
         technology.setName(technologyRequest.getName());
 
         if(technologyRequest.getAssignedAsNiceToHaveIds() != null ){
-            ArrayList<Offer> assignedAsRequiredOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsRequiredIds());
+            ArrayList<Offer> assignedAsRequiredOffersList = utilityService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsRequiredIds());
             assignedAsRequiredOffersList.forEach(offer -> addAssignedAsRequired(technology, offer));
         }
         if(technologyRequest.getAssignedAsNiceToHaveIds() != null){
-            ArrayList<Offer> assignedAsNiceToHaveOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsNiceToHaveIds());
+            ArrayList<Offer> assignedAsNiceToHaveOffersList = utilityService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsNiceToHaveIds());
             assignedAsNiceToHaveOffersList.forEach(offer -> addAssignedAsNiceToHave(technology, offer));
         }
         technologyRepository.save(technology);
@@ -89,6 +92,7 @@ public class TechnologyServiceImpl implements TechnologyService {
         if(optionalTechnology.isEmpty()){throw new TechnologyNotFoundByIdException();}
         return new TechnologyDto(optionalTechnology.get());
     }
+    
 
     @Transactional
     public void addAssignedAsNiceToHave(Technology technology ,Offer offer){

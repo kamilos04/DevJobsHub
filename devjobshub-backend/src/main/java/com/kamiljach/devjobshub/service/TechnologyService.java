@@ -9,6 +9,8 @@ import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 
+import java.util.ArrayList;
+
 public interface TechnologyService {
 //    public Technology getTechnologyByName(String name);
     public TechnologyDto createTechnology(CreateTechnologyRequest technologyRequest, String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException;
@@ -18,6 +20,5 @@ public interface TechnologyService {
 
     public void addAssignedAsNiceToHave(Technology technology , Offer offer);
     public void addAssignedAsRequired(Technology technology, Offer offer);
-
 
 }
