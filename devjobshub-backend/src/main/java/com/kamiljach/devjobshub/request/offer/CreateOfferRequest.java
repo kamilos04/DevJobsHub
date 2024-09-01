@@ -13,8 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateOfferRequest {
-    private Long id;
-
     private String name;
 
     private OFFER_JOB_LEVEL jobLevel;

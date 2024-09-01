@@ -41,11 +41,11 @@ public class TechnologyServiceImpl implements TechnologyService {
         newTechnology.setName(technologyRequest.getName());
         if(technologyRequest.getAssignedAsNiceToHaveIds() != null ){
             ArrayList<Offer> assignedAsRequiredOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsRequiredIds());
-            assignedAsRequiredOffersList.forEach(offer -> newTechnology.addToAssignedAsRequired(offer));
+            assignedAsRequiredOffersList.forEach(offer -> addAssignedAsRequired(newTechnology ,offer));
         }
         if(technologyRequest.getAssignedAsNiceToHaveIds() != null){
             ArrayList<Offer> assignedAsNiceToHaveOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsNiceToHaveIds());
-            assignedAsNiceToHaveOffersList.forEach(offer -> newTechnology.addToAssignedAsNiceToHave(offer));
+            assignedAsNiceToHaveOffersList.forEach(offer -> addAssignedAsNiceToHave(newTechnology, offer));
         }
 
         technologyRepository.save(newTechnology);
@@ -73,11 +73,11 @@ public class TechnologyServiceImpl implements TechnologyService {
 
         if(technologyRequest.getAssignedAsNiceToHaveIds() != null ){
             ArrayList<Offer> assignedAsRequiredOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsRequiredIds());
-            assignedAsRequiredOffersList.forEach(offer -> technology.addToAssignedAsRequired(offer));
+            assignedAsRequiredOffersList.forEach(offer -> addAssignedAsRequired(technology, offer));
         }
         if(technologyRequest.getAssignedAsNiceToHaveIds() != null){
             ArrayList<Offer> assignedAsNiceToHaveOffersList = offerService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsNiceToHaveIds());
-            assignedAsNiceToHaveOffersList.forEach(offer -> technology.addToAssignedAsNiceToHave(offer));
+            assignedAsNiceToHaveOffersList.forEach(offer -> addAssignedAsNiceToHave(technology, offer));
         }
         technologyRepository.save(technology);
         return new TechnologyDto(technology);

@@ -16,6 +16,7 @@ import com.kamiljach.devjobshub.service.OfferService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -49,10 +50,12 @@ public class OfferServiceImpl implements OfferService {
     }
 
 
-//    public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt){
-//        Offer newOffer = OfferMapper.INSTANCE.createOfferRequestToOffer(createOfferRequest);
-//
-//    }
+    public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt){
+        Offer newOffer = OfferMapper.INSTANCE.createOfferRequestToOffer(createOfferRequest);
+        newOffer.setDateTimeOfCreation(LocalDateTime.now());
+        offerRepository.save(newOffer);
+        return OfferDto.mapOfferToOfferDto(newOffer);
+    }
 
     @Transactional
     public void addCandidate(Offer offer, User user){
