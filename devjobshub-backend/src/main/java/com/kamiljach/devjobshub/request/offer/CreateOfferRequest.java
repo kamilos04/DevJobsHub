@@ -31,7 +31,7 @@ public class CreateOfferRequest {
 
     private String localization;
 
-    private LocalDateTime dateTimeOfCreation;
+//    private LocalDateTime dateTimeOfCreation;
 
     private List<Long> likedByUsers = new ArrayList<>();
 
