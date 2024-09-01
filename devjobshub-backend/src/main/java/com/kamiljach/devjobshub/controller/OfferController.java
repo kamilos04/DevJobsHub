@@ -1,6 +1,7 @@
 package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.dto.OfferDto;
+import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.service.OfferService;
@@ -24,7 +25,7 @@ public class OfferController {
     }
 
     @PostMapping("/offer")
-    public ResponseEntity<OfferDto> createOffer(@RequestBody CreateOfferRequest createOfferRequest, @RequestHeader("Authorization")String jwt){
+    public ResponseEntity<OfferDto> createOffer(@RequestBody CreateOfferRequest createOfferRequest, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException {
         OfferDto newOfferDto = offerService.createOffer(createOfferRequest, jwt);
         return new ResponseEntity<>(newOfferDto, HttpStatus.OK);
     }

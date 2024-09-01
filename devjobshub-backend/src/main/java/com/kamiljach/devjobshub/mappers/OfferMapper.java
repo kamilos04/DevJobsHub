@@ -11,10 +11,9 @@ import org.mapstruct.factory.Mappers;
 public interface OfferMapper {
     OfferMapper INSTANCE = Mappers.getMapper(OfferMapper.class);
 
-    @Mapping(target = "candidates", ignore = true)
+
     @Mapping(target = "requiredTechnologies", ignore = true)
     @Mapping(target = "niceToHaveTechnologies", ignore = true)
-    @Mapping(target = "likedByUsers", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dateTimeOfCreation", ignore = true)
     Offer createOfferRequestToOffer(CreateOfferRequest createOfferRequest);

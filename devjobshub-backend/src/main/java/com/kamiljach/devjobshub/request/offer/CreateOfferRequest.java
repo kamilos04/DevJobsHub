@@ -25,17 +25,17 @@ public class CreateOfferRequest {
 
     private Boolean isSalaryMonthly;
 
-    private List<Long> candidates = new ArrayList<>();
+//    private ArrayList<Long> candidates = new ArrayList<>();
 
     private String localization;
 
 //    private LocalDateTime dateTimeOfCreation;
 
-    private List<Long> likedByUsers = new ArrayList<>();
+//    private ArrayList<Long> likedByUsers = new ArrayList<>();
 
-    private List<Long> requiredTechnologies = new ArrayList<>();
+    private ArrayList<Long> requiredTechnologies = new ArrayList<>();
 
-    private List<Long> niceToHaveTechnologies = new ArrayList<>();
+    private ArrayList<Long> niceToHaveTechnologies = new ArrayList<>();
 
     private String aboutProject;
 
