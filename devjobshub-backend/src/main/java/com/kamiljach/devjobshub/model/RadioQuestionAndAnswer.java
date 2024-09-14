@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RadioQuestionAndAnswer {
     private Integer number;
-    
+
     private String question;
 
     private List<String> possibleAnswers = new ArrayList<>();

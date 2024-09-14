@@ -52,6 +52,9 @@ public class User {
     )
     private List<Offer> likedOffers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Application> applications = new ArrayList<>();
+
     public void addLikedOffer(Offer offer){
         if(!likedOffers.contains(offer)){
             likedOffers.add(offer);
