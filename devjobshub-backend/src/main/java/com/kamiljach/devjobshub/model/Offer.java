@@ -33,13 +33,13 @@ public class Offer {
 
     private Boolean isSalaryMonthly;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "offer_user_candidates",
-            joinColumns = @JoinColumn(name = "offer_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> candidates = new ArrayList<>();
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(
+//            name = "offer_user_candidates",
+//            joinColumns = @JoinColumn(name = "offer_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id")
+//    )
+//    private List<User> candidates = new ArrayList<>();
 
     private String localization;
 
@@ -83,6 +83,9 @@ public class Offer {
     @ElementCollection
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "offer")
+    private List<Application> applications = new ArrayList<>();
+
     public void addRequiredTechnology(Technology technology){
         if(!requiredTechnologies.contains(technology)){
             requiredTechnologies.add(technology);
@@ -94,13 +97,6 @@ public class Offer {
         if(!niceToHaveTechnologies.contains(technology)){
             niceToHaveTechnologies.add(technology);
             technology.getAssignedAsNiceToHave().add(this);
-        }
-    }
-
-    public void addCandidate(User user){
-        if(!candidates.contains(user)){
-            candidates.add(user);
-            user.getAppliedOffers().add(this);
         }
     }
 

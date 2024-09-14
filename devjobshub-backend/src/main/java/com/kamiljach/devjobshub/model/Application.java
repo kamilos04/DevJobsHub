@@ -21,6 +21,10 @@ public class Application {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "offer_id")
+    private Offer offer;
+
     private String cvUrl;
 
     @ElementCollection
