@@ -42,14 +42,6 @@ public class TechnologyServiceImpl implements TechnologyService {
 
         Technology newTechnology = new Technology();
         newTechnology.setName(technologyRequest.getName());
-        if(technologyRequest.getAssignedAsNiceToHaveIds() != null ){
-            ArrayList<Offer> assignedAsRequiredOffersList = utilityService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsRequiredIds());
-            assignedAsRequiredOffersList.forEach(offer -> addAssignedAsRequired(newTechnology ,offer));
-        }
-        if(technologyRequest.getAssignedAsNiceToHaveIds() != null){
-            ArrayList<Offer> assignedAsNiceToHaveOffersList = utilityService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsNiceToHaveIds());
-            assignedAsNiceToHaveOffersList.forEach(offer -> addAssignedAsNiceToHave(newTechnology, offer));
-        }
 
         technologyRepository.save(newTechnology);
         return new TechnologyDto(newTechnology);
@@ -73,15 +65,6 @@ public class TechnologyServiceImpl implements TechnologyService {
         }
         Technology technology = optionalTechnology.get();
         technology.setName(technologyRequest.getName());
-
-        if(technologyRequest.getAssignedAsNiceToHaveIds() != null ){
-            ArrayList<Offer> assignedAsRequiredOffersList = utilityService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsRequiredIds());
-            assignedAsRequiredOffersList.forEach(offer -> addAssignedAsRequired(technology, offer));
-        }
-        if(technologyRequest.getAssignedAsNiceToHaveIds() != null){
-            ArrayList<Offer> assignedAsNiceToHaveOffersList = utilityService.getListOfOffersFromTheirIds(technologyRequest.getAssignedAsNiceToHaveIds());
-            assignedAsNiceToHaveOffersList.forEach(offer -> addAssignedAsNiceToHave(technology, offer));
-        }
         technologyRepository.save(technology);
         return new TechnologyDto(technology);
 

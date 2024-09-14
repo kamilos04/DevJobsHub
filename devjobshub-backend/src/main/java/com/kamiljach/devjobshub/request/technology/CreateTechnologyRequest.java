@@ -15,8 +15,4 @@ import java.util.List;
 public class CreateTechnologyRequest {
 
     private String name;
-
-    private ArrayList<Long> assignedAsRequiredIds = new ArrayList<>();
-
-    private ArrayList<Long> assignedAsNiceToHaveIds = new ArrayList<>();
 }
