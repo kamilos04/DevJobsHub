@@ -21,6 +21,8 @@ public class Application {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String cvUrl;
+
     @ElementCollection
     private List<QuestionAndAnswer> questionsAndAnswers = new ArrayList<>();
 

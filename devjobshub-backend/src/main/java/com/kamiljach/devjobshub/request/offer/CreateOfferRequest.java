@@ -48,4 +48,10 @@ public class CreateOfferRequest {
     private List<String> niceToHave = new ArrayList<>();
 
     private List <String> whatWeOffer = new ArrayList<>();
+
+    private List<QuestionAndAnswer> questions = new ArrayList<>();
+
+    private List<RadioQuestionAndAnswer> radioQuestions = new ArrayList<>();
+
+    private List<MultipleChoiceQuestionAndAnswer> multipleChoiceQuestions = new ArrayList<>();
 }

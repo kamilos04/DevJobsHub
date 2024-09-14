@@ -53,7 +53,7 @@ public class OfferServiceImpl implements OfferService {
             niceToHaveTechnologies.forEach(element -> addNiceToHaveTechnology(newOffer, element));
         }
 
-
+        System.out.println(createOfferRequest.getQuestions().get(0).getQuestion());
         offerRepository.save(newOffer);
         return OfferDto.mapOfferToOfferDto(newOffer);
     }

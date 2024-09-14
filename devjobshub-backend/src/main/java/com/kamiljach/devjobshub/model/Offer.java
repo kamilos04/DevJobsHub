@@ -74,6 +74,15 @@ public class Offer {
 
     private List <String> whatWeOffer = new ArrayList<>();
 
+    @ElementCollection
+    private List<QuestionAndAnswer> questions = new ArrayList<>();
+
+    @ElementCollection
+    private List<RadioQuestionAndAnswer> radioQuestions = new ArrayList<>();
+
+    @ElementCollection
+    private List<MultipleChoiceQuestionAndAnswer> multipleChoiceQuestions = new ArrayList<>();
+
     public void addRequiredTechnology(Technology technology){
         if(!requiredTechnologies.contains(technology)){
             requiredTechnologies.add(technology);
