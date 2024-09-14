@@ -55,11 +55,5 @@ public class UserServiceImpl implements UserService {
         offerRepository.save(offer);
     }
 
-    @Transactional
-    public void addAppliedOffer(User user, Offer offer){
-        user.addAppliedOffer(offer);
-        userRepository.save(user);
-        offerRepository.save(offer);
-    }
 
 }

@@ -57,12 +57,6 @@ public class OfferServiceImpl implements OfferService {
         return OfferDto.mapOfferToOfferDto(newOffer);
     }
 
-    @Transactional
-    public void addCandidate(Offer offer, User user){
-        offer.addCandidate(user);
-        offerRepository.save(offer);
-        userRepository.save(user);
-    }
 
     @Transactional
     public void addLikedByUser(Offer offer, User user){

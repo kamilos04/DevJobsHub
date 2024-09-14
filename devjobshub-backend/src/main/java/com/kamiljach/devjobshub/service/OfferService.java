@@ -17,7 +17,7 @@ public interface OfferService {
 //
 //    public void addTechnologyToNiceToHaveTechnologies(Offer offer, Technology technology);
 
-    public void addCandidate(Offer offer, User user);
+
     public void addLikedByUser(Offer offer, User user);
     public void addRequiredTechnology(Offer offer, Technology technology);
     public void addNiceToHaveTechnology(Offer offer, Technology technology);
