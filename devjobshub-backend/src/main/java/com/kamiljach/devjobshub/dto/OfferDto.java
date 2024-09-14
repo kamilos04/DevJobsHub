@@ -53,11 +53,11 @@ public class OfferDto {
 
     private List <String> whatWeOffer = new ArrayList<>();
 
-    private List<QuestionAndAnswer> questions = new ArrayList<>();
+    private List<Question> questions = new ArrayList<>();
 
-    private List<RadioQuestionAndAnswer> radioQuestions = new ArrayList<>();
+    private List<RadioQuestion> radioQuestions = new ArrayList<>();
 
-    private List<MultipleChoiceQuestionAndAnswer> multipleChoiceQuestions = new ArrayList<>();
+    private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
     public OfferDto(Offer offer){
 //        this.id = offer.getId();
