@@ -4,6 +4,7 @@ import com.kamiljach.devjobshub.dto.TechnologyDto;
 import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.TechnologyWithThisNameAlreadyExistsException;
+import com.kamiljach.devjobshub.mappers.TechnologyMapper;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.repository.OfferRepository;
@@ -44,7 +45,7 @@ public class TechnologyServiceImpl implements TechnologyService {
         newTechnology.setName(technologyRequest.getName());
 
         technologyRepository.save(newTechnology);
-        return new TechnologyDto(newTechnology);
+        return TechnologyDto.mapTechnologyToTechnologyDto(newTechnology);
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -66,14 +67,14 @@ public class TechnologyServiceImpl implements TechnologyService {
         Technology technology = optionalTechnology.get();
         technology.setName(technologyRequest.getName());
         technologyRepository.save(technology);
-        return new TechnologyDto(technology);
+        return TechnologyDto.mapTechnologyToTechnologyDto(technology);
 
     }
 
     public TechnologyDto getTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException {
         Optional<Technology> optionalTechnology = technologyRepository.findById(id);
         if(optionalTechnology.isEmpty()){throw new TechnologyNotFoundByIdException();}
-        return new TechnologyDto(optionalTechnology.get());
+        return TechnologyDto.mapTechnologyToTechnologyDto(optionalTechnology.get());
     }
     
 

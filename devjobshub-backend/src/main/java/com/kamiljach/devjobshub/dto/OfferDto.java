@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -37,9 +38,9 @@ public class OfferDto {
 
     private List<User> likedByUsers = new ArrayList<>();
 
-    private List<Technology> requiredTechnologies = new ArrayList<>();
+    private List<TechnologyDto> requiredTechnologies = new ArrayList<>();
 
-    private List<Technology> niceToHaveTechnologies = new ArrayList<>();
+    private List<TechnologyDto> niceToHaveTechnologies = new ArrayList<>();
 
     private String aboutProject;
 
@@ -59,7 +60,7 @@ public class OfferDto {
 
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
-    public OfferDto(Offer offer){
+//    public OfferDto(Offer offer){
 //        this.id = offer.getId();
 //        this.name = offer.getName();
 //        this.jobLevel = offer.getJobLevel();
@@ -80,11 +81,13 @@ public class OfferDto {
 //        offer.getNiceToHave().stream().forEach(element -> this.niceToHave.add(element));
 //        offer.getWhatWeOffer().stream().forEach(element -> this.whatWeOffer.add(element));
 //        To do candidates, likedByUsers, requiredTechnolgies, niceToHaveTechnologies
-    }
+//    }
 
     public static OfferDto mapOfferToOfferDto(Offer offer){
         OfferDto newOfferDto = OfferMapper.INSTANCE.offerToOfferDto(offer);
         newOfferDto.setDateTimeOfCreation(offer.getDateTimeOfCreation().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        newOfferDto.setRequiredTechnologies( offer.getRequiredTechnologies().stream().map(element -> TechnologyDto.mapTechnologyToTechnologyDto(element)).collect(Collectors.toList()) );
+        newOfferDto.setNiceToHaveTechnologies(offer.getNiceToHaveTechnologies().stream().map(element -> TechnologyDto.mapTechnologyToTechnologyDto(element)).collect(Collectors.toList()));
         return newOfferDto;
     }
 }
