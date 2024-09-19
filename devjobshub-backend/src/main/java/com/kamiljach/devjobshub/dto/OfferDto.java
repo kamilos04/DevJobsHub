@@ -30,7 +30,7 @@ public class OfferDto {
 
     private Boolean isSalaryMonthly;
 
-    private List<User> candidates = new ArrayList<>();
+    private List<ApplicationDto> applications = new ArrayList<>();
 
     private String localization;
 

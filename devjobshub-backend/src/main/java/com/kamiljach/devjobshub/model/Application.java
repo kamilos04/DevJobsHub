@@ -35,4 +35,18 @@ public class Application {
 
     @ElementCollection
     private List<MultipleChoiceQuestionAndAnswer> multipleChoiceQuestionsAndAnswers = new ArrayList<>();
+
+    public void setOffer(Offer offer){
+        if(!offer.getApplications().contains(this)){
+            offer.getApplications().add(this);
+            this.offer = offer;
+        }
+    }
+
+    public void setUser(User user){
+        if(!user.getApplications().contains(this)){
+            user.getApplications().add(this);
+            this.user = user;
+        }
+    }
 }
