@@ -52,4 +52,18 @@ public class Application {
             this.user = user;
         }
     }
+
+    public void removeOffer(){
+        if(this.offer.getApplications().contains(this)){
+            this.offer.getApplications().remove(this);
+            this.offer = null;
+        }
+    }
+
+    public void removeUser(){
+        if(this.user.getApplications().contains(this)){
+            this.user.getApplications().remove(this);
+            this.user = null;
+        }
+    }
 }
