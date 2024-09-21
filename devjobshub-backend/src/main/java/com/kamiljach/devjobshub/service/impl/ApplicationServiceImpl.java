@@ -52,6 +52,17 @@ public class ApplicationServiceImpl implements ApplicationService {
         return ApplicationDto.mapApplicationToApplicationDto(optionalApplication.get());
     }
 
+    @Transactional(rollbackOn = Exception.class)
+    public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException {
+        Optional<Application> optionalApplication = applicationRepository.findById(id);
+        if(optionalApplication.isEmpty()){throw new ApplicationNotFoundByIdException();}
+        Application application = optionalApplication.get();
+        removeOfferFromApplication(application);
+        removeUserFromApplication(application);
+        applicationRepository.delete(application);
+
+    }
+
     @Transactional
     public void setOfferInApplication(Application application, Offer offer){
         application.setOffer(offer);
@@ -59,9 +70,26 @@ public class ApplicationServiceImpl implements ApplicationService {
         offerRepository.save(offer);
     }
 
+    @Transactional
     public void setUserInApplication(Application application, User user){
         application.setUser(user);
         applicationRepository.save(application);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void removeOfferFromApplication(Application application){
+        Offer offer = application.getOffer();
+        application.removeOffer();
+        offerRepository.save(offer);
+        applicationRepository.save(application);
+    }
+
+    @Transactional
+    public void removeUserFromApplication(Application application){
+        User user = application.getUser();
+        application.removeUser();
+        userRepository.save(user);
+        applicationRepository.save(application);
     }
 }
