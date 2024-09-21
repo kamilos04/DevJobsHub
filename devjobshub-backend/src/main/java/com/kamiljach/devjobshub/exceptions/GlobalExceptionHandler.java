@@ -43,4 +43,10 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Technology not found by ID, invalid ID");
         return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(ApplicationNotFoundByIdException.class)
+    public ResponseEntity<ApiError> handleApplicationNotFoundByIdException(ApplicationNotFoundByIdException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Application not found, invalid ID");
+        return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
+    }
 }
