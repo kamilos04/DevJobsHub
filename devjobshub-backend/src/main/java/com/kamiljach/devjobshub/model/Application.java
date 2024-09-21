@@ -53,14 +53,14 @@ public class Application {
         }
     }
 
-    public void removeOffer(){
+    public void deleteOffer(){
         if(this.offer.getApplications().contains(this)){
             this.offer.getApplications().remove(this);
             this.offer = null;
         }
     }
 
-    public void removeUser(){
+    public void deleteUser(){
         if(this.user.getApplications().contains(this)){
             this.user.getApplications().remove(this);
             this.user = null;

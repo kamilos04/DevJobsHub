@@ -51,6 +51,13 @@ public class TechnologyServiceImpl implements TechnologyService {
             throw new TechnologyNotFoundByIdException();
         }
         Technology technology = optionalTechnology.get();
+
+        for(int i = 0; i < technology.getAssignedAsRequired().size(); i++){
+            deleteOfferFromAssignedAsRequired(technology, technology.getAssignedAsRequired().get(i));
+        }
+        for(int i = 0; i < technology.getAssignedAsNiceToHave().size(); i++){
+            deleteOfferFromAssignedAsNiceToHave(technology, technology.getAssignedAsNiceToHave().get(i));
+        }
         technologyRepository.delete(technology);
     }
 
@@ -87,4 +94,20 @@ public class TechnologyServiceImpl implements TechnologyService {
         technologyRepository.save(technology);
         offerRepository.save(offer);
     }
+
+    @Transactional
+    public void deleteOfferFromAssignedAsRequired(Technology technology, Offer offer){
+        technology.deleteOfferAssignedAsRequired(offer);
+        technologyRepository.save(technology);
+        offerRepository.save(offer);
+    }
+
+    @Transactional
+    public void deleteOfferFromAssignedAsNiceToHave(Technology technology, Offer offer){
+        technology.deleteOfferAssignedAsNiceToHave(offer);
+        technologyRepository.save(technology);
+        offerRepository.save(offer);
+    }
+
+
 }
