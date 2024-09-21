@@ -1,4 +1,4 @@
-package com.kamiljach.devjobshub.exceptions;
+package com.kamiljach.devjobshub.exceptions.exceptions;
 
 public class TechnologyNotFoundByNameException extends Exception{
     public TechnologyNotFoundByNameException() {

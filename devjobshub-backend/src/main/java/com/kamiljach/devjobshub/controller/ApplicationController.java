@@ -1,11 +1,10 @@
 package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.dto.ApplicationDto;
-import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.UserNotFoundByJwtException;
+import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import com.kamiljach.devjobshub.service.ApplicationService;
-import com.kamiljach.devjobshub.service.impl.ApplicationServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

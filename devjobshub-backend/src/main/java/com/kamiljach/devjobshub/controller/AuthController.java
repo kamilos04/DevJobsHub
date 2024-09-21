@@ -2,8 +2,7 @@ package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.config.JwtConfig;
 import com.kamiljach.devjobshub.errors.ApiError;
-import com.kamiljach.devjobshub.exceptions.AccountAlreadyExistsException;
-import com.kamiljach.devjobshub.model.User;
+import com.kamiljach.devjobshub.exceptions.exceptions.AccountAlreadyExistsException;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.login.LoginRequest;
 import com.kamiljach.devjobshub.request.register.RegisterRequest;
@@ -13,16 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")

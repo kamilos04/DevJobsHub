@@ -1,8 +1,8 @@
 package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.dto.ApplicationDto;
-import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.UserNotFoundByJwtException;
+import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
 import com.kamiljach.devjobshub.mappers.ApplicationMapper;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Offer;

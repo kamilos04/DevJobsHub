@@ -1,10 +1,9 @@
 package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.dto.TechnologyDto;
-import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByNameException;
-import com.kamiljach.devjobshub.exceptions.TechnologyWithThisNameAlreadyExistsException;
+import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyWithThisNameAlreadyExistsException;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.response.MessageResponse;
 import com.kamiljach.devjobshub.service.TechnologyService;

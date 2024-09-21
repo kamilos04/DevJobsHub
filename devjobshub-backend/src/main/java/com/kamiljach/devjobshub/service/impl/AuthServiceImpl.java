@@ -1,7 +1,7 @@
 package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.config.JwtConfig;
-import com.kamiljach.devjobshub.exceptions.AccountAlreadyExistsException;
+import com.kamiljach.devjobshub.exceptions.exceptions.AccountAlreadyExistsException;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.response.login.LoginResponse;

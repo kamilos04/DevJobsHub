@@ -1,6 +1,6 @@
 package com.kamiljach.devjobshub.controller;
 
-import com.kamiljach.devjobshub.exceptions.UserNotFoundByJwtException;
+import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.service.UserService;
 import org.springframework.http.HttpStatus;

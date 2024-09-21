@@ -1,4 +1,4 @@
-package com.kamiljach.devjobshub.exceptions;
+package com.kamiljach.devjobshub.exceptions.exceptions;
 
 public class UserNotFoundByJwtException extends Exception{
     public UserNotFoundByJwtException() {

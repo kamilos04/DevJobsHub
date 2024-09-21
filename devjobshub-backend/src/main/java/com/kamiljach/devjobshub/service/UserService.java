@@ -1,6 +1,6 @@
 package com.kamiljach.devjobshub.service;
 
-import com.kamiljach.devjobshub.exceptions.UserNotFoundByJwtException;
+import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.User;
 

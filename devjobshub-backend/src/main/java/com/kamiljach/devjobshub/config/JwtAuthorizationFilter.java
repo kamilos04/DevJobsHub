@@ -1,7 +1,7 @@
 package com.kamiljach.devjobshub.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kamiljach.devjobshub.exceptions.UserNotFoundByJwtException;
+import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.kamiljach.devjobshub.exceptions;
+package com.kamiljach.devjobshub.exceptions.exceptions;
 
 public class AccountAlreadyExistsException extends Exception{
     public AccountAlreadyExistsException(){

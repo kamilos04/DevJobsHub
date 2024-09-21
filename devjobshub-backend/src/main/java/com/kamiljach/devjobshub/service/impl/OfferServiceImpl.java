@@ -2,16 +2,13 @@ package com.kamiljach.devjobshub.service.impl;
 
 
 import com.kamiljach.devjobshub.dto.OfferDto;
-import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.mappers.OfferMapper;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
-import com.kamiljach.devjobshub.service.TechnologyService;
-import com.kamiljach.devjobshub.service.UtilityClass;
-import com.kamiljach.devjobshub.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.service.OfferService;
@@ -21,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Service
 public class OfferServiceImpl implements OfferService {

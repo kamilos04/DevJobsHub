@@ -1,6 +1,6 @@
 package com.kamiljach.devjobshub.service;
 
-import com.kamiljach.devjobshub.exceptions.AccountAlreadyExistsException;
+import com.kamiljach.devjobshub.exceptions.exceptions.AccountAlreadyExistsException;
 import com.kamiljach.devjobshub.response.login.LoginResponse;
 
 public interface AuthService {

@@ -1,9 +1,8 @@
 package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.dto.OfferDto;
-import com.kamiljach.devjobshub.exceptions.TechnologyNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
-import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.service.OfferService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

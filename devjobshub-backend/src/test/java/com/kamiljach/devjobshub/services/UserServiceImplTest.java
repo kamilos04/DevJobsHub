@@ -1,24 +1,16 @@
 package com.kamiljach.devjobshub.services;
 
-import com.kamiljach.devjobshub.TestDataUtil;
 import com.kamiljach.devjobshub.config.JwtConfig;
-import com.kamiljach.devjobshub.exceptions.UserNotFoundByJwtException;
-import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.service.impl.UserServiceImpl;
-import io.jsonwebtoken.Claims;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
