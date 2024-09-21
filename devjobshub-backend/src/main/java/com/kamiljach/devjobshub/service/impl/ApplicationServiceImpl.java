@@ -80,7 +80,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public void removeOfferFromApplication(Application application){
         Offer offer = application.getOffer();
-        application.removeOffer();
+        application.deleteOffer();
         offerRepository.save(offer);
         applicationRepository.save(application);
     }
@@ -88,7 +88,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public void removeUserFromApplication(Application application){
         User user = application.getUser();
-        application.removeUser();
+        application.deleteUser();
         userRepository.save(user);
         applicationRepository.save(application);
     }
