@@ -1,9 +1,6 @@
-package com.kamiljach.devjobshub.model;
+package com.kamiljach.devjobshub.model.embeddable;
 
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,12 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MultipleChoiceQuestionAndAnswer {
+public class MultipleChoiceQuestion {
     private Integer number;
 
     private String question;
 
     private List<String> possibleAnswers = new ArrayList<>();
-
-    private List<Integer> answers = new ArrayList<>();
 }

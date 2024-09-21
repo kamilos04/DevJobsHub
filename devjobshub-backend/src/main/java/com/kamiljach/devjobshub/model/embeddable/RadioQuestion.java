@@ -1,4 +1,4 @@
-package com.kamiljach.devjobshub.model;
+package com.kamiljach.devjobshub.model.embeddable;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

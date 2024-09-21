@@ -1,5 +1,8 @@
 package com.kamiljach.devjobshub.model;
 
+import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestion;
+import com.kamiljach.devjobshub.model.embeddable.Question;
+import com.kamiljach.devjobshub.model.embeddable.RadioQuestion;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

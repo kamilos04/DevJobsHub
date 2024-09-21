@@ -1,4 +1,4 @@
-package com.kamiljach.devjobshub.model;
+package com.kamiljach.devjobshub.model.embeddable;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Question {
+public class QuestionAndAnswer {
     private Integer number;
 
     private String question;
+
+    private String answer;
 }

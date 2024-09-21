@@ -2,9 +2,9 @@ package com.kamiljach.devjobshub.dto;
 
 import com.kamiljach.devjobshub.mappers.ApplicationMapper;
 import com.kamiljach.devjobshub.model.*;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestionAndAnswer;
+import com.kamiljach.devjobshub.model.embeddable.QuestionAndAnswer;
+import com.kamiljach.devjobshub.model.embeddable.RadioQuestionAndAnswer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

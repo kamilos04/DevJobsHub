@@ -2,11 +2,13 @@ package com.kamiljach.devjobshub.dto;
 
 import com.kamiljach.devjobshub.mappers.OfferMapper;
 import com.kamiljach.devjobshub.model.*;
+import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestion;
+import com.kamiljach.devjobshub.model.embeddable.Question;
+import com.kamiljach.devjobshub.model.embeddable.RadioQuestion;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
