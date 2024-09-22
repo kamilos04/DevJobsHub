@@ -23,4 +23,6 @@ public interface OfferService {
     public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException;
 
     public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException;
+
+    public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException;
 }

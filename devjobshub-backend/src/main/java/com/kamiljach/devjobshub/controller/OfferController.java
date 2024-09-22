@@ -32,4 +32,10 @@ public class OfferController {
         OfferDto updatedOfferDto = offerService.updateOffer(createOfferRequest, offerId, jwt);
         return new ResponseEntity<>(updatedOfferDto, HttpStatus.OK);
     }
+
+    @GetMapping("/offer/{offerId}")
+    public ResponseEntity<OfferDto> getOfferById(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException {
+        OfferDto offerDto = offerService.getOffer(offerId, jwt);
+        return new ResponseEntity<>(offerDto, HttpStatus.OK);
+    }
 }

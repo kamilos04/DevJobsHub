@@ -83,7 +83,11 @@ public class OfferServiceImpl implements OfferService {
 
     }
 
-
+    public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException {
+        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
+        if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
+        return OfferDto.mapOfferToOfferDto(optionalOffer.get());
+    }
 
     private Offer putValuesFromCreateOfferRequestToOffer(CreateOfferRequest createOfferRequest, Offer offer) {
         offer.setName(createOfferRequest.getName());
