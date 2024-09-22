@@ -2,6 +2,7 @@ package com.kamiljach.devjobshub.service.impl;
 
 
 import com.kamiljach.devjobshub.dto.OfferDto;
+import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.mappers.OfferMapper;
 import com.kamiljach.devjobshub.model.Technology;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class OfferServiceImpl implements OfferService {
@@ -53,6 +55,60 @@ public class OfferServiceImpl implements OfferService {
         return OfferDto.mapOfferToOfferDto(newOffer);
     }
 
+    @Transactional(rollbackOn = Exception.class)
+    public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException {
+        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
+        if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
+        Offer offer = putValuesFromCreateOfferRequestToOffer(createOfferRequest, optionalOffer.get());
+
+
+        if(createOfferRequest.getNiceToHaveTechnologies() != null){
+            for(int i = offer.getNiceToHaveTechnologies().size()-1; i >= 0; i--){
+                deleteNiceToHaveTechnologyFromOffer(offer, offer.getNiceToHaveTechnologies().get(i));
+            }
+            ArrayList<Technology> niceToHaveTechnologies = utilityService.getListOfTechnologiesFromTheirIds(createOfferRequest.getNiceToHaveTechnologies());
+            niceToHaveTechnologies.forEach(element -> addNiceToHaveTechnology(offer, element));
+        }
+
+        if(createOfferRequest.getRequiredTechnologies() != null){
+            for(int i = offer.getRequiredTechnologies().size()-1; i >= 0; i--){
+                deleteRequiredTechnologyFromOffer(offer, offer.getRequiredTechnologies().get(i));
+            }
+            ArrayList<Technology> requiredTechnologies = utilityService.getListOfTechnologiesFromTheirIds(createOfferRequest.getRequiredTechnologies());
+            requiredTechnologies.forEach(element -> addRequiredTechnology(offer, element));
+        }
+
+        offerRepository.save(offer);
+
+        return OfferDto.mapOfferToOfferDto(offer);
+
+    }
+
+    public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException {
+        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
+        if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
+        return OfferDto.mapOfferToOfferDto(optionalOffer.get());
+    }
+
+    private Offer putValuesFromCreateOfferRequestToOffer(CreateOfferRequest createOfferRequest, Offer offer) {
+        offer.setName(createOfferRequest.getName());
+        offer.setJobLevel(createOfferRequest.getJobLevel());
+        offer.setOperatingMode(createOfferRequest.getOperatingMode());
+        offer.setMinSalary(createOfferRequest.getMinSalary());
+        offer.setMaxSalary(createOfferRequest.getMaxSalary());
+        offer.setIsSalaryMonthly(createOfferRequest.getIsSalaryMonthly());
+        offer.setLocalization(createOfferRequest.getLocalization());
+        offer.setAboutProject(createOfferRequest.getAboutProject());
+        offer.setResponsibilitiesText(createOfferRequest.getResponsibilitiesText());
+        offer.setResponsibilities(createOfferRequest.getResponsibilities());
+        offer.setRequirements(createOfferRequest.getRequirements());
+        offer.setNiceToHave(createOfferRequest.getNiceToHave());
+        offer.setWhatWeOffer(createOfferRequest.getWhatWeOffer());
+        offer.setQuestions(createOfferRequest.getQuestions());
+        offer.setRadioQuestions(createOfferRequest.getRadioQuestions());
+        offer.setMultipleChoiceQuestions(createOfferRequest.getMultipleChoiceQuestions());
+        return offer;
+    }
 
     @Transactional
     public void addLikedByUser(Offer offer, User user){
@@ -75,4 +131,17 @@ public class OfferServiceImpl implements OfferService {
         technologyRepository.save(technology);
     }
 
+    @Transactional
+    public void deleteNiceToHaveTechnologyFromOffer(Offer offer, Technology technology){
+        technology.deleteOfferAssignedAsNiceToHave(offer);
+        technologyRepository.save(technology);
+        offerRepository.save(offer);
+    }
+
+    @Transactional
+    public void deleteRequiredTechnologyFromOffer(Offer offer, Technology technology){
+        technology.deleteOfferAssignedAsRequired(offer);
+        technologyRepository.save(technology);
+        offerRepository.save(offer);
+    }
 }
