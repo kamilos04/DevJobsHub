@@ -55,6 +55,7 @@ public class OfferServiceImpl implements OfferService {
         return OfferDto.mapOfferToOfferDto(newOffer);
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException {
         Optional<Offer> optionalOffer = offerRepository.findById(offerId);
         if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
@@ -73,7 +74,7 @@ public class OfferServiceImpl implements OfferService {
             for(int i = offer.getRequiredTechnologies().size()-1; i >= 0; i--){
                 deleteRequiredTechnologyFromOffer(offer, offer.getRequiredTechnologies().get(i));
             }
-            ArrayList<Technology> requiredTechnologies = utilityService.getListOfTechnologiesFromTheirIds(createOfferRequest.getNiceToHaveTechnologies());
+            ArrayList<Technology> requiredTechnologies = utilityService.getListOfTechnologiesFromTheirIds(createOfferRequest.getRequiredTechnologies());
             requiredTechnologies.forEach(element -> addRequiredTechnology(offer, element));
         }
 
