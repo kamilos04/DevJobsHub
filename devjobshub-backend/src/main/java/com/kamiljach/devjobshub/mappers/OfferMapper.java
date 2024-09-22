@@ -18,7 +18,7 @@ public interface OfferMapper {
     @Mapping(target = "dateTimeOfCreation", ignore = true)
     Offer createOfferRequestToOffer(CreateOfferRequest createOfferRequest);
 
-    @Mapping(target = "candidates", ignore = true)
+    
     @Mapping(target = "requiredTechnologies", ignore = true)
     @Mapping(target = "niceToHaveTechnologies", ignore = true)
     @Mapping(target = "likedByUsers", ignore = true)
