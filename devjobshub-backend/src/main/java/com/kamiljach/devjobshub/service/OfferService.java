@@ -1,6 +1,7 @@
 package com.kamiljach.devjobshub.service;
 
 import com.kamiljach.devjobshub.dto.OfferDto;
+import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
@@ -20,4 +21,6 @@ public interface OfferService {
     public void addNiceToHaveTechnology(Offer offer, Technology technology);
 
     public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException;
+
+    public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException;
 }
