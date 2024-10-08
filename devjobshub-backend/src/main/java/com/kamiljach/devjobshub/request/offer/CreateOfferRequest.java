@@ -56,4 +56,6 @@ public class CreateOfferRequest {
     private List<RadioQuestion> radioQuestions = new ArrayList<>();
 
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
+
+    private Boolean isActive;
 }

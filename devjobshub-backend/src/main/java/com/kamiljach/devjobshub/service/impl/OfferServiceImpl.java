@@ -39,7 +39,8 @@ public class OfferServiceImpl implements OfferService {
 
     @Transactional(rollbackOn = Exception.class)
     public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException {
-        Offer newOffer = OfferMapper.INSTANCE.createOfferRequestToOffer(createOfferRequest);
+//        Offer newOffer = OfferMapper.INSTANCE.createOfferRequestToOffer(createOfferRequest);
+        Offer newOffer = Offer.mapCreateOfferRequestToOffer(createOfferRequest);
         newOffer.setDateTimeOfCreation(LocalDateTime.now());
 
         if(createOfferRequest.getRequiredTechnologies() != null){
@@ -107,6 +108,9 @@ public class OfferServiceImpl implements OfferService {
         offer.setQuestions(createOfferRequest.getQuestions());
         offer.setRadioQuestions(createOfferRequest.getRadioQuestions());
         offer.setMultipleChoiceQuestions(createOfferRequest.getMultipleChoiceQuestions());
+        if(createOfferRequest.getIsActive()!=null){
+            offer.setIsActive(createOfferRequest.getIsActive());
+        }
         return offer;
     }
 

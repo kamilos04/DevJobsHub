@@ -62,6 +62,8 @@ public class OfferDto {
 
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
+    private Boolean isActive;
+
 //    public OfferDto(Offer offer){
 //        this.id = offer.getId();
 //        this.name = offer.getName();
@@ -91,6 +93,8 @@ public class OfferDto {
         newOfferDto.setRequiredTechnologies( offer.getRequiredTechnologies().stream().map(element -> TechnologyDto.mapTechnologyToTechnologyDto(element)).collect(Collectors.toList()) );
         newOfferDto.setNiceToHaveTechnologies(offer.getNiceToHaveTechnologies().stream().map(element -> TechnologyDto.mapTechnologyToTechnologyDto(element)).collect(Collectors.toList()));
         newOfferDto.setApplications(offer.getApplications().stream().map(element -> ApplicationDto.mapApplicationToApplicationDto(element)).collect(Collectors.toList()));
+
+
         return newOfferDto;
     }
 }
