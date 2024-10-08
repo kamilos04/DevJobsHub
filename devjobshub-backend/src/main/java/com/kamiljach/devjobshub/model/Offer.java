@@ -1,10 +1,14 @@
 package com.kamiljach.devjobshub.model;
 
+import com.kamiljach.devjobshub.dto.OfferDto;
+import com.kamiljach.devjobshub.mappers.OfferMapper;
 import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestion;
 import com.kamiljach.devjobshub.model.embeddable.Question;
 import com.kamiljach.devjobshub.model.embeddable.RadioQuestion;
+import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -89,6 +93,8 @@ public class Offer {
     @OneToMany(mappedBy = "offer")
     private List<Application> applications = new ArrayList<>();
 
+    private Boolean isActive = true;
+
     public void addRequiredTechnology(Technology technology){
         if(!requiredTechnologies.contains(technology)){
             requiredTechnologies.add(technology);
@@ -108,5 +114,13 @@ public class Offer {
             likedByUsers.add(user);
             user.getLikedOffers().add(this);
         }
+    }
+
+    public static Offer mapCreateOfferRequestToOffer(CreateOfferRequest createOfferRequest){
+        Offer offer = OfferMapper.INSTANCE.createOfferRequestToOffer(createOfferRequest);
+        if(createOfferRequest.getIsActive() == null){
+            offer.setIsActive(true);
+        }
+        return offer;
     }
 }
