@@ -62,7 +62,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
     @Transactional(rollbackOn = Exception.class)
-    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException, OfferNotFoundByIdException {
+    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException {
         Optional<Technology> optionalTechnology = technologyRepository.findById(id);
         if (optionalTechnology.isEmpty()) {
             throw new TechnologyNotFoundByIdException();
