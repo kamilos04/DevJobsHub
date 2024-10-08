@@ -52,10 +52,10 @@ public class TechnologyServiceImpl implements TechnologyService {
         }
         Technology technology = optionalTechnology.get();
 
-        for(int i = 0; i < technology.getAssignedAsRequired().size(); i++){
+        for(int i = technology.getAssignedAsNiceToHave().size()-1; i >= 0; i--){
             deleteOfferFromAssignedAsRequired(technology, technology.getAssignedAsRequired().get(i));
         }
-        for(int i = 0; i < technology.getAssignedAsNiceToHave().size(); i++){
+        for(int i = technology.getAssignedAsNiceToHave().size()-1; i >= 0; i--){
             deleteOfferFromAssignedAsNiceToHave(technology, technology.getAssignedAsNiceToHave().get(i));
         }
         technologyRepository.delete(technology);
