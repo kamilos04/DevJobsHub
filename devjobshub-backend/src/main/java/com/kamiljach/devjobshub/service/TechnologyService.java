@@ -22,4 +22,6 @@ public interface TechnologyService {
 
     public void deleteOfferFromAssignedAsNiceToHave(Technology technology, Offer offer);
 
+    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException;
+
 }

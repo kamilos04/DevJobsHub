@@ -40,5 +40,11 @@ public class TechnologyController {
     }
 
 
+    @PutMapping("/technology/{id}")
+    public ResponseEntity<TechnologyDto> updateTechnologyById(@PathVariable("id") Long id, @RequestBody CreateTechnologyRequest createTechnologyRequest, @RequestHeader("Authorization") String jwt) throws TechnologyNotFoundByIdException {
+        TechnologyDto technologyDto = technologyService.updateTechnology(createTechnologyRequest, id, jwt);
+        return new ResponseEntity<>(technologyDto, HttpStatus.OK);
+    }
+
 
 }
