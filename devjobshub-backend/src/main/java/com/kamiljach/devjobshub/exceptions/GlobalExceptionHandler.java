@@ -50,4 +50,10 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Application not found, invalid ID");
         return new ResponseEntity<ApiError>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(QuestionOrAnswerIsIncorrectException.class)
+    public ResponseEntity<ApiError> handleQuestionOrAnswerIsIncorrectException(QuestionOrAnswerIsIncorrectException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Question or answer is incorrect");
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
 }
