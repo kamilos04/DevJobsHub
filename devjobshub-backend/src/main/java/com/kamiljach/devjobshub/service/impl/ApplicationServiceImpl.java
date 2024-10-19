@@ -132,7 +132,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             return(false);
         }
         for(int i = 0; i < multipleChoiceQuestionAndAnswer.getAnswers().size(); i++){
-            System.out.println(multipleChoiceQuestionAndAnswer.getAnswers().size());
             Integer answer = multipleChoiceQuestionAndAnswer.getAnswers().get(i);
             if(!(answer>=0 && answer < multipleChoiceQuestion.getPossibleAnswers().size())){
                 return false;
