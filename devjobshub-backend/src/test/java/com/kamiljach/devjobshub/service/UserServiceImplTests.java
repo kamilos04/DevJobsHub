@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import com.kamiljach.devjobshub.TestDataUtil;
 import com.kamiljach.devjobshub.config.JwtConfig;
 import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
+import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.UserRepository;
@@ -57,6 +58,17 @@ public class UserServiceImplTests {
         assertNotNull(result);
         assertEquals(email, result.getEmail());
 
+    }
+
+    @Test
+    public void UserService_addLikedOffer_Verify(){
+        User user = new User();
+        Offer offer = new Offer();
+
+        userService.addLikedOffer(user, offer);
+
+        verify(userRepository, times(1)).save(user);
+        verify(offerRepository, times(1)).save(offer);
     }
 
 
