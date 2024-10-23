@@ -57,7 +57,7 @@ public class TechnologyServiceImplTests {
     }
 
     @Test
-    public void TechnologyService_createTechnology_ThrowsAlreadyExistsException(){
+    public void TechnologyService_createTechnology_ThrowsTechnologyWithThisNameAlreadyExistsException(){
         Technology existingTechnology = new Technology();
         existingTechnology.setName("Existing");
 
@@ -96,4 +96,49 @@ public class TechnologyServiceImplTests {
         verify(technologyServiceSpy, times(2)).deleteOfferFromAssignedAsNiceToHave(eq(technologyToDelete), Mockito.any(Offer.class));
         verify(technologyServiceSpy, times(3)).deleteOfferFromAssignedAsRequired(eq(technologyToDelete), Mockito.any(Offer.class));
     }
+
+    @Test
+    public void TechnologyService_deleteTechnologyById_ThrowsTechnologyNotFoundByIdException(){
+        Long validId = 1L;
+        String validJwt = "some jwt";
+
+        when(technologyRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        assertThrows(TechnologyNotFoundByIdException.class, () -> {
+            technologyService.deleteTechnologyById(validId, validJwt);
+        });
+    }
+
+    @Test
+    public void TechnologyService_updateTechnology_ReturnsTechnologyDto() throws TechnologyNotFoundByIdException{
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        Technology existingTechnology = new Technology();
+        existingTechnology.setName("Existing");
+
+        when(technologyRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(existingTechnology));
+
+        TechnologyDto result = technologyService.updateTechnology(validRequests, validId, validJwt);
+
+
+        assertNotNull(result);
+        assertNotEquals(result.getName(), "Existing");
+        verify(technologyRepository, times(1)).save(Mockito.any(Technology.class));
+
+    }
+
+    @Test
+    public void TechnologyService_updateTechnology_ThrowsTechnologyNotFoundByIdException() throws TechnologyNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+
+        when(technologyRepository.findById(validId)).thenReturn(Optional.empty());
+
+        assertThrows(TechnologyNotFoundByIdException.class, () -> {
+            technologyService.updateTechnology(validRequests, validId, validJwt);
+        });
+
+        verify(technologyRepository, never()).save(Mockito.any(Technology.class));
+    }
+
 }
