@@ -61,7 +61,7 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void UserService_addLikedOffer_Verify(){
+    public void UserService_addLikedOffer_Verify() {
         User user = new User();
         Offer offer = new Offer();
 
