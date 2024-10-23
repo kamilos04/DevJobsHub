@@ -141,4 +141,30 @@ public class TechnologyServiceImplTests {
         verify(technologyRepository, never()).save(Mockito.any(Technology.class));
     }
 
+    @Test
+    public void TechnologyService_getTechnologyById_ReturnsTechnologyDto() throws TechnologyNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        Technology existingTechnology = new Technology();
+        existingTechnology.setName("Existing");
+
+        when(technologyRepository.findById(validId)).thenReturn(Optional.of(existingTechnology));
+
+        TechnologyDto result = technologyService.getTechnologyById(validId, validJwt);
+
+        assertNotNull(result);
+    }
+
+    @Test
+    public void TechnologyService_getTechnologyById_ThrowsTechnologyNotFoundByIdException(){
+        Long validId = 1L;
+        String validJwt = "some jwt";
+
+        when(technologyRepository.findById(validId)).thenReturn(Optional.empty());
+
+        assertThrows(TechnologyNotFoundByIdException.class, () -> {
+            technologyService.getTechnologyById(validId, validJwt);
+        });
+    }
+
 }
