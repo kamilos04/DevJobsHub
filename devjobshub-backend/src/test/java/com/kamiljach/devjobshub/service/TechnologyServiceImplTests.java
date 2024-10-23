@@ -167,4 +167,67 @@ public class TechnologyServiceImplTests {
         });
     }
 
+    @Test
+    public void TechnologyService_addAssignedAsNiceHave_Success(){
+        Technology technology = new Technology();
+        Offer offer = new Offer();
+        assertFalse(technology.getAssignedAsNiceToHave().contains(offer));
+
+        technologyService.addAssignedAsNiceToHave(technology, offer);
+
+        verify(technologyRepository, times(1)).save(technology);
+        verify(offerRepository, times(1)).save(offer);
+        assertTrue(technology.getAssignedAsNiceToHave().contains(offer));
+        assertTrue(offer.getNiceToHaveTechnologies().contains(technology));
+
+    }
+
+    @Test
+    public void TechnologyService_addAssignedAsRequired_Success(){
+        Technology technology = new Technology();
+        Offer offer = new Offer();
+        assertFalse(technology.getAssignedAsRequired().contains(offer));
+
+        technologyService.addAssignedAsRequired(technology, offer);
+
+        verify(technologyRepository, times(1)).save(technology);
+        verify(offerRepository, times(1)).save(offer);
+        assertTrue(technology.getAssignedAsRequired().contains(offer));
+        assertTrue(offer.getRequiredTechnologies().contains(technology));
+
+    }
+
+    @Test
+    public void TechnologyService_deleteOfferFromAssignedAsRequired_Success(){
+        Technology technology = new Technology();
+        Offer offer = new Offer();
+
+        technologyService.addAssignedAsRequired(technology, offer);
+
+        assertTrue(technology.getAssignedAsRequired().contains(offer));
+
+        technologyService.deleteOfferFromAssignedAsRequired(technology, offer);
+
+        assertFalse(technology.getAssignedAsRequired().contains(offer));
+        assertFalse(offer.getRequiredTechnologies().contains(technology));
+    }
+
+    @Test
+    public void TechnologyService_deleteOfferFromAssignedAsNiceToHace_Success(){
+        Technology technology = new Technology();
+        Offer offer = new Offer();
+
+        technologyService.addAssignedAsNiceToHave(technology, offer);
+
+        assertTrue(technology.getAssignedAsNiceToHave().contains(offer));
+
+        technologyService.deleteOfferFromAssignedAsNiceToHave(technology, offer);
+
+        assertFalse(technology.getAssignedAsNiceToHave().contains(offer));
+        assertFalse(offer.getNiceToHaveTechnologies().contains(technology));
+    }
+
+
+
+
 }
