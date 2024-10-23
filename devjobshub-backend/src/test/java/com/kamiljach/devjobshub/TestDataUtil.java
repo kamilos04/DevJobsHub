@@ -1,8 +1,12 @@
 package com.kamiljach.devjobshub;
 
+import com.kamiljach.devjobshub.config.JwtConfig;
 import com.kamiljach.devjobshub.model.User;
+import org.springframework.stereotype.Component;
 
 public class TestDataUtil {
+
+
     public static User createTestUserA() {
 
         return User.builder()
@@ -12,5 +16,6 @@ public class TestDataUtil {
                 .isFirm(false)
                 .build();
     }
+
 
 }
