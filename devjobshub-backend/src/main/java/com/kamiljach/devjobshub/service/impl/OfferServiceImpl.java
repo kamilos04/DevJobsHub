@@ -4,7 +4,6 @@ package com.kamiljach.devjobshub.service.impl;
 import com.kamiljach.devjobshub.dto.OfferDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
-import com.kamiljach.devjobshub.mappers.OfferMapper;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
@@ -12,9 +11,13 @@ import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.repository.OfferRepository;
+import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
 import com.kamiljach.devjobshub.service.OfferService;
 import com.kamiljach.devjobshub.service.UtilityService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -83,6 +86,23 @@ public class OfferServiceImpl implements OfferService {
 
         return OfferDto.mapOfferToOfferDto(offer);
 
+    }
+
+    @Transactional
+    public ArrayList<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest, String jwt){
+        Pageable pageable;
+        if(searchOffersRequest.getSortingDirection().equals("dsc")){
+            pageable = PageRequest.of(searchOffersRequest.getPageNumber(), searchOffersRequest.getNumberOfElements(), Sort.by(searchOffersRequest.getSortBy()).descending());
+        }
+        else{
+            pageable = PageRequest.of(searchOffersRequest.getPageNumber(), searchOffersRequest.getNumberOfElements(), Sort.by(searchOffersRequest.getSortBy()).ascending());
+        }
+
+        ArrayList<Offer> offers = new ArrayList<>(offerRepository.searchOffers(searchOffersRequest.getText(), searchOffersRequest.getJobLevels(), searchOffersRequest.getOperatingModes(), searchOffersRequest.getLocalizations(), searchOffersRequest.getTechnologies(), pageable).getContent());
+//        ArrayList<Offer> offers = new ArrayList<>(offerRepository.searchOffers(searchOffersRequest.getText(), pageable).getContent());
+        ArrayList<OfferDto> offersDto = new ArrayList<>();
+        offers.forEach(element -> {offersDto.add(OfferDto.mapOfferToOfferDto(element));});
+        return offersDto;
     }
 
     public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException {
