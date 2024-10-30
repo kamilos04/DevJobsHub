@@ -44,10 +44,10 @@ public class OfferController {
     }
 
     @GetMapping("/offer/search")
-    public ResponseEntity<ArrayList<OfferDto>> searchOffers(@RequestParam String text, @RequestParam List<String> jobLevels,
-                                                            @RequestParam List<String> operatingModes,
-                                                            @RequestParam List<String> localizations,
-                                                            @RequestParam List<Long> technologies,
+    public ResponseEntity<ArrayList<OfferDto>> searchOffers(@RequestParam(defaultValue = "") String text, @RequestParam(required = false) List<String> jobLevels,
+                                                            @RequestParam(required = false) List<String> operatingModes,
+                                                            @RequestParam(required = false) List<String> localizations,
+                                                            @RequestParam(required = false) List<Long> technologies,
                                                             @RequestParam String sortingDirection,
                                                             @RequestParam String sortBy, @RequestParam Integer pageNumber,
                                                             @RequestParam Integer numberOfElements, @RequestHeader("Authorization") String jwt){

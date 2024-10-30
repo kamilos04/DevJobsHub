@@ -90,8 +90,15 @@ public class OfferServiceImpl implements OfferService {
 
     @Transactional
     public ArrayList<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest, String jwt){
-        Pageable pageable = PageRequest.of(searchOffersRequest.getPageNumber(), searchOffersRequest.getNumberOfElements(), Sort.by(searchOffersRequest.getSortBy()).ascending());
-        ArrayList<Offer> offers = new ArrayList<>(offerRepository.searchOffers(searchOffersRequest.getText(), searchOffersRequest.getJobLevels(), searchOffersRequest.getOperatingModes(), searchOffersRequest.getLocalizations(), pageable).getContent());
+        Pageable pageable;
+        if(searchOffersRequest.getSortingDirection().equals("dsc")){
+            pageable = PageRequest.of(searchOffersRequest.getPageNumber(), searchOffersRequest.getNumberOfElements(), Sort.by(searchOffersRequest.getSortBy()).descending());
+        }
+        else{
+            pageable = PageRequest.of(searchOffersRequest.getPageNumber(), searchOffersRequest.getNumberOfElements(), Sort.by(searchOffersRequest.getSortBy()).ascending());
+        }
+
+        ArrayList<Offer> offers = new ArrayList<>(offerRepository.searchOffers(searchOffersRequest.getText(), searchOffersRequest.getJobLevels(), searchOffersRequest.getOperatingModes(), searchOffersRequest.getLocalizations(), searchOffersRequest.getTechnologies(), pageable).getContent());
 //        ArrayList<Offer> offers = new ArrayList<>(offerRepository.searchOffers(searchOffersRequest.getText(), pageable).getContent());
         ArrayList<OfferDto> offersDto = new ArrayList<>();
         offers.forEach(element -> {offersDto.add(OfferDto.mapOfferToOfferDto(element));});
