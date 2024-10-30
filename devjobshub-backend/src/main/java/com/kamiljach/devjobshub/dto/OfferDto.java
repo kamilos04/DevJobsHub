@@ -26,11 +26,23 @@ public class OfferDto {
 
     private OFFER_OPERATING_MODE operatingMode;
 
-    private Long minSalary;
+    private Long minSalaryUoP;
 
-    private Long maxSalary;
+    private Long maxSalaryUoP;
 
-    private Boolean isSalaryMonthly;
+    private Boolean isSalaryMonthlyUoP;
+
+    private Long minSalaryB2B;
+
+    private Long maxSalaryB2B;
+
+    private Boolean isSalaryMonthlyB2B;
+
+    private Long minSalaryUZ;
+
+    private Long maxSalaryUZ;
+
+    private Boolean isSalaryMonthlyUZ;
 
     private List<ApplicationDto> applications = new ArrayList<>();
 

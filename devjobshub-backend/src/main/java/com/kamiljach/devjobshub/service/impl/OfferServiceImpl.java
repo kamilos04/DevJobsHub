@@ -60,7 +60,7 @@ public class OfferServiceImpl implements OfferService {
     public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException {
         Optional<Offer> optionalOffer = offerRepository.findById(offerId);
         if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
-        Offer offer = putValuesFromCreateOfferRequestToOffer(createOfferRequest, optionalOffer.get());
+        Offer offer = Offer.mapCreateOfferRequestToExistingOffer(createOfferRequest, optionalOffer.get());
 
 
         if(createOfferRequest.getNiceToHaveTechnologies() != null){
@@ -89,29 +89,6 @@ public class OfferServiceImpl implements OfferService {
         Optional<Offer> optionalOffer = offerRepository.findById(offerId);
         if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
         return OfferDto.mapOfferToOfferDto(optionalOffer.get());
-    }
-
-    private Offer putValuesFromCreateOfferRequestToOffer(CreateOfferRequest createOfferRequest, Offer offer) {
-        offer.setName(createOfferRequest.getName());
-        offer.setJobLevel(createOfferRequest.getJobLevel());
-        offer.setOperatingMode(createOfferRequest.getOperatingMode());
-        offer.setMinSalary(createOfferRequest.getMinSalary());
-        offer.setMaxSalary(createOfferRequest.getMaxSalary());
-        offer.setIsSalaryMonthly(createOfferRequest.getIsSalaryMonthly());
-        offer.setLocalization(createOfferRequest.getLocalization());
-        offer.setAboutProject(createOfferRequest.getAboutProject());
-        offer.setResponsibilitiesText(createOfferRequest.getResponsibilitiesText());
-        offer.setResponsibilities(createOfferRequest.getResponsibilities());
-        offer.setRequirements(createOfferRequest.getRequirements());
-        offer.setNiceToHave(createOfferRequest.getNiceToHave());
-        offer.setWhatWeOffer(createOfferRequest.getWhatWeOffer());
-        offer.setQuestions(createOfferRequest.getQuestions());
-        offer.setRadioQuestions(createOfferRequest.getRadioQuestions());
-        offer.setMultipleChoiceQuestions(createOfferRequest.getMultipleChoiceQuestions());
-        if(createOfferRequest.getIsActive()!=null){
-            offer.setIsActive(createOfferRequest.getIsActive());
-        }
-        return offer;
     }
 
     @Transactional
