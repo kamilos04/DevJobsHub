@@ -5,6 +5,7 @@ import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -16,8 +17,13 @@ public interface OfferMapper {
     @Mapping(target = "niceToHaveTechnologies", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dateTimeOfCreation", ignore = true)
-    Offer createOfferRequestToOffer(CreateOfferRequest createOfferRequest);
+    Offer createOfferRequestToExistingOffer(CreateOfferRequest createOfferRequest, @MappingTarget Offer offer);
 
+    @Mapping(target = "requiredTechnologies", ignore = true)
+    @Mapping(target = "niceToHaveTechnologies", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dateTimeOfCreation", ignore = true)
+    Offer createOfferRequestToOffer(CreateOfferRequest createOfferRequest);
 
     @Mapping(target = "requiredTechnologies", ignore = true)
     @Mapping(target = "niceToHaveTechnologies", ignore = true)
