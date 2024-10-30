@@ -1,25 +1,33 @@
 package com.kamiljach.devjobshub.request.offer;
 
-import java.util.ArrayList;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SearchOffersRequest {
     private String text;
 
-    private ArrayList<String> jobLevel = new ArrayList<>();
+    private List<String> jobLevels = new ArrayList<>();
 
-    private ArrayList<String> operatringMode = new ArrayList<>();
+    private List<String> operatingModes = new ArrayList<>();
 
-    private ArrayList<String> localizations = new ArrayList<>();
+    private List<String> localizations = new ArrayList<>();
 
-    private ArrayList<Long> technologies = new ArrayList<>();
+    private List<Long> technologies = new ArrayList<>();
 
     private String sortingDirection;
 
     private String sortBy;
 
-    private Long pageNumber;
+    private Integer pageNumber;
 
-    private Long numberOfElements;
+    private Integer numberOfElements;
 
 
 
