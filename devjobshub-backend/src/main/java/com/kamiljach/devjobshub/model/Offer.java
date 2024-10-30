@@ -34,11 +34,23 @@ public class Offer {
     @Enumerated(EnumType.STRING)
     private OFFER_OPERATING_MODE operatingMode;
 
-    private Long minSalary;
+    private Long minSalaryUoP;
 
-    private Long maxSalary;
+    private Long maxSalaryUoP;
 
-    private Boolean isSalaryMonthly;
+    private Boolean isSalaryMonthlyUoP;
+
+    private Long minSalaryB2B;
+
+    private Long maxSalaryB2B;
+
+    private Boolean isSalaryMonthlyB2B;
+
+    private Long minSalaryUZ;
+
+    private Long maxSalaryUZ;
+
+    private Boolean isSalaryMonthlyUZ;
 
 //    @ManyToMany(fetch = FetchType.LAZY)
 //    @JoinTable(
@@ -114,6 +126,14 @@ public class Offer {
             likedByUsers.add(user);
             user.getLikedOffers().add(this);
         }
+    }
+
+    public static Offer mapCreateOfferRequestToExistingOffer(CreateOfferRequest createOfferRequest, Offer existingOffer){
+        Offer offer = OfferMapper.INSTANCE.createOfferRequestToExistingOffer(createOfferRequest, existingOffer);
+        if(createOfferRequest.getIsActive() != null){
+            offer.setIsActive(createOfferRequest.getIsActive());
+        }
+        return offer;
     }
 
     public static Offer mapCreateOfferRequestToOffer(CreateOfferRequest createOfferRequest){

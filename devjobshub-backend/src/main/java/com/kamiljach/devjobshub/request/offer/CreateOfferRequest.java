@@ -21,17 +21,28 @@ public class CreateOfferRequest {
 
     private OFFER_OPERATING_MODE operatingMode;
 
-    private Long minSalary;
+    private Long minSalaryUoP;
 
-    private Long maxSalary;
+    private Long maxSalaryUoP;
 
-    private Boolean isSalaryMonthly;
+    private Boolean isSalaryMonthlyUoP;
+
+    private Long minSalaryB2B;
+
+    private Long maxSalaryB2B;
+
+    private Boolean isSalaryMonthlyB2B;
+
+    private Long minSalaryUZ;
+
+    private Long maxSalaryUZ;
+
+    private Boolean isSalaryMonthlyUZ;
 
 //    private ArrayList<Long> candidates = new ArrayList<>();
 
     private String localization;
 
-//    private LocalDateTime dateTimeOfCreation;
 
 //    private ArrayList<Long> likedByUsers = new ArrayList<>();
 
