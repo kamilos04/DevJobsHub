@@ -85,6 +85,7 @@ public class Offer {
 
     private String responsibilitiesText;
 
+    @ElementCollection
     private List<String> responsibilities = new ArrayList<>();
 
     private List<String> requirements = new ArrayList<>();
