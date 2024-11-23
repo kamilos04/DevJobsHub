@@ -17,11 +17,17 @@ public interface OfferRepository extends JpaRepository<Offer, Long> {
     @Query("SELECT o FROM Offer o " +
             "LEFT JOIN o.requiredTechnologies rt " +
             "LEFT JOIN o.niceToHaveTechnologies nt " +
-            "JOIN o.responsibilities res " +
+            "LEFT JOIN o.responsibilities res " +
+            "LEFT JOIN o.requirements req " +
+            "LEFT JOIN o.niceToHave nth " +
+            "LEFT JOIN o.whatWeOffer wwo " +
             "WHERE ((LOWER(o.name) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(o.aboutProject) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(o.responsibilitiesText) LIKE LOWER(CONCAT('%', :text, '%')) " +
-            "OR LOWER(res) LIKE LOWER(CONCAT('%', :text, '%'))) " +
+            "OR LOWER(res) LIKE LOWER(CONCAT('%', :text, '%')) " +
+            "OR LOWER(req) LIKE LOWER(CONCAT('%', :text, '%')) " +
+            "OR LOWER(nth) LIKE LOWER(CONCAT('%', :text, '%')) " +
+            "OR LOWER(wwo) LIKE LOWER(CONCAT('%', :text, '%'))) " +
             "AND (:jobLevels IS NULL OR o.jobLevel IN :jobLevels) " +
             "AND (:operatingModes IS NULL OR o.operatingMode IN :operatingModes) " +
             "AND (:localizations IS NULL OR o.localization IN :localizations) " +
