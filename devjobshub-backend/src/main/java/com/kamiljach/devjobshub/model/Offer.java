@@ -85,12 +85,16 @@ public class Offer {
 
     private String responsibilitiesText;
 
+    @ElementCollection
     private List<String> responsibilities = new ArrayList<>();
 
+    @ElementCollection
     private List<String> requirements = new ArrayList<>();
 
+    @ElementCollection
     private List<String> niceToHave = new ArrayList<>();
 
+    @ElementCollection
     private List <String> whatWeOffer = new ArrayList<>();
 
     @ElementCollection
@@ -132,6 +136,9 @@ public class Offer {
         Offer offer = OfferMapper.INSTANCE.createOfferRequestToExistingOffer(createOfferRequest, existingOffer);
         if(createOfferRequest.getIsActive() != null){
             offer.setIsActive(createOfferRequest.getIsActive());
+        }
+        else{
+            offer.setIsActive(true);
         }
         return offer;
     }
