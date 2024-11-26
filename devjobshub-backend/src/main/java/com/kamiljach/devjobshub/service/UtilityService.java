@@ -13,5 +13,9 @@ public interface UtilityService {
     public ArrayList<Technology> getListOfTechnologiesFromTheirIds(ArrayList<Long> list) throws TechnologyNotFoundByIdException;
     public ArrayList<Offer> getListOfOffersFromTheirIds(ArrayList<Long> list) throws OfferNotFoundByIdException;
 
+    public void removeOfferFromApplication(Application application);
+
+    public void removeUserFromApplication(Application application);
+
     public void deleteApplication(Application application);
 }
