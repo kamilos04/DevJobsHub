@@ -28,10 +28,11 @@ public class UtilityServiceImpl implements UtilityService {
 
     private ApplicationRepository applicationRepository;
 
-    public UtilityServiceImpl(OfferRepository offerRepository, TechnologyRepository technologyRepository, UserRepository userRepository) {
+    public UtilityServiceImpl(OfferRepository offerRepository, TechnologyRepository technologyRepository, UserRepository userRepository, ApplicationRepository applicationRepository) {
         this.offerRepository = offerRepository;
         this.technologyRepository = technologyRepository;
         this.userRepository = userRepository;
+        this.applicationRepository = applicationRepository;
     }
 
     public ArrayList<Technology> getListOfTechnologiesFromTheirIds(ArrayList<Long> list) throws TechnologyNotFoundByIdException {

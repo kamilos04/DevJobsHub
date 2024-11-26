@@ -39,9 +39,6 @@ public class User {
 
     private Boolean isFirm;
 
-//    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "candidates")
-//    private List<Offer> appliedOffers = new ArrayList<>();
-
     private String photoUrl;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -59,6 +56,13 @@ public class User {
         if(!likedOffers.contains(offer)){
             likedOffers.add(offer);
             offer.getLikedByUsers().add(this);
+        }
+    }
+
+    public void deleteLikedOffer(Offer offer){
+        if(likedOffers.contains(offer)){
+            likedOffers.remove(offer);
+            offer.getLikedByUsers().remove(this);
         }
     }
 
