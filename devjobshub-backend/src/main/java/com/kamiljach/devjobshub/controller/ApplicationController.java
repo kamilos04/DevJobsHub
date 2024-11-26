@@ -8,6 +8,7 @@ import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import com.kamiljach.devjobshub.response.MessageResponse;
 import com.kamiljach.devjobshub.service.ApplicationService;
+import com.kamiljach.devjobshub.service.UtilityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class ApplicationController {
 
     private ApplicationService applicationService;
+
 
     public ApplicationController(ApplicationService applicationService) {
         this.applicationService = applicationService;

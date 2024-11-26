@@ -16,8 +16,9 @@ import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import com.kamiljach.devjobshub.service.ApplicationService;
 import com.kamiljach.devjobshub.service.UserService;
-import jakarta.transaction.Transactional;
+import com.kamiljach.devjobshub.service.UtilityService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -30,14 +31,17 @@ public class ApplicationServiceImpl implements ApplicationService {
     private UserRepository userRepository;
     private UserService userService;
 
-    public ApplicationServiceImpl(OfferRepository offerRepository, ApplicationRepository applicationRepository, UserRepository userRepository, UserService userService) {
+    private UtilityService utilityService;
+
+    public ApplicationServiceImpl(OfferRepository offerRepository, ApplicationRepository applicationRepository, UserRepository userRepository, UserService userService, UtilityService utilityService) {
         this.offerRepository = offerRepository;
         this.applicationRepository = applicationRepository;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.utilityService = utilityService;
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, QuestionOrAnswerIsIncorrectException {
         Optional<Offer> optionalOffer = offerRepository.findById(offerId);
         if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
@@ -57,14 +61,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         return ApplicationDto.mapApplicationToApplicationDto(optionalApplication.get());
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException {
         Optional<Application> optionalApplication = applicationRepository.findById(id);
         if(optionalApplication.isEmpty()){throw new ApplicationNotFoundByIdException();}
-        Application application = optionalApplication.get();
-        removeOfferFromApplication(application);
-        removeUserFromApplication(application);
-        applicationRepository.delete(application);
+        utilityService.deleteApplication(optionalApplication.get());
 
     }
 
@@ -82,21 +83,21 @@ public class ApplicationServiceImpl implements ApplicationService {
         userRepository.save(user);
     }
 
-    @Transactional
-    public void removeOfferFromApplication(Application application){
-        Offer offer = application.getOffer();
-        application.deleteOffer();
-        offerRepository.save(offer);
-        applicationRepository.save(application);
-    }
-
-    @Transactional
-    public void removeUserFromApplication(Application application){
-        User user = application.getUser();
-        application.deleteUser();
-        userRepository.save(user);
-        applicationRepository.save(application);
-    }
+//    @Transactional
+//    public void removeOfferFromApplication(Application application){
+//        Offer offer = application.getOffer();
+//        application.deleteOffer();
+//        offerRepository.save(offer);
+//        applicationRepository.save(application);
+//    }
+//
+//    @Transactional
+//    public void removeUserFromApplication(Application application){
+//        User user = application.getUser();
+//        application.deleteUser();
+//        userRepository.save(user);
+//        applicationRepository.save(application);
+//    }
 
     public boolean validateQuestion(QuestionAndAnswer questionAndAnswer, Question question){
         if(!questionAndAnswer.getNumber().equals(question.getNumber())){

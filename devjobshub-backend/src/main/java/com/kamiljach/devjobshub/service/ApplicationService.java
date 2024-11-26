@@ -12,9 +12,6 @@ public interface ApplicationService {
     public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, QuestionOrAnswerIsIncorrectException;
     public ApplicationDto getApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException;
 
-    public void removeOfferFromApplication(Application application);
-
-    public void removeUserFromApplication(Application application);
 
     public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException;
 }

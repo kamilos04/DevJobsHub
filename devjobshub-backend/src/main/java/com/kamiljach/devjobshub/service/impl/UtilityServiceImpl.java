@@ -1,15 +1,20 @@
 package com.kamiljach.devjobshub.service.impl;
 
+import com.kamiljach.devjobshub.exceptions.exceptions.ApplicationNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
+import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
+import com.kamiljach.devjobshub.model.User;
+import com.kamiljach.devjobshub.repository.ApplicationRepository;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.service.UtilityClass;
 import com.kamiljach.devjobshub.service.UtilityService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -21,10 +26,13 @@ public class UtilityServiceImpl implements UtilityService {
 
     private UserRepository userRepository;
 
-    public UtilityServiceImpl(OfferRepository offerRepository, TechnologyRepository technologyRepository, UserRepository userRepository) {
+    private ApplicationRepository applicationRepository;
+
+    public UtilityServiceImpl(OfferRepository offerRepository, TechnologyRepository technologyRepository, UserRepository userRepository, ApplicationRepository applicationRepository) {
         this.offerRepository = offerRepository;
         this.technologyRepository = technologyRepository;
         this.userRepository = userRepository;
+        this.applicationRepository = applicationRepository;
     }
 
     public ArrayList<Technology> getListOfTechnologiesFromTheirIds(ArrayList<Long> list) throws TechnologyNotFoundByIdException {
@@ -56,5 +64,29 @@ public class UtilityServiceImpl implements UtilityService {
             }
         }
         return offerList;
+    }
+
+    @Transactional
+    public void deleteApplication(Application application){
+        removeOfferFromApplication(application);
+        removeUserFromApplication(application);
+        applicationRepository.delete(application);
+
+    }
+
+    @Transactional
+    public void removeOfferFromApplication(Application application){
+        Offer offer = application.getOffer();
+        application.deleteOffer();
+        offerRepository.save(offer);
+        applicationRepository.save(application);
+    }
+
+    @Transactional
+    public void removeUserFromApplication(Application application){
+        User user = application.getUser();
+        application.deleteUser();
+        userRepository.save(user);
+        applicationRepository.save(application);
     }
 }

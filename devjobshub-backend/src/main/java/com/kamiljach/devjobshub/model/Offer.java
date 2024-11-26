@@ -52,14 +52,6 @@ public class Offer {
 
     private Boolean isSalaryMonthlyUZ;
 
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(
-//            name = "offer_user_candidates",
-//            joinColumns = @JoinColumn(name = "offer_id"),
-//            inverseJoinColumns = @JoinColumn(name = "user_id")
-//    )
-//    private List<User> candidates = new ArrayList<>();
-
     private String localization;
 
     private LocalDateTime dateTimeOfCreation;

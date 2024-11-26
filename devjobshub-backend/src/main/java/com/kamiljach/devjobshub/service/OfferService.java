@@ -30,4 +30,6 @@ public interface OfferService {
     public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException;
 
     public ArrayList<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest, String jwt);
+
+    public void deleteOfferById(Long id, String jwt) throws OfferNotFoundByIdException;
 }
