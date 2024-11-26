@@ -49,8 +49,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         validateAllQuestionsInApplication(newApplication, optionalOffer.get());
 
-        setUserInApplication(newApplication, userService.findUserByJwt(jwt));
-        setOfferInApplication(newApplication, optionalOffer.get());
+        User user = userService.findUserByJwt(jwt);
+        setUserInApplication(newApplication, user);
+        userRepository.save(user);
+
+        Offer offer = optionalOffer.get();
+        setOfferInApplication(newApplication, offer);
+        offerRepository.save(offer);
+
         applicationRepository.save(newApplication);
         return ApplicationDto.mapApplicationToApplicationDto(newApplication);
     }
@@ -72,15 +78,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public void setOfferInApplication(Application application, Offer offer){
         application.setOffer(offer);
-        applicationRepository.save(application);
-        offerRepository.save(offer);
     }
 
     @Transactional
     public void setUserInApplication(Application application, User user){
         application.setUser(user);
-        applicationRepository.save(application);
-        userRepository.save(user);
     }
 
 //    @Transactional
