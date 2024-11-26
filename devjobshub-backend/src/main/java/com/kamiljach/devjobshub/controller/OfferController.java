@@ -5,6 +5,7 @@ import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException
 import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
+import com.kamiljach.devjobshub.response.MessageResponse;
 import com.kamiljach.devjobshub.service.OfferService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,4 +65,14 @@ public class OfferController {
         ArrayList<OfferDto> result = offerService.searchOffer(searchOffersRequest, jwt);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @DeleteMapping("/offer/{offerId}")
+    public ResponseEntity<MessageResponse> deleteOfferById(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException {
+        offerService.deleteOfferById(offerId, jwt);
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setMessage("Offer deleted");
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
+
+
 }
