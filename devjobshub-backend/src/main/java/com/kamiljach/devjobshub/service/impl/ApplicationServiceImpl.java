@@ -50,11 +50,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         validateAllQuestionsInApplication(newApplication, optionalOffer.get());
 
         User user = userService.findUserByJwt(jwt);
-        setUserInApplication(newApplication, user);
+        newApplication.setUser(user);
         userRepository.save(user);
 
         Offer offer = optionalOffer.get();
-        setOfferInApplication(newApplication, offer);
+        newApplication.setOffer(offer);
         offerRepository.save(offer);
 
         applicationRepository.save(newApplication);
@@ -75,15 +75,15 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     }
 
-    @Transactional
-    public void setOfferInApplication(Application application, Offer offer){
-        application.setOffer(offer);
-    }
+//    @Transactional
+//    public void setOfferInApplication(Application application, Offer offer){
+//        application.setOffer(offer);
+//    }
 
-    @Transactional
-    public void setUserInApplication(Application application, User user){
-        application.setUser(user);
-    }
+//    @Transactional
+//    public void setUserInApplication(Application application, User user){
+//        application.setUser(user);
+//    }
 
 //    @Transactional
 //    public void removeOfferFromApplication(Application application){
