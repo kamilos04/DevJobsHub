@@ -40,14 +40,14 @@ public class Technology {
         }
     }
 
-    public void deleteOfferAssignedAsRequired(Offer offer){
+    public void removeOfferAssignedAsRequired(Offer offer){
         if(assignedAsRequired.contains(offer)){
             assignedAsRequired.remove(offer);
             offer.getRequiredTechnologies().remove(this);
         }
     }
 
-    public void deleteOfferAssignedAsNiceToHave(Offer offer){
+    public void removeOfferAssignedAsNiceToHave(Offer offer){
         if(assignedAsNiceToHave.contains(offer)){
             assignedAsNiceToHave.remove(offer);
             offer.getNiceToHaveTechnologies().remove(this);

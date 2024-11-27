@@ -1,6 +1,5 @@
 package com.kamiljach.devjobshub.service.impl;
 
-import com.kamiljach.devjobshub.exceptions.exceptions.ApplicationNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.model.Application;
@@ -77,7 +76,7 @@ public class UtilityServiceImpl implements UtilityService {
     @Transactional
     public void removeOfferFromApplication(Application application){
         Offer offer = application.getOffer();
-        application.deleteOffer();
+        application.removeOffer();
         offerRepository.save(offer);
         applicationRepository.save(application);
     }
@@ -85,7 +84,7 @@ public class UtilityServiceImpl implements UtilityService {
     @Transactional
     public void removeUserFromApplication(Application application){
         User user = application.getUser();
-        application.deleteUser();
+        application.removeUser();
         userRepository.save(user);
         applicationRepository.save(application);
     }

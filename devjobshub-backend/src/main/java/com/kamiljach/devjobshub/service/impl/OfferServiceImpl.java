@@ -137,7 +137,7 @@ public class OfferServiceImpl implements OfferService {
 
         for(int i = offer.getLikedByUsers().size()-1; i>=0; i--){
             User user = offer.getLikedByUsers().get(i);
-            user.deleteLikedOffer(offer);
+            user.removeLikedOffer(offer);
             userRepository.save(user);
         }
 
