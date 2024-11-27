@@ -11,7 +11,6 @@ import com.kamiljach.devjobshub.repository.TechnologyRepository;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.service.UtilityService;
 import com.kamiljach.devjobshub.service.TechnologyService;
-//import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

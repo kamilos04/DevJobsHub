@@ -75,31 +75,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     }
 
-//    @Transactional
-//    public void setOfferInApplication(Application application, Offer offer){
-//        application.setOffer(offer);
-//    }
-
-//    @Transactional
-//    public void setUserInApplication(Application application, User user){
-//        application.setUser(user);
-//    }
-
-//    @Transactional
-//    public void removeOfferFromApplication(Application application){
-//        Offer offer = application.getOffer();
-//        application.deleteOffer();
-//        offerRepository.save(offer);
-//        applicationRepository.save(application);
-//    }
-//
-//    @Transactional
-//    public void removeUserFromApplication(Application application){
-//        User user = application.getUser();
-//        application.deleteUser();
-//        userRepository.save(user);
-//        applicationRepository.save(application);
-//    }
 
     public boolean validateQuestion(QuestionAndAnswer questionAndAnswer, Question question){
         if(!questionAndAnswer.getNumber().equals(question.getNumber())){

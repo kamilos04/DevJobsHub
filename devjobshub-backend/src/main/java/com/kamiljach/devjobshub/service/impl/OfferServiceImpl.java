@@ -162,39 +162,4 @@ public class OfferServiceImpl implements OfferService {
     }
 
 
-//    @Transactional
-//    public void addLikedByUser(Offer offer, User user){
-//        offer.addLikedByUser(user);
-//        offerRepository.save(offer);
-//        userRepository.save(user);
-//    }
-
-//    @Transactional
-//    public void addRequiredTechnology(Offer offer, Technology technology){
-//        offer.addRequiredTechnology(technology);
-//        offerRepository.save(offer);
-//        technologyRepository.save(technology);
-//    }
-
-//    @Transactional
-//    public void addNiceToHaveTechnology(Offer offer, Technology technology){
-//        offer.addNiceToHaveTechnology(technology);
-//        offerRepository.save(offer);
-//        technologyRepository.save(technology);
-//    }
-
-//    @Transactional
-//    public void deleteNiceToHaveTechnologyFromOffer(Offer offer, Technology technology){
-//        technology.deleteOfferAssignedAsNiceToHave(offer);
-//    }
-
-//    @Transactional
-//    public void deleteRequiredTechnologyFromOffer(Offer offer, Technology technology){
-//        technology.deleteOfferAssignedAsRequired(offer);
-//    }
-
-//    @Transactional
-//    public void deleteLikedByUserFromOffer(Offer offer, User user){
-//        user.deleteLikedOffer(offer);
-//    }
 }
