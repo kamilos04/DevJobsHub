@@ -1,7 +1,6 @@
 package com.kamiljach.devjobshub.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kamiljach.devjobshub.request.register.RegisterRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,7 +58,7 @@ public class User {
         }
     }
 
-    public void deleteLikedOffer(Offer offer){
+    public void removeLikedOffer(Offer offer){
         if(likedOffers.contains(offer)){
             likedOffers.remove(offer);
             offer.getLikedByUsers().remove(this);

@@ -49,11 +49,18 @@ public class OfferServiceImpl implements OfferService {
 
         if(createOfferRequest.getRequiredTechnologies() != null){
             ArrayList<Technology> requiredTechnologies = utilityService.getListOfTechnologiesFromTheirIds(createOfferRequest.getRequiredTechnologies());
-            requiredTechnologies.forEach(element -> addRequiredTechnology(newOffer, element));
+            requiredTechnologies.forEach(element -> {
+                newOffer.addRequiredTechnology(element);
+                technologyRepository.save(element);
+            });
+
         }
         if(createOfferRequest.getNiceToHaveTechnologies() != null){
             ArrayList<Technology> niceToHaveTechnologies = utilityService.getListOfTechnologiesFromTheirIds(createOfferRequest.getNiceToHaveTechnologies());
-            niceToHaveTechnologies.forEach(element -> addNiceToHaveTechnology(newOffer, element));
+            niceToHaveTechnologies.forEach(element -> {
+                newOffer.addNiceToHaveTechnology(element);
+                technologyRepository.save(element);
+            });
         }
 
         offerRepository.save(newOffer);
@@ -69,18 +76,28 @@ public class OfferServiceImpl implements OfferService {
 
         if(createOfferRequest.getNiceToHaveTechnologies() != null){
             for(int i = offer.getNiceToHaveTechnologies().size()-1; i >= 0; i--){
-                deleteNiceToHaveTechnologyFromOffer(offer, offer.getNiceToHaveTechnologies().get(i));
+                Technology technology = offer.getNiceToHaveTechnologies().get(i);
+                offer.removeNiceToHaveTechnology(technology);
+                technologyRepository.save(technology);
             }
             ArrayList<Technology> niceToHaveTechnologies = utilityService.getListOfTechnologiesFromTheirIds(createOfferRequest.getNiceToHaveTechnologies());
-            niceToHaveTechnologies.forEach(element -> addNiceToHaveTechnology(offer, element));
+            niceToHaveTechnologies.forEach(element -> {
+                offer.addNiceToHaveTechnology(element);
+                technologyRepository.save(element);
+            });
         }
 
         if(createOfferRequest.getRequiredTechnologies() != null){
             for(int i = offer.getRequiredTechnologies().size()-1; i >= 0; i--){
-                deleteRequiredTechnologyFromOffer(offer, offer.getRequiredTechnologies().get(i));
+                Technology technology = offer.getRequiredTechnologies().get(i);
+                offer.removeRequiredTechnology(technology);
+                technologyRepository.save(technology);
             }
             ArrayList<Technology> requiredTechnologies = utilityService.getListOfTechnologiesFromTheirIds(createOfferRequest.getRequiredTechnologies());
-            requiredTechnologies.forEach(element -> addRequiredTechnology(offer, element));
+            requiredTechnologies.forEach(element -> {
+                offer.addRequiredTechnology(element);
+                technologyRepository.save(element);
+            });
         }
 
         offerRepository.save(offer);
@@ -100,7 +117,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         ArrayList<Offer> offers = new ArrayList<>(offerRepository.searchOffers(searchOffersRequest.getText(), searchOffersRequest.getJobLevels(), searchOffersRequest.getOperatingModes(), searchOffersRequest.getLocalizations(), searchOffersRequest.getTechnologies(), pageable).getContent());
-//        ArrayList<Offer> offers = new ArrayList<>(offerRepository.searchOffers(searchOffersRequest.getText(), pageable).getContent());
+
         ArrayList<OfferDto> offersDto = new ArrayList<>();
         offers.forEach(element -> {offersDto.add(OfferDto.mapOfferToOfferDto(element));});
         return offersDto;
@@ -120,19 +137,19 @@ public class OfferServiceImpl implements OfferService {
 
         for(int i = offer.getLikedByUsers().size()-1; i>=0; i--){
             User user = offer.getLikedByUsers().get(i);
-            deleteLikedByUserFromOffer(offer, user);
+            user.removeLikedOffer(offer);
             userRepository.save(user);
         }
 
         for(int i = offer.getRequiredTechnologies().size()-1; i>=0; i--){
             Technology technology = offer.getRequiredTechnologies().get(i);
-            deleteRequiredTechnologyFromOffer(offer, technology);
+            offer.removeRequiredTechnology(technology);
             technologyRepository.save(technology);
         }
 
         for(int i = offer.getNiceToHaveTechnologies().size()-1; i>=0; i--){
             Technology technology = offer.getNiceToHaveTechnologies().get(i);
-            deleteNiceToHaveTechnologyFromOffer(offer, technology);
+            offer.removeNiceToHaveTechnology(technology);
             technologyRepository.save(technology);
         }
 
@@ -141,47 +158,43 @@ public class OfferServiceImpl implements OfferService {
             utilityService.deleteApplication(application);
         }
 
-        offerRepository.save(offer);
+        offerRepository.delete(offer);
     }
 
 
-    @Transactional
-    public void addLikedByUser(Offer offer, User user){
-        offer.addLikedByUser(user);
-        offerRepository.save(offer);
-        userRepository.save(user);
-    }
-
-    @Transactional
-    public void addRequiredTechnology(Offer offer, Technology technology){
-        offer.addRequiredTechnology(technology);
-        offerRepository.save(offer);
-        technologyRepository.save(technology);
-    }
-
-    @Transactional
-    public void addNiceToHaveTechnology(Offer offer, Technology technology){
-        offer.addNiceToHaveTechnology(technology);
-        offerRepository.save(offer);
-        technologyRepository.save(technology);
-    }
-
-    @Transactional
-    public void deleteNiceToHaveTechnologyFromOffer(Offer offer, Technology technology){
-        technology.deleteOfferAssignedAsNiceToHave(offer);
-//        technologyRepository.save(technology);
+//    @Transactional
+//    public void addLikedByUser(Offer offer, User user){
+//        offer.addLikedByUser(user);
 //        offerRepository.save(offer);
-    }
+//        userRepository.save(user);
+//    }
 
-    @Transactional
-    public void deleteRequiredTechnologyFromOffer(Offer offer, Technology technology){
-        technology.deleteOfferAssignedAsRequired(offer);
-//        technologyRepository.save(technology);
+//    @Transactional
+//    public void addRequiredTechnology(Offer offer, Technology technology){
+//        offer.addRequiredTechnology(technology);
 //        offerRepository.save(offer);
-    }
+//        technologyRepository.save(technology);
+//    }
 
-    @Transactional
-    public void deleteLikedByUserFromOffer(Offer offer, User user){
-        user.deleteLikedOffer(offer);
-    }
+//    @Transactional
+//    public void addNiceToHaveTechnology(Offer offer, Technology technology){
+//        offer.addNiceToHaveTechnology(technology);
+//        offerRepository.save(offer);
+//        technologyRepository.save(technology);
+//    }
+
+//    @Transactional
+//    public void deleteNiceToHaveTechnologyFromOffer(Offer offer, Technology technology){
+//        technology.deleteOfferAssignedAsNiceToHave(offer);
+//    }
+
+//    @Transactional
+//    public void deleteRequiredTechnologyFromOffer(Offer offer, Technology technology){
+//        technology.deleteOfferAssignedAsRequired(offer);
+//    }
+
+//    @Transactional
+//    public void deleteLikedByUserFromOffer(Offer offer, User user){
+//        user.deleteLikedOffer(offer);
+//    }
 }
