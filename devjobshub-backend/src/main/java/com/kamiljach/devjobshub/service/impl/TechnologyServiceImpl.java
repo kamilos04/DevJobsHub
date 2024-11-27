@@ -54,10 +54,14 @@ public class TechnologyServiceImpl implements TechnologyService {
         Technology technology = optionalTechnology.get();
 
         for(int i = technology.getAssignedAsRequired().size()-1; i >= 0; i--){
-            deleteOfferFromAssignedAsRequired(technology, technology.getAssignedAsRequired().get(i));
+            Offer offer = technology.getAssignedAsRequired().get(i);
+            technology.deleteOfferAssignedAsRequired(offer);
+            offerRepository.save(offer);
         }
         for(int i = technology.getAssignedAsNiceToHave().size()-1; i >= 0; i--){
-            deleteOfferFromAssignedAsNiceToHave(technology, technology.getAssignedAsNiceToHave().get(i));
+            Offer offer = technology.getAssignedAsNiceToHave().get(i);
+            technology.deleteOfferAssignedAsNiceToHave(offer);
+            offerRepository.save(offer);
         }
         technologyRepository.delete(technology);
     }
@@ -82,33 +86,6 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
     
 
-    @Transactional
-    public void addAssignedAsNiceToHave(Technology technology ,Offer offer){
-        technology.addToAssignedAsNiceToHave(offer);
-        technologyRepository.save(technology);
-        offerRepository.save(offer);
-    }
-
-    @Transactional
-    public void addAssignedAsRequired(Technology technology, Offer offer){
-        technology.addToAssignedAsRequired(offer);
-        technologyRepository.save(technology);
-        offerRepository.save(offer);
-    }
-
-    @Transactional
-    public void deleteOfferFromAssignedAsRequired(Technology technology, Offer offer){
-        technology.deleteOfferAssignedAsRequired(offer);
-        technologyRepository.save(technology);
-        offerRepository.save(offer);
-    }
-
-    @Transactional
-    public void deleteOfferFromAssignedAsNiceToHave(Technology technology, Offer offer){
-        technology.deleteOfferAssignedAsNiceToHave(offer);
-        technologyRepository.save(technology);
-        offerRepository.save(offer);
-    }
 
 
 }

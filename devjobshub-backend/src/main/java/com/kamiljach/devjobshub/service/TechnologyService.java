@@ -15,13 +15,6 @@ public interface TechnologyService {
 
     public TechnologyDto getTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException;
 
-    public void addAssignedAsNiceToHave(Technology technology , Offer offer);
-    public void addAssignedAsRequired(Technology technology, Offer offer);
-
-    public void deleteOfferFromAssignedAsRequired(Technology technology, Offer offer);
-
-    public void deleteOfferFromAssignedAsNiceToHave(Technology technology, Offer offer);
-
     public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException;
 
 }
