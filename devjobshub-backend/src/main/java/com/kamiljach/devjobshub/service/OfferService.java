@@ -12,16 +12,6 @@ import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
 import java.util.ArrayList;
 
 public interface OfferService {
-//    public ArrayList<Offer> getListOfOffersFromTheirIds(ArrayList<Long> list) throws OfferNotFoundByIdException ;
-
-//    public void addTechnologyToRequiredTechnologies(Offer offer , Technology technology);
-//
-//    public void addTechnologyToNiceToHaveTechnologies(Offer offer, Technology technology);
-
-
-//    public void addLikedByUser(Offer offer, User user);
-//    public void addRequiredTechnology(Offer offer, Technology technology);
-//    public void addNiceToHaveTechnology(Offer offer, Technology technology);
 
     public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException;
 
