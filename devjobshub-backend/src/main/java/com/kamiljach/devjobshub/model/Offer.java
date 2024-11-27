@@ -124,6 +124,21 @@ public class Offer {
         }
     }
 
+    public void removeNiceToHaveTechnology(Technology technology){
+        if(niceToHaveTechnologies.contains(technology)){
+            niceToHaveTechnologies.remove(technology);
+            technology.getAssignedAsNiceToHave().remove(this);
+        }
+    }
+
+    public void removeRequiredTechnology(Technology technology){
+        if(requiredTechnologies.contains(technology)){
+            requiredTechnologies.remove(technology);
+            technology.getAssignedAsRequired().remove(this);
+        }
+    }
+
+
     public static Offer mapCreateOfferRequestToExistingOffer(CreateOfferRequest createOfferRequest, Offer existingOffer){
         Offer offer = OfferMapper.INSTANCE.createOfferRequestToExistingOffer(createOfferRequest, existingOffer);
         if(createOfferRequest.getIsActive() != null){
