@@ -103,6 +103,14 @@ public class Offer {
 
     private Boolean isActive = true;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name="offer_favouriteApplications",
+            joinColumns = @JoinColumn(name = "offer_id"),
+            inverseJoinColumns = @JoinColumn(name = "application_id"))
+    private List<Application> favouriteApplications = new ArrayList<>();
+
+
     public void addRequiredTechnology(Technology technology){
         if(!requiredTechnologies.contains(technology)){
             requiredTechnologies.add(technology);
@@ -135,6 +143,20 @@ public class Offer {
         if(requiredTechnologies.contains(technology)){
             requiredTechnologies.remove(technology);
             technology.getAssignedAsRequired().remove(this);
+        }
+    }
+
+    public void addFavouriteApplication(Application application){
+        if(!favouriteApplications.contains(application)){
+            favouriteApplications.add(application);
+            application.getAssignedAsFavourite().add(this);
+        }
+    }
+
+    public void removeFavouriteApplication(Application application){
+        if(favouriteApplications.contains(application)){
+            favouriteApplications.remove(application);
+            application.getAssignedAsFavourite().remove(this);
         }
     }
 
