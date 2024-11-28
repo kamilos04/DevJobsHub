@@ -2,8 +2,10 @@ package com.kamiljach.devjobshub.service.impl;
 
 
 import com.kamiljach.devjobshub.dto.OfferDto;
+import com.kamiljach.devjobshub.exceptions.exceptions.OfferIsAlreadyLikedByUserException;
 import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.model.User;
@@ -14,6 +16,7 @@ import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
 import com.kamiljach.devjobshub.service.OfferService;
+import com.kamiljach.devjobshub.service.UserService;
 import com.kamiljach.devjobshub.service.UtilityService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,12 +36,14 @@ public class OfferServiceImpl implements OfferService {
 
     private UtilityService utilityService;
 
+    private UserService userService;
 
-    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository, TechnologyRepository technologyRepository, UtilityService utilityService) {
+    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository, TechnologyRepository technologyRepository, UtilityService utilityService, UserService userService) {
         this.offerRepository = offerRepository;
         this.userRepository = userRepository;
         this.technologyRepository = technologyRepository;
         this.utilityService = utilityService;
+        this.userService = userService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -159,6 +164,21 @@ public class OfferServiceImpl implements OfferService {
         }
 
         offerRepository.delete(offer);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void likeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsAlreadyLikedByUserException {
+        User user = userService.findUserByJwt(jwt);
+        Optional<Offer> optionalOffer = offerRepository.findById(id);
+        if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
+
+        Offer offer = optionalOffer.get();
+        if (user.getLikedOffers().contains(offer)){
+            throw new OfferIsAlreadyLikedByUserException();
+        }
+        user.addLikedOffer(offer);
+        userRepository.save(user);
+        offerRepository.save(offer);
     }
 
 
