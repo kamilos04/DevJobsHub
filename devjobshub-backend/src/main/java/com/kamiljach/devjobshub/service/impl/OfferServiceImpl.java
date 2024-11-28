@@ -6,6 +6,7 @@ import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.model.User;
+import com.kamiljach.devjobshub.repository.ApplicationRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
@@ -35,13 +36,17 @@ public class OfferServiceImpl implements OfferService {
 
     private UserService userService;
 
-    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository, TechnologyRepository technologyRepository, UtilityService utilityService, UserService userService) {
+    private ApplicationRepository applicationRepository;
+
+    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository, TechnologyRepository technologyRepository, UtilityService utilityService, UserService userService, ApplicationRepository applicationRepository) {
         this.offerRepository = offerRepository;
         this.userRepository = userRepository;
         this.technologyRepository = technologyRepository;
         this.utilityService = utilityService;
         this.userService = userService;
+        this.applicationRepository = applicationRepository;
     }
+
 
     @Transactional(rollbackFor = Exception.class)
     public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException {
@@ -191,6 +196,43 @@ public class OfferServiceImpl implements OfferService {
         user.removeLikedOffer(offer);
         userRepository.save(user);
         offerRepository.save(offer);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void addApplicationToFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException {
+        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
+        Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
+
+        if (optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
+        if (optionalApplication.isEmpty()){throw new ApplicationNotFoundByIdException();}
+
+        Offer offer = optionalOffer.get();
+        Application application = optionalApplication.get();
+
+        if(offer.getFavouriteApplications().contains(application)){throw new ApplicationAlreadyIsInFavouritesException();}
+
+        offer.addFavouriteApplication(application);
+        offerRepository.save(offer);
+        applicationRepository.save(application);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void removeApplicationFromFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException {
+        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
+        Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
+
+        if (optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
+        if (optionalApplication.isEmpty()){throw new ApplicationNotFoundByIdException();}
+
+        Offer offer = optionalOffer.get();
+        Application application = optionalApplication.get();
+
+        if(!offer.getFavouriteApplications().contains(application)){throw new ApplicationIsNotInFavouritesException();}
+
+        offer.removeFavouriteApplication(application);
+        offerRepository.save(offer);
+        applicationRepository.save(application);
+
     }
 
 
