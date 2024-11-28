@@ -68,4 +68,16 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Offer is not liked by user");
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(ApplicationAlreadyIsInFavouritesException.class)
+    public ResponseEntity<ApiError> handleApplicationAlreadyIsInFavouritesException(ApplicationAlreadyIsInFavouritesException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Application already is in favourites");
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(ApplicationIsNotInFavouritesException.class)
+    public ResponseEntity<ApiError> handleApplicationIsNotInFavouritesException(ApplicationIsNotInFavouritesException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Application is not in favourites");
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
 }

@@ -92,4 +92,25 @@ public class OfferController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
+    @PostMapping("/offer/addApplicationToFavourites")
+    public ResponseEntity<MessageResponse> addApplicationToFavourites(@RequestParam("offerId") Long offerId,
+                                                                      @RequestParam("applicationId") Long applicationId,
+                                                                      @RequestHeader("Authorization") String jwt)
+            throws ApplicationNotFoundByIdException, OfferNotFoundByIdException, ApplicationAlreadyIsInFavouritesException {
+        offerService.addApplicationToFavourites(offerId, applicationId, jwt);
+        MessageResponse messageResponse = new MessageResponse("Application has been added to favourites");
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/offer/removeApplicationFromFavourites")
+    public ResponseEntity<MessageResponse> removeApplicationFromFavourites(@RequestParam("offerId") Long offerId,
+                                                                           @RequestParam("applicationId") Long applicationId,
+                                                                           @RequestHeader("Authorization") String jwt)
+            throws ApplicationNotFoundByIdException, OfferNotFoundByIdException, ApplicationIsNotInFavouritesException {
+        offerService.removeApplicationFromFavourites(offerId, applicationId, jwt);
+        MessageResponse messageResponse = new MessageResponse("Application has been removed from favourites");
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
+
 }
