@@ -1,8 +1,10 @@
 package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.dto.OfferDto;
+import com.kamiljach.devjobshub.exceptions.exceptions.OfferIsAlreadyLikedByUserException;
 import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
 import com.kamiljach.devjobshub.response.MessageResponse;
@@ -74,5 +76,14 @@ public class OfferController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
+    @PostMapping("/likeOffer/{offerId}")
+    public ResponseEntity<MessageResponse> likeOffer(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException,
+            OfferIsAlreadyLikedByUserException,
+            OfferNotFoundByIdException
+    {
+        offerService.likeOffer(offerId, jwt);
+        MessageResponse messageResponse = new MessageResponse("Liked the offer");
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
 
 }
