@@ -1,13 +1,7 @@
 package com.kamiljach.devjobshub.service;
 
 import com.kamiljach.devjobshub.dto.OfferDto;
-import com.kamiljach.devjobshub.exceptions.exceptions.OfferIsAlreadyLikedByUserException;
-import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
-import com.kamiljach.devjobshub.model.Offer;
-import com.kamiljach.devjobshub.model.Technology;
-import com.kamiljach.devjobshub.model.User;
+import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
 
@@ -27,4 +21,5 @@ public interface OfferService {
 
     public void likeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsAlreadyLikedByUserException;
 
-    }
+    public void removeLikeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsNotLikedByUserException;
+}

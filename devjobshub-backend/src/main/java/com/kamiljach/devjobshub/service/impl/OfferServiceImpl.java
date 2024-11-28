@@ -2,10 +2,7 @@ package com.kamiljach.devjobshub.service.impl;
 
 
 import com.kamiljach.devjobshub.dto.OfferDto;
-import com.kamiljach.devjobshub.exceptions.exceptions.OfferIsAlreadyLikedByUserException;
-import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
+import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.model.User;
@@ -177,6 +174,21 @@ public class OfferServiceImpl implements OfferService {
             throw new OfferIsAlreadyLikedByUserException();
         }
         user.addLikedOffer(offer);
+        userRepository.save(user);
+        offerRepository.save(offer);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void removeLikeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsNotLikedByUserException {
+        User user = userService.findUserByJwt(jwt);
+        Optional<Offer> optionalOffer = offerRepository.findById(id);
+        if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
+
+        Offer offer = optionalOffer.get();
+        if (!user.getLikedOffers().contains(offer)){
+            throw new OfferIsNotLikedByUserException();
+        }
+        user.removeLikedOffer(offer);
         userRepository.save(user);
         offerRepository.save(offer);
     }

@@ -1,10 +1,7 @@
 package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.dto.OfferDto;
-import com.kamiljach.devjobshub.exceptions.exceptions.OfferIsAlreadyLikedByUserException;
-import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
+import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
 import com.kamiljach.devjobshub.response.MessageResponse;
@@ -83,6 +80,15 @@ public class OfferController {
     {
         offerService.likeOffer(offerId, jwt);
         MessageResponse messageResponse = new MessageResponse("Liked the offer");
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/removeLikeOffer/{offerId}")
+    public ResponseEntity<MessageResponse> removeLikeOffer(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException,
+            OfferNotFoundByIdException, OfferIsNotLikedByUserException
+    {
+        offerService.removeLikeOffer(offerId, jwt);
+        MessageResponse messageResponse = new MessageResponse("Like has been removed");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
