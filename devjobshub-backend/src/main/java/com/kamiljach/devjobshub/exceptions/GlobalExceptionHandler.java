@@ -56,4 +56,10 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Question or answer is incorrect");
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(OfferIsAlreadyLikedByUserException.class)
+    public ResponseEntity<ApiError> handleOfferIsAlreadyLikedByUserException(OfferIsAlreadyLikedByUserException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Offer is already liked by user");
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
 }
