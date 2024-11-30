@@ -103,8 +103,6 @@ public class Offer {
     @OneToMany(mappedBy = "offer")
     private List<Application> applications = new ArrayList<>();
 
-    private Boolean isActive = true;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name="offer_favouriteApplications",
@@ -167,14 +165,6 @@ public class Offer {
 
     public static Offer mapCreateOfferRequestToExistingOffer(CreateOfferRequest createOfferRequest, Offer existingOffer){
         Offer offer = OfferMapper.INSTANCE.createOfferRequestToExistingOffer(createOfferRequest, existingOffer);
-
-        if(createOfferRequest.getIsActive() != null){
-            offer.setIsActive(createOfferRequest.getIsActive());
-        }
-        else{
-            offer.setIsActive(true);
-        }
-
         offer.setExpirationDate(LocalDateTime.parse(createOfferRequest.getExpirationDate(), Constants.dateTimeFormatter));
 
         return offer;
@@ -183,9 +173,6 @@ public class Offer {
 
     public static Offer mapCreateOfferRequestToOffer(CreateOfferRequest createOfferRequest){
         Offer offer = OfferMapper.INSTANCE.createOfferRequestToOffer(createOfferRequest);
-        if(createOfferRequest.getIsActive() == null){
-            offer.setIsActive(true);
-        }
 
         offer.setExpirationDate(LocalDateTime.parse(createOfferRequest.getExpirationDate(), Constants.dateTimeFormatter));
 

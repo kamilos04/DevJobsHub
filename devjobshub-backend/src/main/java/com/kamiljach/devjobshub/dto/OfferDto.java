@@ -75,32 +75,7 @@ public class OfferDto {
 
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
-    private Boolean isActive;
-
     private String expirationDate;
-
-//    public OfferDto(Offer offer){
-//        this.id = offer.getId();
-//        this.name = offer.getName();
-//        this.jobLevel = offer.getJobLevel();
-//        this.operatingMode = offer.getOperatingMode();
-//        this.minSalary = offer.getMinSalary();
-//        this.maxSalary = offer.getMaxSalary();
-//        this.isSalaryMonthly = offer.getIsSalaryMonthly();
-//        this.localization = offer.getLocalization();
-//        this.dateTimeOfCreation = offer.getDateTimeOfCreation();
-//        this.aboutProject = offer.getAboutProject();
-//        this.responsibilitiesText = offer.getResponsibilitiesText();
-
-
-//        OfferDto newOfferDto = OfferMapper.INSTANCE.offerToOfferDto(offer);
-
-//        offer.getResponsibilities().stream().forEach(element -> this.responsibilities.add(element));
-//        offer.getRequirements().stream().forEach(element -> this.requirements.add(element));
-//        offer.getNiceToHave().stream().forEach(element -> this.niceToHave.add(element));
-//        offer.getWhatWeOffer().stream().forEach(element -> this.whatWeOffer.add(element));
-//        To do candidates, likedByUsers, requiredTechnolgies, niceToHaveTechnologies
-//    }
 
     public static OfferDto mapOfferToOfferDto(Offer offer){
         OfferDto newOfferDto = OfferMapper.INSTANCE.offerToOfferDto(offer);

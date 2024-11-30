@@ -1,5 +1,6 @@
 package com.kamiljach.devjobshub.dto;
 
+import com.kamiljach.devjobshub.config.Constants;
 import com.kamiljach.devjobshub.mappers.ApplicationMapper;
 import com.kamiljach.devjobshub.model.*;
 import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestionAndAnswer;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class ApplicationDto {
 
     private String cvUrl;
 
+    private String dateTimeOfCreation;
+
     private List<QuestionAndAnswer> questionsAndAnswers = new ArrayList<>();
 
     private List<RadioQuestionAndAnswer> radioQuestionsAndAnswers = new ArrayList<>();
@@ -34,6 +38,9 @@ public class ApplicationDto {
         ApplicationDto applicationDto = ApplicationMapper.INSTANCE.applicationToApplicationDto(application);
         applicationDto.setOffer(null);
         applicationDto.setUser(null);
+
+        applicationDto.setDateTimeOfCreation(application.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
+
         return applicationDto;
     }
 }
