@@ -1,5 +1,6 @@
 package com.kamiljach.devjobshub.model;
 
+import com.kamiljach.devjobshub.config.Constants;
 import com.kamiljach.devjobshub.dto.OfferDto;
 import com.kamiljach.devjobshub.mappers.OfferMapper;
 import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestion;
@@ -13,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,6 +112,8 @@ public class Offer {
             inverseJoinColumns = @JoinColumn(name = "application_id"))
     private List<Application> favouriteApplications = new ArrayList<>();
 
+    private LocalDateTime expirationDate;
+
 
     public void addRequiredTechnology(Technology technology){
         if(!requiredTechnologies.contains(technology)){
@@ -163,13 +167,18 @@ public class Offer {
 
     public static Offer mapCreateOfferRequestToExistingOffer(CreateOfferRequest createOfferRequest, Offer existingOffer){
         Offer offer = OfferMapper.INSTANCE.createOfferRequestToExistingOffer(createOfferRequest, existingOffer);
+
         if(createOfferRequest.getIsActive() != null){
             offer.setIsActive(createOfferRequest.getIsActive());
         }
         else{
             offer.setIsActive(true);
         }
+
+        offer.setExpirationDate(LocalDateTime.parse(createOfferRequest.getExpirationDate(), Constants.dateTimeFormatter));
+
         return offer;
+
     }
 
     public static Offer mapCreateOfferRequestToOffer(CreateOfferRequest createOfferRequest){
@@ -177,6 +186,9 @@ public class Offer {
         if(createOfferRequest.getIsActive() == null){
             offer.setIsActive(true);
         }
+
+        offer.setExpirationDate(LocalDateTime.parse(createOfferRequest.getExpirationDate(), Constants.dateTimeFormatter));
+
         return offer;
     }
 }

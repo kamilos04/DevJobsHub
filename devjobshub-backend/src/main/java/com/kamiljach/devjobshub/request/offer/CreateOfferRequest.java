@@ -39,12 +39,7 @@ public class CreateOfferRequest {
 
     private Boolean isSalaryMonthlyUZ;
 
-//    private ArrayList<Long> candidates = new ArrayList<>();
-
     private String localization;
-
-
-//    private ArrayList<Long> likedByUsers = new ArrayList<>();
 
     private ArrayList<Long> requiredTechnologies = new ArrayList<>();
 
@@ -69,4 +64,6 @@ public class CreateOfferRequest {
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
     private Boolean isActive;
+
+    private String expirationDate;
 }

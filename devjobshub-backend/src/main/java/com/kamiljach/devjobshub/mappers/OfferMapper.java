@@ -17,12 +17,14 @@ public interface OfferMapper {
     @Mapping(target = "niceToHaveTechnologies", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dateTimeOfCreation", ignore = true)
+    @Mapping(target = "expirationDate", ignore = true)
     Offer createOfferRequestToExistingOffer(CreateOfferRequest createOfferRequest, @MappingTarget Offer offer);
 
     @Mapping(target = "requiredTechnologies", ignore = true)
     @Mapping(target = "niceToHaveTechnologies", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dateTimeOfCreation", ignore = true)
+    @Mapping(target = "expirationDate", ignore = true)
     Offer createOfferRequestToOffer(CreateOfferRequest createOfferRequest);
 
     @Mapping(target = "requiredTechnologies", ignore = true)

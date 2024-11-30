@@ -1,10 +1,7 @@
 package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.dto.ApplicationDto;
-import com.kamiljach.devjobshub.exceptions.exceptions.ApplicationNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.QuestionOrAnswerIsIncorrectException;
-import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
+import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.mappers.ApplicationMapper;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Offer;
@@ -20,6 +17,7 @@ import com.kamiljach.devjobshub.service.UtilityService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -42,9 +40,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, QuestionOrAnswerIsIncorrectException {
+    public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, QuestionOrAnswerIsIncorrectException, OfferExpiredException {
         Optional<Offer> optionalOffer = offerRepository.findById(offerId);
         if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
+
+        Offer offer = optionalOffer.get();
+
+        if(LocalDateTime.now().isAfter(offer.getExpirationDate())){
+            throw new OfferExpiredException();
+        }
+
         Application newApplication = ApplicationMapper.INSTANCE.createApplicationRequestToApplication(createApplicationRequest);
 
         validateAllQuestionsInApplication(newApplication, optionalOffer.get());
@@ -53,7 +58,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         newApplication.setUser(user);
         userRepository.save(user);
 
-        Offer offer = optionalOffer.get();
+
         newApplication.setOffer(offer);
         offerRepository.save(offer);
 

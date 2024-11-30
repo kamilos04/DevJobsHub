@@ -1,5 +1,6 @@
 package com.kamiljach.devjobshub.config;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ public class Constants {
     public static String header = "Authorization";
 
     public static String prefix = "Bearer ";
+
+    public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
 //    public List<String> cities = List.of(
 //            "Warszawa", "Kraków", "Łódź", "Wrocław", "Poznań",

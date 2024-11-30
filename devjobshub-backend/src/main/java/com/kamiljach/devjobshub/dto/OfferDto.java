@@ -1,5 +1,6 @@
 package com.kamiljach.devjobshub.dto;
 
+import com.kamiljach.devjobshub.config.Constants;
 import com.kamiljach.devjobshub.mappers.OfferMapper;
 import com.kamiljach.devjobshub.model.*;
 import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestion;
@@ -76,6 +77,8 @@ public class OfferDto {
 
     private Boolean isActive;
 
+    private String expirationDate;
+
 //    public OfferDto(Offer offer){
 //        this.id = offer.getId();
 //        this.name = offer.getName();
@@ -101,7 +104,8 @@ public class OfferDto {
 
     public static OfferDto mapOfferToOfferDto(Offer offer){
         OfferDto newOfferDto = OfferMapper.INSTANCE.offerToOfferDto(offer);
-        newOfferDto.setDateTimeOfCreation(offer.getDateTimeOfCreation().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        newOfferDto.setDateTimeOfCreation(offer.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
+        newOfferDto.setExpirationDate(offer.getExpirationDate().format(Constants.dateTimeFormatter));
         newOfferDto.setRequiredTechnologies( offer.getRequiredTechnologies().stream().map(element -> TechnologyDto.mapTechnologyToTechnologyDto(element)).collect(Collectors.toList()) );
         newOfferDto.setNiceToHaveTechnologies(offer.getNiceToHaveTechnologies().stream().map(element -> TechnologyDto.mapTechnologyToTechnologyDto(element)).collect(Collectors.toList()));
         newOfferDto.setApplications(offer.getApplications().stream().map(element -> ApplicationDto.mapApplicationToApplicationDto(element)).collect(Collectors.toList()));
