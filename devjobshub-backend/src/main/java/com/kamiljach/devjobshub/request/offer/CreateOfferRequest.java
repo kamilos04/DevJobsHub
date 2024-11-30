@@ -63,7 +63,5 @@ public class CreateOfferRequest {
 
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
-    private Boolean isActive;
-
     private String expirationDate;
 }
