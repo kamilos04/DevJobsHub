@@ -50,7 +50,6 @@ public class OfferServiceImpl implements OfferService {
 
     @Transactional(rollbackFor = Exception.class)
     public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException {
-//        Offer newOffer = OfferMapper.INSTANCE.createOfferRequestToOffer(createOfferRequest);
         Offer newOffer = Offer.mapCreateOfferRequestToOffer(createOfferRequest);
         newOffer.setDateTimeOfCreation(LocalDateTime.now());
 
