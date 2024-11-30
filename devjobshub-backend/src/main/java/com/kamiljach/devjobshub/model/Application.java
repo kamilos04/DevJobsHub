@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,8 @@ public class Application {
     private Offer offer;
 
     private String cvUrl;
+
+    private LocalDateTime dateTimeOfCreation;
 
     @ElementCollection
     private List<QuestionAndAnswer> questionsAndAnswers = new ArrayList<>();

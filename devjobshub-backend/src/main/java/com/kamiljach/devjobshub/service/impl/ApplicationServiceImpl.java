@@ -54,6 +54,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         validateAllQuestionsInApplication(newApplication, optionalOffer.get());
 
+        newApplication.setDateTimeOfCreation(LocalDateTime.now());
+
         User user = userService.findUserByJwt(jwt);
         newApplication.setUser(user);
         userRepository.save(user);
