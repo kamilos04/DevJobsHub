@@ -80,4 +80,10 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Application is not in favourites");
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(OfferExpiredException.class)
+    public ResponseEntity<ApiError> handleOfferExpiredException(OfferExpiredException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Offer has already expired");
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
 }
