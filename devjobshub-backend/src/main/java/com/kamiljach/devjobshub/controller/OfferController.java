@@ -113,4 +113,22 @@ public class OfferController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
+    @PostMapping("/offer/addRecruiter")
+    public ResponseEntity<MessageResponse> addRecruiter(@RequestParam("offerId") Long offerId,
+                                                        @RequestParam("userId") Long userId,
+                                                        @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException {
+        offerService.addRecruiterToOffer(offerId, userId, jwt);
+        MessageResponse messageResponse = new MessageResponse("Recruiter has been added to the offer");
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/offer/removeRecruiter")
+    public ResponseEntity<MessageResponse> removeRecruiter(@RequestParam("offerId") Long offerId,
+                                                           @RequestParam("userId") Long userId,
+                                                           @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException {
+        offerService.removeRecruiterFromOffer(offerId, userId, jwt);
+        MessageResponse messageResponse = new MessageResponse("Recruiter has been removed from the offer");
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
+
 }
