@@ -238,5 +238,28 @@ public class OfferServiceImpl implements OfferService {
 
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void addRecruiterToOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException {
+        Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
+        User recruiter = userRepository.findById(recruiterId).orElseThrow(UserNotFoundByIdException::new);
+
+        if (offer.getRecruiters().contains(recruiter)) throw new UserIsAlreadyRecruiterException();
+
+        offer.addRecruiter(recruiter);
+        userRepository.save(recruiter);
+        offerRepository.save(offer);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void removeRecruiterFromOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException {
+        Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
+        User recruiter = userRepository.findById(recruiterId).orElseThrow(UserNotFoundByIdException::new);
+
+        if (!offer.getRecruiters().contains(recruiter)) throw new UserIsNotRecruiterException();
+
+        offer.removeRecruiter(recruiter);
+        userRepository.save(recruiter);
+        offerRepository.save(offer);
+    }
 
 }

@@ -86,4 +86,22 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Offer has already expired");
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(UserNotFoundByIdException.class)
+    public ResponseEntity<ApiError> handleUserNotFoundByIdException(UserNotFoundByIdException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "User not found, invalid ID");
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(UserIsAlreadyRecruiterException.class)
+    public ResponseEntity<ApiError> handleUserIsAlreadyRecruiterException(UserIsAlreadyRecruiterException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "User is already a recruiter");
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(UserIsNotRecruiterException.class)
+    public ResponseEntity<ApiError> handleUserIsNotRecruiterException(UserIsNotRecruiterException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "User is not a recruiter");
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
 }
