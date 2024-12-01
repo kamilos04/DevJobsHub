@@ -26,7 +26,7 @@ public class OfferController {
     }
 
     @PostMapping("/offer")
-    public ResponseEntity<OfferDto> createOffer(@RequestBody CreateOfferRequest createOfferRequest, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException {
+    public ResponseEntity<OfferDto> createOffer(@RequestBody CreateOfferRequest createOfferRequest, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException {
         OfferDto newOfferDto = offerService.createOffer(createOfferRequest, jwt);
         return new ResponseEntity<>(newOfferDto, HttpStatus.OK);
     }

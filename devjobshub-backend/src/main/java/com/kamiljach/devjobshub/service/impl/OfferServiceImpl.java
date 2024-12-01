@@ -49,9 +49,14 @@ public class OfferServiceImpl implements OfferService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException {
+    public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException {
+        User user = userService.findUserByJwt(jwt);
+
         Offer newOffer = Offer.mapCreateOfferRequestToOffer(createOfferRequest);
         newOffer.setDateTimeOfCreation(LocalDateTime.now());
+
+        newOffer.addRecruiter(user);
+        userRepository.save(user);
 
         if(createOfferRequest.getRequiredTechnologies() != null){
             ArrayList<Technology> requiredTechnologies = utilityService.getListOfTechnologiesFromTheirIds(createOfferRequest.getRequiredTechnologies());
@@ -70,7 +75,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         offerRepository.save(newOffer);
-        return OfferDto.mapOfferToOfferDto(newOffer);
+        return Offer.mapOfferToOfferDto(newOffer);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -107,8 +112,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         offerRepository.save(offer);
-
-        return OfferDto.mapOfferToOfferDto(offer);
+        return Offer.mapOfferToOfferDto(offer);
 
     }
 
@@ -125,14 +129,14 @@ public class OfferServiceImpl implements OfferService {
         ArrayList<Offer> offers = new ArrayList<>(offerRepository.searchOffers(searchOffersRequest.getText(), searchOffersRequest.getJobLevels(), searchOffersRequest.getOperatingModes(), searchOffersRequest.getLocalizations(), searchOffersRequest.getTechnologies(), pageable).getContent());
 
         ArrayList<OfferDto> offersDto = new ArrayList<>();
-        offers.forEach(element -> {offersDto.add(OfferDto.mapOfferToOfferDto(element));});
+        offers.forEach(element -> {offersDto.add(Offer.mapOfferToOfferDtoShallow(element));});
         return offersDto;
     }
 
     public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException {
         Optional<Offer> optionalOffer = offerRepository.findById(offerId);
         if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
-        return OfferDto.mapOfferToOfferDto(optionalOffer.get());
+        return Offer.mapOfferToOfferDto(optionalOffer.get());
     }
 
     @Transactional(rollbackFor = Exception.class)
