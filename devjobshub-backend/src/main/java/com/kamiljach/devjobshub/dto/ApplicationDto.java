@@ -20,9 +20,9 @@ import java.util.List;
 public class ApplicationDto {
     private Long id;
 
-    private User user;
+    private UserDto user;
 
-    private Offer offer;
+    private OfferDto offer;
 
     private String cvUrl;
 
@@ -34,13 +34,4 @@ public class ApplicationDto {
 
     private List<MultipleChoiceQuestionAndAnswer> multipleChoiceQuestionsAndAnswers = new ArrayList<>();
 
-    public static ApplicationDto mapApplicationToApplicationDto(Application application){
-        ApplicationDto applicationDto = ApplicationMapper.INSTANCE.applicationToApplicationDto(application);
-        applicationDto.setOffer(null);
-        applicationDto.setUser(null);
-
-        applicationDto.setDateTimeOfCreation(application.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
-
-        return applicationDto;
-    }
 }

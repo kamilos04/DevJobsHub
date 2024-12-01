@@ -1,5 +1,8 @@
 package com.kamiljach.devjobshub.model;
 
+import com.kamiljach.devjobshub.config.Constants;
+import com.kamiljach.devjobshub.dto.ApplicationDto;
+import com.kamiljach.devjobshub.mappers.ApplicationMapper;
 import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestionAndAnswer;
 import com.kamiljach.devjobshub.model.embeddable.QuestionAndAnswer;
 import com.kamiljach.devjobshub.model.embeddable.RadioQuestionAndAnswer;
@@ -8,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,4 +75,15 @@ public class Application {
             this.user = null;
         }
     }
+
+    public static ApplicationDto mapApplicationToApplicationDtoShallow(Application application){
+        ApplicationDto applicationDto = ApplicationMapper.INSTANCE.applicationToApplicationDto(application);
+        applicationDto.setOffer(null);
+        applicationDto.setUser(null);
+
+        applicationDto.setDateTimeOfCreation(application.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
+
+        return applicationDto;
+    }
+
 }

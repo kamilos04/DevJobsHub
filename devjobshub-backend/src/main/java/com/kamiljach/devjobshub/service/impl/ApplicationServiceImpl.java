@@ -65,13 +65,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         offerRepository.save(offer);
 
         applicationRepository.save(newApplication);
-        return ApplicationDto.mapApplicationToApplicationDto(newApplication);
+        return Application.mapApplicationToApplicationDtoShallow(newApplication);
     }
 
     public ApplicationDto getApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException {
         Optional<Application> optionalApplication = applicationRepository.findById(id);
         if(optionalApplication.isEmpty()){throw new ApplicationNotFoundByIdException();}
-        return ApplicationDto.mapApplicationToApplicationDto(optionalApplication.get());
+        return Application.mapApplicationToApplicationDtoShallow(optionalApplication.get());
     }
 
     @Transactional(rollbackFor = Exception.class)

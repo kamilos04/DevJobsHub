@@ -12,6 +12,8 @@ public interface ApplicationMapper {
     ApplicationMapper INSTANCE = Mappers.getMapper(ApplicationMapper.class);
 
     @Mapping(target = "dateTimeOfCreation", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "offer", ignore = true)
     ApplicationDto applicationToApplicationDto(Application application);
 
     Application createApplicationRequestToApplication(CreateApplicationRequest createApplicationRequest);
