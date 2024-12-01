@@ -1,5 +1,6 @@
 package com.kamiljach.devjobshub.controller;
 
+import com.kamiljach.devjobshub.dto.UserDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.service.UserService;
@@ -17,7 +18,7 @@ public class UserController {
     }
 
     @GetMapping("/myprofile")
-    public ResponseEntity<User> getMyProfile(@RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException {
-        return new ResponseEntity<>(userService.findUserByJwt(jwt), HttpStatus.OK);
+    public ResponseEntity<UserDto> getMyProfile(@RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException {
+        return new ResponseEntity<>(User.mapUserToUserDtoShallow(userService.findUserByJwt(jwt)), HttpStatus.OK);
     }
 }

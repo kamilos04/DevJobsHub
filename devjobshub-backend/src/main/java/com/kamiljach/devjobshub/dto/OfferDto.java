@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,7 +50,7 @@ public class OfferDto {
 
     private String dateTimeOfCreation;
 
-    private List<User> likedByUsers = new ArrayList<>();
+    private List<UserDto> likedByUsers = new ArrayList<>();
 
     private List<TechnologyDto> requiredTechnologies = new ArrayList<>();
 
@@ -77,15 +76,8 @@ public class OfferDto {
 
     private String expirationDate;
 
-    public static OfferDto mapOfferToOfferDto(Offer offer){
-        OfferDto newOfferDto = OfferMapper.INSTANCE.offerToOfferDto(offer);
-        newOfferDto.setDateTimeOfCreation(offer.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
-        newOfferDto.setExpirationDate(offer.getExpirationDate().format(Constants.dateTimeFormatter));
-        newOfferDto.setRequiredTechnologies( offer.getRequiredTechnologies().stream().map(element -> TechnologyDto.mapTechnologyToTechnologyDto(element)).collect(Collectors.toList()) );
-        newOfferDto.setNiceToHaveTechnologies(offer.getNiceToHaveTechnologies().stream().map(element -> TechnologyDto.mapTechnologyToTechnologyDto(element)).collect(Collectors.toList()));
-        newOfferDto.setApplications(offer.getApplications().stream().map(element -> ApplicationDto.mapApplicationToApplicationDto(element)).collect(Collectors.toList()));
+    private List<UserDto> recruiters = new ArrayList<>();
 
 
-        return newOfferDto;
-    }
+
 }

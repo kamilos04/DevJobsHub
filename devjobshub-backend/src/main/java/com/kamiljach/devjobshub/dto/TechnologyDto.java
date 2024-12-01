@@ -21,19 +21,8 @@ public class TechnologyDto {
 
     private String name;
 
-    private List<Offer> assignedAsRequired = new ArrayList<>();
+    private List<OfferDto> assignedAsRequired = new ArrayList<>();
 
-    private List<Offer> assignedAsNiceToHave = new ArrayList<>();
+    private List<OfferDto> assignedAsNiceToHave = new ArrayList<>();
 
-//    public TechnologyDto(Technology technology){
-//        this.setId(technology.getId());
-//        this.setName(technology.getName());
-//    }
-
-    public static TechnologyDto mapTechnologyToTechnologyDto(Technology technology){
-        TechnologyDto technologyDto = TechnologyMapper.INSTANCE.technologyToTechnologyDto(technology);
-        technologyDto.getAssignedAsRequired().clear();
-        technologyDto.getAssignedAsNiceToHave().clear();
-        return technologyDto;
-    }
 }
