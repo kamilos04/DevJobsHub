@@ -41,7 +41,7 @@ public class TechnologyServiceImpl implements TechnologyService {
         newTechnology.setName(technologyRequest.getName());
 
         technologyRepository.save(newTechnology);
-        return TechnologyDto.mapTechnologyToTechnologyDto(newTechnology);
+        return Technology.mapTechnologyToTechnologyDtoShallow(newTechnology);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -74,14 +74,14 @@ public class TechnologyServiceImpl implements TechnologyService {
         Technology technology = optionalTechnology.get();
         technology.setName(technologyRequest.getName());
         technologyRepository.save(technology);
-        return TechnologyDto.mapTechnologyToTechnologyDto(technology);
+        return Technology.mapTechnologyToTechnologyDtoShallow(technology);
 
     }
 
     public TechnologyDto getTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException {
         Optional<Technology> optionalTechnology = technologyRepository.findById(id);
         if(optionalTechnology.isEmpty()){throw new TechnologyNotFoundByIdException();}
-        return TechnologyDto.mapTechnologyToTechnologyDto(optionalTechnology.get());
+        return Technology.mapTechnologyToTechnologyDtoShallow(optionalTechnology.get());
     }
     
 

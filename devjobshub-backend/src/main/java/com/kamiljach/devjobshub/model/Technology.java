@@ -1,5 +1,7 @@
 package com.kamiljach.devjobshub.model;
 
+import com.kamiljach.devjobshub.dto.TechnologyDto;
+import com.kamiljach.devjobshub.mappers.TechnologyMapper;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,6 +54,11 @@ public class Technology {
             assignedAsNiceToHave.remove(offer);
             offer.getNiceToHaveTechnologies().remove(this);
         }
+    }
+
+    public static TechnologyDto mapTechnologyToTechnologyDtoShallow(Technology technology){
+        TechnologyDto technologyDto = TechnologyMapper.INSTANCE.technologyToTechnologyDto(technology);
+        return technologyDto;
     }
 
 }
