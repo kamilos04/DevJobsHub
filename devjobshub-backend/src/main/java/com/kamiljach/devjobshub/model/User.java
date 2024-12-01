@@ -1,6 +1,8 @@
 package com.kamiljach.devjobshub.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kamiljach.devjobshub.dto.UserDto;
+import com.kamiljach.devjobshub.mappers.UserMapper;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity(name = "users")
 @Data
@@ -51,6 +54,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Application> applications = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "recruiters")
+    private List<Offer> offers = new ArrayList<>();
+
     public void addLikedOffer(Offer offer){
         if(!likedOffers.contains(offer)){
             likedOffers.add(offer);
@@ -64,5 +70,24 @@ public class User {
             offer.getLikedByUsers().remove(this);
         }
     }
+
+    public static UserDto mapUserToUserDtoShallow(User user){
+        UserDto userDto = UserMapper.INSTANCE.userToUserDto(user);
+
+        return userDto;
+    }
+
+    public static UserDto mapUserToUserDto(User user){
+        UserDto userDto = UserMapper.INSTANCE.userToUserDto(user);
+
+        userDto.setApplications(user.getApplications().stream().map(element -> Application.mapApplicationToApplicationDtoShallow(element)).collect(Collectors.toList()));
+        userDto.setOffers(user.getOffers().stream().map(element -> Offer.mapOfferToOfferDtoShallow(element)).collect(Collectors.toList()));
+        userDto.setLikedOffers(user.getLikedOffers().stream().map(element -> Offer.mapOfferToOfferDtoShallow(element)).collect(Collectors.toList()));
+
+        return userDto;
+    }
+
+
+
 
 }
