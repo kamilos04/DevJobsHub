@@ -4,6 +4,9 @@ import com.kamiljach.devjobshub.model.*;
 import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestion;
 import com.kamiljach.devjobshub.model.embeddable.Question;
 import com.kamiljach.devjobshub.model.embeddable.RadioQuestion;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,11 +18,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateOfferRequest {
+    @Size(min = 1, max = 30, message = "name must be between 1 and 30 characters")
+    @NotBlank(message = "name can not be blank")
     private String name;
 
+    @NotNull
     private OFFER_JOB_LEVEL jobLevel;
 
+    @NotNull
     private OFFER_OPERATING_MODE operatingMode;
+
 
     private Long minSalaryUoP;
 
@@ -39,6 +47,8 @@ public class CreateOfferRequest {
 
     private Boolean isSalaryMonthlyUZ;
 
+    @Size(min = 1, max = 30, message = "localization must be between 1 and 30 characters")
+    @NotBlank(message = "localization can not be blank")
     private String localization;
 
     private ArrayList<Long> requiredTechnologies = new ArrayList<>();
@@ -63,5 +73,6 @@ public class CreateOfferRequest {
 
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
+    @NotBlank(message = "expirationDate can not be blank")
     private String expirationDate;
 }

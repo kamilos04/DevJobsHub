@@ -6,9 +6,11 @@ import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
 import com.kamiljach.devjobshub.response.MessageResponse;
 import com.kamiljach.devjobshub.service.OfferService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,13 +28,13 @@ public class OfferController {
     }
 
     @PostMapping("/offer")
-    public ResponseEntity<OfferDto> createOffer(@RequestBody CreateOfferRequest createOfferRequest, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException {
+    public ResponseEntity<OfferDto> createOffer(@Valid @RequestBody CreateOfferRequest createOfferRequest, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException {
         OfferDto newOfferDto = offerService.createOffer(createOfferRequest, jwt);
         return new ResponseEntity<>(newOfferDto, HttpStatus.OK);
     }
 
     @PutMapping("/offer/{offerId}")
-    public ResponseEntity<OfferDto> updateOffer(@RequestBody CreateOfferRequest createOfferRequest, @PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException {
+    public ResponseEntity<OfferDto> updateOffer(@Valid @RequestBody CreateOfferRequest createOfferRequest, @PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException {
         OfferDto updatedOfferDto = offerService.updateOffer(createOfferRequest, offerId, jwt);
         return new ResponseEntity<>(updatedOfferDto, HttpStatus.OK);
     }

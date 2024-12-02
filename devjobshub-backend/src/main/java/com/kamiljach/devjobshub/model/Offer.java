@@ -26,7 +26,6 @@ public class Offer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 100)
     private String name;
 
     @Enumerated(EnumType.STRING)
