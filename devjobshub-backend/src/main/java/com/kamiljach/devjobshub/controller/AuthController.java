@@ -8,6 +8,7 @@ import com.kamiljach.devjobshub.request.login.LoginRequest;
 import com.kamiljach.devjobshub.request.register.RegisterRequest;
 import com.kamiljach.devjobshub.response.login.LoginResponse;
 import com.kamiljach.devjobshub.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,25 +39,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
-        try{
-            LoginResponse loginResponse = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
-            return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
-        } catch (BadCredentialsException ex){
-        ApiError errorResponse = new ApiError(HttpStatus.FORBIDDEN,"Invalid username or password", ex);
-        return new ResponseEntity<ApiError>(errorResponse, errorResponse.getStatus());
-        } catch (Exception ex){
-            ApiError errorResponse = new ApiError(HttpStatus.BAD_REQUEST,"Invalid username or password", ex);
-            return new ResponseEntity<ApiError>(errorResponse, errorResponse.getStatus());
-    }}
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        LoginResponse loginResponse = authService.login(loginRequest);
+        return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
+    }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) throws AccountAlreadyExistsException {
-        try {
-            LoginResponse loginResponse = authService.register(registerRequest.getEmail(), registerRequest.getPassword(), registerRequest.getName(), registerRequest.getSurname());
-            return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
-        }catch (Exception ex){
-            ApiError errorResponse = new ApiError(HttpStatus.FORBIDDEN,"Something went wrong", ex);
-            return new ResponseEntity<ApiError>(errorResponse, errorResponse.getStatus());
-    }}
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) throws AccountAlreadyExistsException {
+        LoginResponse loginResponse = authService.register(registerRequest);
+        return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
+
+    }
 }

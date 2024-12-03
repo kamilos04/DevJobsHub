@@ -1,10 +1,12 @@
 package com.kamiljach.devjobshub.service;
 
 import com.kamiljach.devjobshub.exceptions.exceptions.AccountAlreadyExistsException;
+import com.kamiljach.devjobshub.request.login.LoginRequest;
+import com.kamiljach.devjobshub.request.register.RegisterRequest;
 import com.kamiljach.devjobshub.response.login.LoginResponse;
 
 public interface AuthService {
-    public LoginResponse login(String emailFromRequest, String passwordFromRequest);
+    public LoginResponse login(LoginRequest loginRequest);
 
-    public LoginResponse register(String emailFromRequest, String passwordFromRequest, String name, String surname) throws AccountAlreadyExistsException;
+    public LoginResponse register(RegisterRequest registerRequest) throws AccountAlreadyExistsException;
 }
