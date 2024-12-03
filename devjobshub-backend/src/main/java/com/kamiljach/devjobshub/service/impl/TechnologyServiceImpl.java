@@ -11,6 +11,7 @@ import com.kamiljach.devjobshub.repository.TechnologyRepository;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.service.UtilityService;
 import com.kamiljach.devjobshub.service.TechnologyService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public TechnologyDto createTechnology(CreateTechnologyRequest technologyRequest, String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
+    public TechnologyDto createTechnology(@Valid CreateTechnologyRequest technologyRequest, String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
         Optional<Technology> optionalTechnology = technologyRepository.findByName(technologyRequest.getName());
         if(optionalTechnology.isPresent()){throw new TechnologyWithThisNameAlreadyExistsException();}
 
@@ -66,7 +67,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException {
+    public TechnologyDto updateTechnology(@Valid CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException {
         Optional<Technology> optionalTechnology = technologyRepository.findById(id);
         if (optionalTechnology.isEmpty()) {
             throw new TechnologyNotFoundByIdException();

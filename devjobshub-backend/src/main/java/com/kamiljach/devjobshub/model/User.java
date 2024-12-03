@@ -24,19 +24,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 100)
     private String name;
 
-    @Column(length = 100)
     private String surname;
 
-    @Column(length = 100)
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @Builder.Default
     private Boolean isBanned = false;
 
     private Boolean isFirm;

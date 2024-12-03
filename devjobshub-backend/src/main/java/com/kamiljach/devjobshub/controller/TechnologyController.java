@@ -7,6 +7,7 @@ import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyWithThisNameAlre
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.response.MessageResponse;
 import com.kamiljach.devjobshub.service.TechnologyService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class TechnologyController {
     }
 
     @PostMapping("/technology")
-    public ResponseEntity<TechnologyDto> createTechnology(@RequestBody CreateTechnologyRequest createTechnologyRequest, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
+    public ResponseEntity<TechnologyDto> createTechnology(@Valid @RequestBody CreateTechnologyRequest createTechnologyRequest, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
         TechnologyDto createdTechnologyDto = technologyService.createTechnology(createTechnologyRequest, jwt);
         return new ResponseEntity<>(createdTechnologyDto, HttpStatus.OK);
     }
@@ -41,7 +42,7 @@ public class TechnologyController {
 
 
     @PutMapping("/technology/{id}")
-    public ResponseEntity<TechnologyDto> updateTechnologyById(@PathVariable("id") Long id, @RequestBody CreateTechnologyRequest createTechnologyRequest, @RequestHeader("Authorization") String jwt) throws TechnologyNotFoundByIdException {
+    public ResponseEntity<TechnologyDto> updateTechnologyById(@Valid @PathVariable("id") Long id, @RequestBody CreateTechnologyRequest createTechnologyRequest, @RequestHeader("Authorization") String jwt) throws TechnologyNotFoundByIdException {
         TechnologyDto technologyDto = technologyService.updateTechnology(createTechnologyRequest, id, jwt);
         return new ResponseEntity<>(technologyDto, HttpStatus.OK);
     }

@@ -4,6 +4,8 @@ import com.kamiljach.devjobshub.config.JwtConfig;
 import com.kamiljach.devjobshub.exceptions.exceptions.AccountAlreadyExistsException;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.UserRepository;
+import com.kamiljach.devjobshub.request.login.LoginRequest;
+import com.kamiljach.devjobshub.request.register.RegisterRequest;
 import com.kamiljach.devjobshub.response.login.LoginResponse;
 import com.kamiljach.devjobshub.service.AuthService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +33,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public LoginResponse login(String emailFromRequest, String passwordFromRequest){
+    public LoginResponse login(LoginRequest loginRequest){
+        String emailFromRequest = loginRequest.getEmail();
+        String passwordFromRequest = loginRequest.getPassword();
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(emailFromRequest, passwordFromRequest));
         String email = authentication.getName();
         User user = new User();
@@ -47,31 +51,32 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public LoginResponse register(String emailFromRequest, String passwordFromRequest, String name, String surname) throws AccountAlreadyExistsException {
-        Optional<User> optionalUser = userRepository.findByEmail(emailFromRequest);
+    public LoginResponse register(RegisterRequest registerRequest) throws AccountAlreadyExistsException {
+        Optional<User> optionalUser = userRepository.findByEmail(registerRequest.getEmail());
         if(optionalUser.isPresent()){
             throw new AccountAlreadyExistsException();
         }
 
         User newUser = new User();
-        newUser.setEmail(emailFromRequest);
-        newUser.setPassword(passwordEncoder.encode(passwordFromRequest));
-        newUser.setName(name);
-        newUser.setSurname(surname);
+        newUser.setEmail(registerRequest.getEmail());
+        newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        newUser.setName(registerRequest.getName());
+        newUser.setSurname(registerRequest.getSurname());
+        newUser.setIsFirm(registerRequest.getIsFirm());
 
         userRepository.save(newUser);
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(emailFromRequest, passwordFromRequest));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(registerRequest.getEmail(), registerRequest.getPassword()));
 
         String email = authentication.getName();
         User user = new User();
         user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(passwordFromRequest));
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
         String token = jwtConfig.createToken(user);
 
         LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setEmail(user.getEmail());
+        loginResponse.setEmail(newUser.getEmail());
         loginResponse.setToken(token);
 
         return loginResponse;

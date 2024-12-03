@@ -1,14 +1,29 @@
 package com.kamiljach.devjobshub.exceptions;
 
-import com.kamiljach.devjobshub.errors.ApiError;
+import com.kamiljach.devjobshub.response.ApiError;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage())
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
     @ExceptionHandler(AccountAlreadyExistsException.class)
     public ResponseEntity<ApiError> handleAccountAlreadyExistsException(AccountAlreadyExistsException ex) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Account already exists");
@@ -102,6 +117,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserIsNotRecruiterException.class)
     public ResponseEntity<ApiError> handleUserIsNotRecruiterException(UserIsNotRecruiterException ex){
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "User is not a recruiter");
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiError> handleBadCredentialsException(BadCredentialsException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN,"Invalid username or password", ex);
+
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 }
