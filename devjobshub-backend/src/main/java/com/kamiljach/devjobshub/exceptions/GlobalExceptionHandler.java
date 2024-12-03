@@ -1,6 +1,6 @@
 package com.kamiljach.devjobshub.exceptions;
 
-import com.kamiljach.devjobshub.errors.ApiError;
+import com.kamiljach.devjobshub.response.ApiError;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

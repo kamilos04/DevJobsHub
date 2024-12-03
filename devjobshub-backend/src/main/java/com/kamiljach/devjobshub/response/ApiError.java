@@ -1,4 +1,4 @@
-package com.kamiljach.devjobshub.errors;
+package com.kamiljach.devjobshub.response;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
