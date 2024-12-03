@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateOfferRequest {
-    @Size(min = 1, max = 30, message = "name must be between 1 and 30 characters")
+    @Size(min = 1, max = 100, message = "name must be between 1 and 100 characters")
     @NotBlank(message = "name can not be blank")
     private String name;
 
@@ -47,7 +47,7 @@ public class CreateOfferRequest {
 
     private Boolean isSalaryMonthlyUZ;
 
-    @Size(min = 1, max = 30, message = "localization must be between 1 and 30 characters")
+    @Size(min = 1, max = 100, message = "localization must be between 1 and 100 characters")
     @NotBlank(message = "localization can not be blank")
     private String localization;
 
