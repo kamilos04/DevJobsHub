@@ -2,6 +2,7 @@ package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.config.JwtConfig;
 import com.kamiljach.devjobshub.exceptions.exceptions.AccountAlreadyExistsException;
+import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByEmailException;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.login.LoginRequest;
@@ -33,16 +34,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public LoginResponse login(LoginRequest loginRequest){
+    public LoginResponse login(LoginRequest loginRequest) throws UserNotFoundByEmailException {
         String emailFromRequest = loginRequest.getEmail();
         String passwordFromRequest = loginRequest.getPassword();
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(emailFromRequest, passwordFromRequest));
-        String email = authentication.getName();
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(passwordFromRequest));
 
-        String token = jwtConfig.createToken(user);
+        User user = userRepository.findByEmail(emailFromRequest).orElseThrow(UserNotFoundByEmailException::new);
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getId(), passwordFromRequest));
+
+        String stringId = authentication.getName();
+        User u = new User();
+        u.setId(Long.parseLong(stringId));
+
+
+        String token = jwtConfig.createToken(u);
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setEmail(user.getEmail());
@@ -66,12 +71,12 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(newUser);
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(registerRequest.getEmail(), registerRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(newUser.getId(), registerRequest.getPassword()));
 
-        String email = authentication.getName();
+        String stringId = authentication.getName();
         User user = new User();
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setId(Long.parseLong(stringId));
+//        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
         String token = jwtConfig.createToken(user);
 
