@@ -30,7 +30,7 @@ public class JwtConfig {
     }
 
     public String createToken(User user) {
-        Claims claims = Jwts.claims().setSubject(user.getEmail());
+        Claims claims = Jwts.claims().setSubject(Long.toString(user.getId()));
         Date tokenCreateTime = new Date();
         Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(expirationTime));
         return Jwts.builder()
@@ -76,7 +76,7 @@ public class JwtConfig {
         }
     }
 
-    public String getEmail(Claims claims) {
+    public String getId(Claims claims) {
         return claims.getSubject();
     }
 

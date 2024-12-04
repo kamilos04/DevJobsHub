@@ -46,17 +46,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-            System.out.println("token : "+accessToken);
+            System.out.println("token: "+accessToken);
             Claims claims = jwtConfig.resolveClaims(request);
 
             if(claims!=null && jwtConfig.validateClaims(claims)){
-                String email = claims.getSubject();
-                System.out.println("email : "+email);
-                Optional<User> optionalUser = userRepository.findByEmail(email);
+                String stringId = claims.getSubject();
+                System.out.println("id: "+stringId);
+                Optional<User> optionalUser = userRepository.findById(Long.parseLong(stringId));
                 if(optionalUser.isEmpty()){
                     throw new UserNotFoundByJwtException();
                 }
-                Authentication authentication = new UsernamePasswordAuthenticationToken(email, "", new ArrayList<>());
+                Authentication authentication = new UsernamePasswordAuthenticationToken(stringId, "", new ArrayList<>());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 filterChain.doFilter(request, response);
             }

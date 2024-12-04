@@ -1,6 +1,7 @@
 package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.config.JwtConfig;
+import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByEmailException;
 import com.kamiljach.devjobshub.response.ApiError;
 import com.kamiljach.devjobshub.exceptions.exceptions.AccountAlreadyExistsException;
 import com.kamiljach.devjobshub.repository.UserRepository;
@@ -39,7 +40,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws UserNotFoundByEmailException {
         LoginResponse loginResponse = authService.login(loginRequest);
         return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
     }

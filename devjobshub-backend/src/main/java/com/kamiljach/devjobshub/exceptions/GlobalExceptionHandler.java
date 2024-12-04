@@ -126,4 +126,19 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<ApiError> handleInvalidRequestException(InvalidRequestException ex){
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,ex.getMessage(), ex);
+
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+
+    @ExceptionHandler(UserNotFoundByEmailException.class)
+    public ResponseEntity<ApiError> handleUserNotFoundByEmailException(UserNotFoundByEmailException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN,ex.getMessage(), ex);
+
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
 }
