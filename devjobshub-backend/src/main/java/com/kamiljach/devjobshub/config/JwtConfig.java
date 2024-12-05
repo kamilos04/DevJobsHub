@@ -1,6 +1,9 @@
 package com.kamiljach.devjobshub.config;
 
+import com.kamiljach.devjobshub.exceptions.exceptions.JwtIsOnBlackListException;
+import com.kamiljach.devjobshub.model.BlackListJwt;
 import com.kamiljach.devjobshub.model.User;
+import com.kamiljach.devjobshub.repository.BlackListJwtRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.naming.AuthenticationException;
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -24,10 +28,15 @@ public class JwtConfig {
     private JwtParser jwtParser;
 
     private Key key;
-    public JwtConfig() {
+
+    private BlackListJwtRepository blackListJwtRepository;
+    public JwtConfig(BlackListJwtRepository blackListJwtRepository) {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
         this.jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
+        this.blackListJwtRepository = blackListJwtRepository;
     }
+
+
 
     public String createToken(User user) {
         Claims claims = Jwts.claims().setSubject(Long.toString(user.getId()));
@@ -44,7 +53,7 @@ public class JwtConfig {
         return jwtParser.parseClaimsJws(token).getBody();
     }
 
-    public Claims resolveClaims(HttpServletRequest req) {
+    public Claims resolveClaims(HttpServletRequest req) throws JwtIsOnBlackListException {
         try {
             String token = resolveToken(req);
             if(token != null) {
@@ -60,8 +69,9 @@ public class JwtConfig {
         }
     }
 
-    public String resolveToken(HttpServletRequest req) {
+    public String resolveToken(HttpServletRequest req) throws JwtIsOnBlackListException {
         String bearerToken = req.getHeader(TOKEN_HEADER);
+        ifJwtIsOnBlackListThrowException(bearerToken);
         if(bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
             return bearerToken.substring(TOKEN_PREFIX.length());
         }
@@ -78,6 +88,11 @@ public class JwtConfig {
 
     public String getId(Claims claims) {
         return claims.getSubject();
+    }
+
+    public void ifJwtIsOnBlackListThrowException(String jwt) throws JwtIsOnBlackListException {
+        Optional<BlackListJwt> optionalBlackListJwt = blackListJwtRepository.findByJwt(jwt);
+        if(optionalBlackListJwt.isPresent()){throw new JwtIsOnBlackListException();}
     }
 
 }
