@@ -1,4 +1,4 @@
-package com.kamiljach.devjobshub.request.login;
+package com.kamiljach.devjobshub.request.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
