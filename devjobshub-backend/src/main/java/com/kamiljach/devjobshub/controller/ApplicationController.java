@@ -24,7 +24,7 @@ public class ApplicationController {
     }
 
     @PostMapping("/apply/{offerId}")
-    public ResponseEntity<ApplicationDto> applyForOffer(@PathVariable("offerId") Long offerId, @Valid @RequestBody CreateApplicationRequest createApplicationRequest, @RequestHeader("Authorization")String jwt) throws UserNotFoundByJwtException, OfferNotFoundByIdException, QuestionOrAnswerIsIncorrectException, OfferExpiredException {
+    public ResponseEntity<ApplicationDto> applyForOffer(@PathVariable("offerId") Long offerId, @Valid @RequestBody CreateApplicationRequest createApplicationRequest, @RequestHeader("Authorization")String jwt) throws UserNotFoundByJwtException, OfferNotFoundByIdException, QuestionOrAnswerIsIncorrectException, OfferExpiredException, FirmAccountCanNotDoThatException, UserAlreadyAppliedForThisOfferException {
         return new ResponseEntity<>(applicationService.applyForOffer(createApplicationRequest, offerId, jwt), HttpStatus.OK);
     }
 

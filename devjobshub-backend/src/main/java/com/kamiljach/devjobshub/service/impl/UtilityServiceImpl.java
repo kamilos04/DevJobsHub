@@ -1,5 +1,7 @@
 package com.kamiljach.devjobshub.service.impl;
 
+import com.kamiljach.devjobshub.exceptions.exceptions.FirmAccountCanNotDoThatException;
+import com.kamiljach.devjobshub.exceptions.exceptions.NotFirmAccountCanNotDoThatException;
 import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
 import com.kamiljach.devjobshub.model.Application;
@@ -87,5 +89,13 @@ public class UtilityServiceImpl implements UtilityService {
         application.removeUser();
         userRepository.save(user);
         applicationRepository.save(application);
+    }
+
+    public void isFirmFalseOrThrowException(User user) throws FirmAccountCanNotDoThatException {
+        if (user.getIsFirm()) throw new FirmAccountCanNotDoThatException();
+    }
+
+    public void isFirmOrThrowException(User user) throws NotFirmAccountCanNotDoThatException {
+        if (!user.getIsFirm()) throw new NotFirmAccountCanNotDoThatException();
     }
 }
