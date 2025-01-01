@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -27,6 +28,14 @@ public class Technology {
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "niceToHaveTechnologies")
     private List<Offer> assignedAsNiceToHave = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Technology technology = (Technology) o;
+        return Objects.equals(id, technology.id);
+    }
 
     public void addToAssignedAsRequired(Offer offer){
         if(!assignedAsRequired.contains(offer)){

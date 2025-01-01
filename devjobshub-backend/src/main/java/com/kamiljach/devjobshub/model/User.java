@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity(name = "users")
@@ -52,6 +53,14 @@ public class User {
 
     @ManyToMany(mappedBy = "recruiters")
     private List<Offer> offers = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
 
     public void addLikedOffer(Offer offer){
         if(!likedOffers.contains(offer)){
