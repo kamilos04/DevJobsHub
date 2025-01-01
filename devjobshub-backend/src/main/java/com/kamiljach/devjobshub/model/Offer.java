@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -117,6 +118,15 @@ public class Offer {
             inverseJoinColumns = @JoinColumn(name = "recruiter_id")
     )
     private List<User> recruiters = new ArrayList<>();
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Offer offer = (Offer) o;
+        return Objects.equals(id, offer.id);
+    }
 
 
     public void addRequiredTechnology(Technology technology) {

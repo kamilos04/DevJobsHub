@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
@@ -74,6 +75,14 @@ public class Application {
             this.user.getApplications().remove(this);
             this.user = null;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Application application = (Application) o;
+        return Objects.equals(id, application.id);
     }
 
     public static ApplicationDto mapApplicationToApplicationDtoShallow(Application application){

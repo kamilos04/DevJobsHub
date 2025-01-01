@@ -148,4 +148,25 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(FirmAccountCanNotDoThatException.class)
+    public ResponseEntity<ApiError> handleFirmAccountCanNotDoThatException(FirmAccountCanNotDoThatException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ex.getMessage(), ex);
+
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(NotFirmAccountCanNotDoThatException.class)
+    public ResponseEntity<ApiError> handleNotFirmAccountCanNotDoThatException(NotFirmAccountCanNotDoThatException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ex.getMessage(), ex);
+
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(UserAlreadyAppliedForThisOfferException.class)
+    public ResponseEntity<ApiError> handleUserAlreadyAppliedForThisOfferException(UserAlreadyAppliedForThisOfferException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ex.getMessage(), ex);
+
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
 }

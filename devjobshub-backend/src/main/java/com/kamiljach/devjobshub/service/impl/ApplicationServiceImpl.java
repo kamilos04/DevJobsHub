@@ -40,11 +40,15 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, QuestionOrAnswerIsIncorrectException, OfferExpiredException {
+    public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, QuestionOrAnswerIsIncorrectException, OfferExpiredException, FirmAccountCanNotDoThatException, UserAlreadyAppliedForThisOfferException {
         Optional<Offer> optionalOffer = offerRepository.findById(offerId);
         if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
 
+        User user = userService.findUserByJwt(jwt);
         Offer offer = optionalOffer.get();
+        utilityService.isFirmFalseOrThrowException(user);
+        ifUserAlreadyAppliedForOfferThrowException(user, offer);
+
 
         if(LocalDateTime.now().isAfter(offer.getExpirationDate())){
             throw new OfferExpiredException();
@@ -56,7 +60,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         newApplication.setDateTimeOfCreation(LocalDateTime.now());
 
-        User user = userService.findUserByJwt(jwt);
+
         newApplication.setUser(user);
         userRepository.save(user);
 
@@ -147,4 +151,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
     }
+
+    public void ifUserAlreadyAppliedForOfferThrowException(User user, Offer offer) throws UserAlreadyAppliedForThisOfferException {
+        for (Application application : user.getApplications()){
+            if(application.getOffer().equals(offer)) throw new UserAlreadyAppliedForThisOfferException();
+        }
+    }
+
+
 }

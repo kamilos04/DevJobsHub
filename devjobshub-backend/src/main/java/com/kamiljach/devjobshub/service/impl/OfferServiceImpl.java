@@ -50,8 +50,9 @@ public class OfferServiceImpl implements OfferService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException {
+    public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NotFirmAccountCanNotDoThatException {
         User user = userService.findUserByJwt(jwt);
+        utilityService.isFirmOrThrowException(user);
 
         Offer newOffer = Offer.mapCreateOfferRequestToOffer(createOfferRequest);
         newOffer.setDateTimeOfCreation(LocalDateTime.now());

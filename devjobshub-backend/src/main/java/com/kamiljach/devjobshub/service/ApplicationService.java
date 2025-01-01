@@ -6,7 +6,7 @@ import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 
 public interface ApplicationService {
-    public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, QuestionOrAnswerIsIncorrectException, OfferExpiredException;
+    public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, QuestionOrAnswerIsIncorrectException, OfferExpiredException, FirmAccountCanNotDoThatException, UserAlreadyAppliedForThisOfferException;
     public ApplicationDto getApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException;
 
 

@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(updateUserRequest.getEmail());
         user.setName(updateUserRequest.getName());
 
+
         if (!user.getIsFirm() && updateUserRequest.getSurname()!= null){
             verifySurnameOrThrowException(updateUserRequest.getSurname());
             user.setSurname(updateUserRequest.getSurname());
