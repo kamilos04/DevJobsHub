@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Repository
 public interface OfferRepository extends JpaRepository<Offer, Long> {
-    @Query("SELECT o FROM Offer o " +
+    @Query("SELECT DISTINCT o FROM Offer o " +
             "LEFT JOIN o.requiredTechnologies rt " +
             "LEFT JOIN o.niceToHaveTechnologies nt " +
             "LEFT JOIN o.responsibilities res " +
