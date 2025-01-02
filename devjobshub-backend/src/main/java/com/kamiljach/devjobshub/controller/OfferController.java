@@ -5,6 +5,7 @@ import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
 import com.kamiljach.devjobshub.response.MessageResponse;
+import com.kamiljach.devjobshub.response.PageResponse;
 import com.kamiljach.devjobshub.service.OfferService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,7 @@ public class OfferController {
     }
 
     @GetMapping("/offer/search")
-    public ResponseEntity<ArrayList<OfferDto>> searchOffers(@RequestParam(defaultValue = "") String text, @RequestParam(required = false) List<String> jobLevels,
+    public ResponseEntity<PageResponse<OfferDto>> searchOffers(@RequestParam(defaultValue = "") String text, @RequestParam(required = false) List<String> jobLevels,
                                                             @RequestParam(required = false) List<String> operatingModes,
                                                             @RequestParam(required = false) List<String> localizations,
                                                             @RequestParam(required = false) List<Long> technologies,
@@ -63,7 +64,7 @@ public class OfferController {
         searchOffersRequest.setNumberOfElements(numberOfElements);
         searchOffersRequest.setTechnologies(technologies);
         searchOffersRequest.setOperatingModes(operatingModes);
-        ArrayList<OfferDto> result = offerService.searchOffer(searchOffersRequest, jwt);
+        PageResponse<OfferDto> result = offerService.searchOffer(searchOffersRequest, jwt);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -131,6 +132,12 @@ public class OfferController {
         offerService.removeRecruiterFromOffer(offerId, userId, jwt);
         MessageResponse messageResponse = new MessageResponse("Recruiter has been removed from the offer");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("offer/liked")
+    public ResponseEntity<PageResponse<OfferDto>> getLikedOffersFromJwt(@RequestParam("numberOfElements") Integer numberOfElements, @RequestParam("pageNumber") Integer pageNumber, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException {
+        PageResponse<OfferDto> pageResponse = offerService.getLikedOffersFromJwt(numberOfElements, pageNumber, jwt);
+        return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 
 }

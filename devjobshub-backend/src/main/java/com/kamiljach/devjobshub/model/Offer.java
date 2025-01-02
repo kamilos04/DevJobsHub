@@ -218,7 +218,7 @@ public class Offer {
         newOfferDto.setExpirationDate(offer.getExpirationDate().format(Constants.dateTimeFormatter));
         newOfferDto.setRequiredTechnologies(offer.getRequiredTechnologies().stream().map(element -> Technology.mapTechnologyToTechnologyDtoShallow(element)).collect(Collectors.toList()));
         newOfferDto.setNiceToHaveTechnologies(offer.getNiceToHaveTechnologies().stream().map(element -> Technology.mapTechnologyToTechnologyDtoShallow(element)).collect(Collectors.toList()));
-        newOfferDto.setApplications(offer.getApplications().stream().map(element -> Application.mapApplicationToApplicationDtoShallow(element)).collect(Collectors.toList()));
+//        newOfferDto.setApplications(offer.getApplications().stream().map(element -> Application.mapApplicationToApplicationDtoShallow(element)).collect(Collectors.toList()));
         newOfferDto.setRecruiters(offer.getRecruiters().stream().map(element -> User.mapUserToUserDtoShallow(element)).toList());
 
         return newOfferDto;
@@ -228,7 +228,8 @@ public class Offer {
         OfferDto newOfferDto = OfferMapper.INSTANCE.offerToOfferDto(offer);
         newOfferDto.setDateTimeOfCreation(offer.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
         newOfferDto.setExpirationDate(offer.getExpirationDate().format(Constants.dateTimeFormatter));
-
+        newOfferDto.setRequiredTechnologies(offer.getRequiredTechnologies().stream().map(element -> Technology.mapTechnologyToTechnologyDtoShallow(element)).collect(Collectors.toList()));
+        newOfferDto.setNiceToHaveTechnologies(offer.getNiceToHaveTechnologies().stream().map(element -> Technology.mapTechnologyToTechnologyDtoShallow(element)).collect(Collectors.toList()));
         return newOfferDto;
     }
 }

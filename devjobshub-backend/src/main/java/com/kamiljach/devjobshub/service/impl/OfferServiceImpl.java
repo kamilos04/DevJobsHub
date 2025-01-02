@@ -13,10 +13,12 @@ import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
+import com.kamiljach.devjobshub.response.PageResponse;
 import com.kamiljach.devjobshub.service.OfferService;
 import com.kamiljach.devjobshub.service.UserService;
 import com.kamiljach.devjobshub.service.UtilityService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -120,7 +122,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional
-    public ArrayList<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest, String jwt){
+    public PageResponse<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest, String jwt){
         Pageable pageable;
         if(searchOffersRequest.getSortingDirection().equals("dsc")){
             pageable = PageRequest.of(searchOffersRequest.getPageNumber(), searchOffersRequest.getNumberOfElements(), Sort.by(searchOffersRequest.getSortBy()).descending());
@@ -129,12 +131,15 @@ public class OfferServiceImpl implements OfferService {
             pageable = PageRequest.of(searchOffersRequest.getPageNumber(), searchOffersRequest.getNumberOfElements(), Sort.by(searchOffersRequest.getSortBy()).ascending());
         }
         LocalDateTime currentDateTime = LocalDateTime.now();
+        Page<Offer> page = offerRepository.searchOffers(searchOffersRequest.getText(), searchOffersRequest.getJobLevels(), searchOffersRequest.getOperatingModes(), searchOffersRequest.getLocalizations(), searchOffersRequest.getTechnologies(), currentDateTime, pageable);
 
-        ArrayList<Offer> offers = new ArrayList<>(offerRepository.searchOffers(searchOffersRequest.getText(), searchOffersRequest.getJobLevels(), searchOffersRequest.getOperatingModes(), searchOffersRequest.getLocalizations(), searchOffersRequest.getTechnologies(), currentDateTime, pageable).getContent());
+        ArrayList<Offer> offers = new ArrayList<>(page.getContent());
 
         ArrayList<OfferDto> offersDto = new ArrayList<>();
         offers.forEach(element -> {offersDto.add(Offer.mapOfferToOfferDtoShallow(element));});
-        return offersDto;
+
+        PageResponse<OfferDto> pageResponse = new PageResponse<OfferDto>(offersDto, page);
+        return pageResponse;
     }
 
     public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException {
@@ -264,6 +269,21 @@ public class OfferServiceImpl implements OfferService {
         offer.removeRecruiter(recruiter);
         userRepository.save(recruiter);
         offerRepository.save(offer);
+    }
+
+    public PageResponse<OfferDto> getLikedOffersFromJwt(Integer numberOfElements, Integer pageNumber, String jwt) throws UserNotFoundByJwtException {
+        User user = userService.findUserByJwt(jwt);
+
+        Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("expirationDate").ascending());
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Page<Offer> offersPage = offerRepository.getLikedOffersFromUser(user.getId(), currentDateTime, pageable);
+        ArrayList<Offer> offers = new ArrayList<>(offersPage.getContent());
+
+        ArrayList<OfferDto> offersDto = new ArrayList<>();
+        offers.forEach(element -> {offersDto.add(Offer.mapOfferToOfferDtoShallow(element));});
+
+        PageResponse<OfferDto> pageResponse = new PageResponse<>(offersDto, offersPage);
+        return pageResponse;
     }
 
 }
