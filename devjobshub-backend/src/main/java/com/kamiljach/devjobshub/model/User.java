@@ -40,6 +40,8 @@ public class User {
 
     private String photoUrl;
 
+    private Boolean isAdmin = false;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name="user_offer_liked",

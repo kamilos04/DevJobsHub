@@ -30,6 +30,8 @@ public class UserDto {
 
     private String photoUrl;
 
+    private Boolean isAdmin;
+
     private List<OfferDto> likedOffers = new ArrayList<>();
 
     private List<ApplicationDto> applications = new ArrayList<>();
