@@ -28,13 +28,13 @@ public class OfferController {
     }
 
     @PostMapping("/offer")
-    public ResponseEntity<OfferDto> createOffer(@RequestBody CreateOfferRequest createOfferRequest, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NotFirmAccountCanNotDoThatException {
+    public ResponseEntity<OfferDto> createOffer(@Valid @RequestBody CreateOfferRequest createOfferRequest, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NotFirmAccountCanNotDoThatException {
         OfferDto newOfferDto = offerService.createOffer(createOfferRequest, jwt);
         return new ResponseEntity<>(newOfferDto, HttpStatus.OK);
     }
 
     @PutMapping("/offer/{offerId}")
-    public ResponseEntity<OfferDto> updateOffer(@RequestBody CreateOfferRequest createOfferRequest, @PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException {
+    public ResponseEntity<OfferDto> updateOffer(@Valid @RequestBody CreateOfferRequest createOfferRequest, @PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException {
         OfferDto updatedOfferDto = offerService.updateOffer(createOfferRequest, offerId, jwt);
         return new ResponseEntity<>(updatedOfferDto, HttpStatus.OK);
     }
