@@ -55,6 +55,8 @@ public class Offer {
 
     private String localization;
 
+    private String address;
+
     private LocalDateTime dateTimeOfCreation;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "likedOffers")

@@ -51,6 +51,10 @@ public class CreateOfferRequest {
     @NotBlank(message = "localization can not be blank")
     private String localization;
 
+    @Size(min = 1, max = 200, message = "address must be between 1 and 100 characters")
+    @NotBlank(message = "address can not be blank")
+    private String address;
+
     private ArrayList<Long> requiredTechnologies = new ArrayList<>();
 
     private ArrayList<Long> niceToHaveTechnologies = new ArrayList<>();

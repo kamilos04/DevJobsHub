@@ -48,6 +48,8 @@ public class OfferDto {
 
     private String localization;
 
+    private String address;
+
     private String dateTimeOfCreation;
 
     private List<UserDto> likedByUsers = new ArrayList<>();

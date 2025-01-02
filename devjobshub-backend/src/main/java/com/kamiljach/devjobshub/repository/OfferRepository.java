@@ -32,13 +32,6 @@ public interface OfferRepository extends JpaRepository<Offer, Long> {
             "AND (:operatingModes IS NULL OR o.operatingMode IN :operatingModes) " +
             "AND (:localizations IS NULL OR o.localization IN :localizations) " +
             "AND (:technologies IS NULL OR rt.id IN :technologies OR nt.id IN :technologies))")
-
-
     Page<Offer> searchOffers(@Param("text") String text, @Param("jobLevels") List<String> jobLevels, @Param("operatingModes") List<String> operatingModes, @Param("localizations") List<String> localizations, @RequestParam("technologies") List<Long> technologies, Pageable pageable);
 
-//    @Query("SELECT o FROM Offer o WHERE o.name LIKE CONCAT('%', :text, '%') " )
-////            "AND o.jobLevel IN :jobLevels " +
-////            "AND o.operatingMode IN :operatingModes " +
-////            "AND o.localization IN :localizations ")
-//    Page<Offer> searchOffers(@Param("text") String text, Pageable pageable);
 }
