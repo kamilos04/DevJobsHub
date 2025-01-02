@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -127,8 +128,9 @@ public class OfferServiceImpl implements OfferService {
         else{
             pageable = PageRequest.of(searchOffersRequest.getPageNumber(), searchOffersRequest.getNumberOfElements(), Sort.by(searchOffersRequest.getSortBy()).ascending());
         }
+        LocalDateTime currentDateTime = LocalDateTime.now();
 
-        ArrayList<Offer> offers = new ArrayList<>(offerRepository.searchOffers(searchOffersRequest.getText(), searchOffersRequest.getJobLevels(), searchOffersRequest.getOperatingModes(), searchOffersRequest.getLocalizations(), searchOffersRequest.getTechnologies(), pageable).getContent());
+        ArrayList<Offer> offers = new ArrayList<>(offerRepository.searchOffers(searchOffersRequest.getText(), searchOffersRequest.getJobLevels(), searchOffersRequest.getOperatingModes(), searchOffersRequest.getLocalizations(), searchOffersRequest.getTechnologies(), currentDateTime, pageable).getContent());
 
         ArrayList<OfferDto> offersDto = new ArrayList<>();
         offers.forEach(element -> {offersDto.add(Offer.mapOfferToOfferDtoShallow(element));});
