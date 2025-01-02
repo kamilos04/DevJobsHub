@@ -169,4 +169,11 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
+
+    @ExceptionHandler(NoPermissionException.class)
+    public ResponseEntity<ApiError> handleNoPermissionException(NoPermissionException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ex.getMessage(), ex);
+
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
 }
