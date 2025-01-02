@@ -1,6 +1,7 @@
 package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.config.JwtConfig;
+import com.kamiljach.devjobshub.dto.OfferDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.InvalidRequestException;
 import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByIdException;
 import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
@@ -12,8 +13,13 @@ import com.kamiljach.devjobshub.request.user.UpdateUserRequest;
 import com.kamiljach.devjobshub.service.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
+import org.hibernate.query.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service

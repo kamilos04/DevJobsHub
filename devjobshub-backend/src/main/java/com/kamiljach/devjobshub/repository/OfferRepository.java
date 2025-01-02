@@ -36,4 +36,9 @@ public interface OfferRepository extends JpaRepository<Offer, Long> {
             "AND (o.expirationDate > :currentDateTime))")
     Page<Offer> searchOffers(@Param("text") String text, @Param("jobLevels") List<String> jobLevels, @Param("operatingModes") List<String> operatingModes, @Param("localizations") List<String> localizations, @Param("technologies") List<Long> technologies, @Param("currentDateTime") LocalDateTime currentDateTime, Pageable pageable);
 
+    @Query("SELECT DISTINCT o FROM Offer o " +
+            "LEFT JOIN o.likedByUsers lbu " +
+            "WHERE (lbu.id = :userId AND o.expirationDate > :currentDateTime)")
+    Page<Offer> getLikedOffersFromUser(@Param("userId") Long userId, @Param("currentDateTime") LocalDateTime currentDateTime, Pageable pageable);
+
 }
