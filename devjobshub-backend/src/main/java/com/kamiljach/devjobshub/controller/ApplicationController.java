@@ -4,6 +4,7 @@ import com.kamiljach.devjobshub.dto.ApplicationDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import com.kamiljach.devjobshub.response.MessageResponse;
+import com.kamiljach.devjobshub.response.PageResponse;
 import com.kamiljach.devjobshub.service.ApplicationService;
 import com.kamiljach.devjobshub.service.UtilityService;
 import jakarta.validation.Valid;
@@ -39,5 +40,11 @@ public class ApplicationController {
         MessageResponse messageResponse = new MessageResponse();
         messageResponse.setMessage("Deleted application");
         return new ResponseEntity<MessageResponse>(messageResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/application/fromOffer/{offerId}")
+    public ResponseEntity<PageResponse<ApplicationDto>> getApplicationsFromOffer(@PathVariable("offerId") Long offerId, @RequestParam("numberOfElements") Integer numberOfElements, @RequestParam("pageNumber") Integer pageNumber, @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException {
+        PageResponse<ApplicationDto> pageResponse = applicationService.getApplicationsFromOffer(offerId, numberOfElements, pageNumber, jwt);
+        return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 }

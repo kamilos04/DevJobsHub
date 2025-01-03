@@ -11,13 +11,20 @@ import com.kamiljach.devjobshub.repository.ApplicationRepository;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
+import com.kamiljach.devjobshub.response.PageResponse;
 import com.kamiljach.devjobshub.service.ApplicationService;
 import com.kamiljach.devjobshub.service.UserService;
 import com.kamiljach.devjobshub.service.UtilityService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -156,6 +163,21 @@ public class ApplicationServiceImpl implements ApplicationService {
         for (Application application : user.getApplications()){
             if(application.getOffer().equals(offer)) throw new UserAlreadyAppliedForThisOfferException();
         }
+    }
+
+    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException {
+        Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
+        Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
+
+
+        Page<Application> page = applicationRepository.getApplicationsFromOffer(offerId, pageable);
+        ArrayList<Application> applications = new ArrayList<>(page.getContent());
+        ArrayList<ApplicationDto> applicationDtos = new ArrayList<>();
+
+        applications.forEach(element -> {applicationDtos.add(Application.mapApplicationToApplicationDtoShallow(element));});
+
+        PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
+        return pageResponse;
     }
 
 
