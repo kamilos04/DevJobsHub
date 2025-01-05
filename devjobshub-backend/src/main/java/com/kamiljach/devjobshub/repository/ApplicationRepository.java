@@ -14,4 +14,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
             "LEFT JOIN a.offer o " +
             "WHERE (o.id = :offerId )")
     Page<Application> getApplicationsFromOffer(@Param("offerId") Long offerId, Pageable pageable);
+
+    @Query("SELECT DISTINCT a FROM Application a " +
+            "LEFT JOIN a.assignedAsFavourite aaf " +
+            "WHERE (aaf.id = :offerId )")
+    Page<Application> getFavouriteApplicationsFromOffer(@Param("offerId") Long offerId, Pageable pageable);
 }

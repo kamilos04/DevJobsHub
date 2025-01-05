@@ -25,11 +25,11 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "offer_id")
     private Offer offer;
 
@@ -46,8 +46,8 @@ public class Application {
     @ElementCollection
     private List<MultipleChoiceQuestionAndAnswer> multipleChoiceQuestionsAndAnswers = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "favouriteApplications")
-    private List<Offer> assignedAsFavourite = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Offer assignedAsFavourite;
 
     public void setOffer(Offer offer){
         if(!offer.getApplications().contains(this)){

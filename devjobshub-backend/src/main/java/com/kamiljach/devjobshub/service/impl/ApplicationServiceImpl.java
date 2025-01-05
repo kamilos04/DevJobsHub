@@ -180,5 +180,20 @@ public class ApplicationServiceImpl implements ApplicationService {
         return pageResponse;
     }
 
+    public PageResponse<ApplicationDto> getFavouriteApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException {
+        Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
+        Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
+
+
+        Page<Application> page = applicationRepository.getFavouriteApplicationsFromOffer(offerId, pageable);
+        ArrayList<Application> applications = new ArrayList<>(page.getContent());
+        ArrayList<ApplicationDto> applicationDtos = new ArrayList<>();
+
+        applications.forEach(element -> {applicationDtos.add(Application.mapApplicationToApplicationDtoShallow(element));});
+
+        PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
+        return pageResponse;
+    }
+
 
 }

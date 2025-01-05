@@ -104,11 +104,7 @@ public class Offer {
     @OneToMany(mappedBy = "offer")
     private List<Application> applications = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "offer_favouriteApplications",
-            joinColumns = @JoinColumn(name = "offer_id"),
-            inverseJoinColumns = @JoinColumn(name = "application_id"))
+    @OneToMany(mappedBy = "assignedAsFavourite")
     private List<Application> favouriteApplications = new ArrayList<>();
 
     private LocalDateTime expirationDate;
@@ -169,14 +165,14 @@ public class Offer {
     public void addFavouriteApplication(Application application) {
         if (!favouriteApplications.contains(application)) {
             favouriteApplications.add(application);
-            application.getAssignedAsFavourite().add(this);
+            application.setAssignedAsFavourite(this);
         }
     }
 
     public void removeFavouriteApplication(Application application) {
         if (favouriteApplications.contains(application)) {
             favouriteApplications.remove(application);
-            application.getAssignedAsFavourite().remove(this);
+            application.setAssignedAsFavourite(null);
         }
     }
 
