@@ -46,8 +46,8 @@ public class Application {
     @ElementCollection
     private List<MultipleChoiceQuestionAndAnswer> multipleChoiceQuestionsAndAnswers = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "favouriteApplications")
-    private List<Offer> assignedAsFavourite = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Offer assignedAsFavourite;
 
     public void setOffer(Offer offer){
         if(!offer.getApplications().contains(this)){
