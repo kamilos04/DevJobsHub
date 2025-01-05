@@ -14,4 +14,6 @@ public interface ApplicationService {
     public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException;
 
     public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException;
+
+    public PageResponse<ApplicationDto> getFavouriteApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException;
 }
