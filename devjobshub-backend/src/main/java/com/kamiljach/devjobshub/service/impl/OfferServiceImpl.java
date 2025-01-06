@@ -80,7 +80,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         offerRepository.save(newOffer);
-        return Offer.mapOfferToOfferDto(newOffer);
+        return Offer.mapOfferToOfferDtoShallow(newOffer);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -117,7 +117,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         offerRepository.save(offer);
-        return Offer.mapOfferToOfferDto(offer);
+        return Offer.mapOfferToOfferDtoShallow(offer);
 
     }
 
@@ -282,8 +282,27 @@ public class OfferServiceImpl implements OfferService {
         ArrayList<OfferDto> offersDto = new ArrayList<>();
         offers.forEach(element -> {offersDto.add(Offer.mapOfferToOfferDtoShallow(element));});
 
-        PageResponse<OfferDto> pageResponse = new PageResponse<>(offersDto, offersPage);
-        return pageResponse;
+        return new PageResponse<>(offersDto, offersPage);
     }
+
+    public PageResponse<OfferDto> getOffersFromRecruiter(Long recruiterId, Boolean isActive, Integer numberOfElements, Integer pageNumber, String sortBy, String sortDirection, String jwt) throws UserNotFoundByIdException {
+        User recruiter = userRepository.findById(recruiterId).orElseThrow(UserNotFoundByIdException::new);
+
+        Pageable pageable;
+        System.out.println(sortBy);
+        if(sortDirection.equals("asc")) pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by(sortBy).ascending());
+        else pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by(sortBy).descending());
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Page<Offer> offersPage = offerRepository.getOffersFromRecruiter(recruiterId, isActive, currentDateTime, pageable);
+        ArrayList<Offer> offers = new ArrayList<>(offersPage.getContent());
+
+        ArrayList<OfferDto> offersDto = new ArrayList<>();
+        offers.forEach(element -> {offersDto.add(Offer.mapOfferToOfferDtoShallow(element));});
+
+        return new PageResponse<>(offersDto, offersPage);
+    }
+
+
 
 }

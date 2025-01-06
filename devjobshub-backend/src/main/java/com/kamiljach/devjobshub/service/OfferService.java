@@ -31,5 +31,7 @@ public interface OfferService {
 
     public void addRecruiterToOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException;
 
-    public PageResponse<OfferDto> getLikedOffersFromJwt(Integer numberOfElements, Integer pageNumber, String jwt) throws UserNotFoundByJwtException ;
+    public PageResponse<OfferDto> getLikedOffersFromJwt(Integer numberOfElements, Integer pageNumber, String jwt) throws UserNotFoundByJwtException;
+
+    public PageResponse<OfferDto> getOffersFromRecruiter(Long recruiterId, Boolean isActive, Integer numberOfElements, Integer pageNumber, String sortBy, String sortDirection, String jwt) throws UserNotFoundByIdException;
 }
