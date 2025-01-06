@@ -140,4 +140,16 @@ public class OfferController {
         return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 
+    @GetMapping("offer/fromRecruiter/{recruiterId}")
+    public ResponseEntity<PageResponse<OfferDto>> getOffersFromRecruiter(@PathVariable("recruiterId") Long recruiterId,
+                                                                         @RequestParam(value = "isActive", required = false) Boolean isActive,
+                                                                         @RequestParam("numberOfElements") Integer numberOfElements,
+                                                                         @RequestParam("pageNumber") Integer pageNumber,
+                                                                         @RequestParam("sortBy") String sortBy,
+                                                                         @RequestParam("sortDirection") String sortDirection,
+                                                                         @RequestHeader("Authorization") String jwt) throws UserNotFoundByIdException {
+        PageResponse<OfferDto> pageResponse = offerService.getOffersFromRecruiter(recruiterId, isActive, numberOfElements, pageNumber, sortBy, sortDirection, jwt);
+        return new ResponseEntity<>(pageResponse, HttpStatus.OK);
+    }
+
 }
