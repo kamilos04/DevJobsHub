@@ -80,7 +80,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         offerRepository.save(newOffer);
-        return Offer.mapOfferToOfferDto(newOffer);
+        return Offer.mapOfferToOfferDtoShallow(newOffer);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -117,7 +117,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         offerRepository.save(offer);
-        return Offer.mapOfferToOfferDto(offer);
+        return Offer.mapOfferToOfferDtoShallow(offer);
 
     }
 
