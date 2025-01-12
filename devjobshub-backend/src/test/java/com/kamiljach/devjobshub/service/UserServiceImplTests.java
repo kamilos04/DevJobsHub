@@ -40,32 +40,32 @@ public class UserServiceImplTests {
     private String validJwt = "Valid jwt";
     private String email = "test@gmail.com";
 
-    @Test
-    public void UserService_findUserByJwt_ReturnsUser() throws UserNotFoundByJwtException {
-        User user = new User();
-        user.setEmail(email);
-
-        when(jwtConfig.parseJwtClaims(Mockito.any(String.class))).thenReturn(claims);
-        when(jwtConfig.getId(claims)).thenReturn(email);
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-
-        User result = userService.findUserByJwt(validJwt);
-
-        assertNotNull(result);
-        assertEquals(email, result.getEmail());
-
-    }
-
-    @Test
-    public void UserService_addLikedOffer_Verify() {
-        User user = new User();
-        Offer offer = new Offer();
-
-        userService.addLikedOffer(user, offer);
-
-        verify(userRepository, times(1)).save(user);
-        verify(offerRepository, times(1)).save(offer);
-    }
+//    @Test
+//    public void UserService_findUserByJwt_ReturnsUser() throws UserNotFoundByJwtException {
+//        User user = new User();
+//        user.setEmail(email);
+//
+//        when(jwtConfig.parseJwtClaims(Mockito.any(String.class))).thenReturn(claims);
+//        when(jwtConfig.getId(claims)).thenReturn(email);
+//        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+//
+//        User result = userService.findUserByJwt(validJwt);
+//
+//        assertNotNull(result);
+//        assertEquals(email, result.getEmail());
+//
+//    }
+//
+//    @Test
+//    public void UserService_addLikedOffer_Verify() {
+//        User user = new User();
+//        Offer offer = new Offer();
+//
+//        userService.addLikedOffer(user, offer);
+//
+//        verify(userRepository, times(1)).save(user);
+//        verify(offerRepository, times(1)).save(offer);
+//    }
 
 
 

@@ -1,9 +1,7 @@
 package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.dto.TechnologyDto;
-import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyWithThisNameAlreadyExistsException;
+import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.response.MessageResponse;
 import com.kamiljach.devjobshub.service.TechnologyService;
@@ -28,7 +26,7 @@ public class TechnologyController {
     }
 
     @DeleteMapping("/technology/{id}")
-    public ResponseEntity<MessageResponse> deleteTechnologyById(@PathVariable("id") Long id, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException {
+    public ResponseEntity<MessageResponse> deleteTechnologyById(@PathVariable("id") Long id, @RequestHeader("Authorization")String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
         technologyService.deleteTechnologyById(id, jwt);
         MessageResponse messageResponse = new MessageResponse();
         messageResponse.setMessage("Technology deleted");
@@ -42,7 +40,7 @@ public class TechnologyController {
 
 
     @PutMapping("/technology/{id}")
-    public ResponseEntity<TechnologyDto> updateTechnologyById(@Valid @PathVariable("id") Long id, @RequestBody CreateTechnologyRequest createTechnologyRequest, @RequestHeader("Authorization") String jwt) throws TechnologyNotFoundByIdException {
+    public ResponseEntity<TechnologyDto> updateTechnologyById(@Valid @PathVariable("id") Long id, @RequestBody CreateTechnologyRequest createTechnologyRequest, @RequestHeader("Authorization") String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
         TechnologyDto technologyDto = technologyService.updateTechnology(createTechnologyRequest, id, jwt);
         return new ResponseEntity<>(technologyDto, HttpStatus.OK);
     }

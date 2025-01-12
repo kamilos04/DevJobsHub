@@ -14,6 +14,29 @@ public class TestDataUtil {
                 .surname("Kowalski")
                 .email("test@gmail.com")
                 .isFirm(false)
+                .isAdmin(false)
+                .build();
+    }
+
+    public static User createTestUserAdminA() {
+
+        return User.builder()
+                .name("Piotr")
+                .surname("Kowalski")
+                .email("test@gmail.com")
+                .isFirm(false)
+                .isAdmin(true)
+                .build();
+    }
+
+    public static User createTestUserFirmA() {
+
+        return User.builder()
+                .name("Piotr")
+                .surname("Kowalski")
+                .email("test@gmail.com")
+                .isFirm(true)
+                .isAdmin(false)
                 .build();
     }
 

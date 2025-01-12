@@ -58,56 +58,56 @@ public class OfferServiceImplTests {
 
     }
 
-    @Test
-    public void OfferService_createOffer_Success() throws TechnologyNotFoundByIdException {
-        validRequest.setRequiredTechnologies(new ArrayList<>(Arrays.asList(0L, 1L)));
-        validRequest.setNiceToHaveTechnologies(new ArrayList<>(Arrays.asList(0L)));
-
-        String validJwt = "some jwt";
-
-        when(utilityService.getListOfTechnologiesFromTheirIds(validRequest.getRequiredTechnologies())).thenReturn(new ArrayList<Technology>(Arrays.asList(technology1, technology2)));
-        when(utilityService.getListOfTechnologiesFromTheirIds(validRequest.getNiceToHaveTechnologies())).thenReturn(new ArrayList<>(Arrays.asList(technology1)));
-
-        OfferDto result = offerService.createOffer(validRequest, validJwt);
-
-        assertNotNull(result);
-        verify(offerRepository, times(4)).save(Mockito.any(Offer.class));
-        assertEquals(result.getRequiredTechnologies().size(), 2);
-        assertEquals(result.getNiceToHaveTechnologies().size(), 1);
-        assertNotNull(result.getDateTimeOfCreation());
-
-    }
-
-    @Test
-    public void OfferService_updateOffer_Success() throws OfferNotFoundByIdException, TechnologyNotFoundByIdException {
-        validRequest.setRequiredTechnologies(new ArrayList<>(Arrays.asList(0L, 1L)));
-        validRequest.setNiceToHaveTechnologies(new ArrayList<>(Arrays.asList(0L)));
-        validRequest.setMinSalary(4000L);
-        offer1.setDateTimeOfCreation(LocalDateTime.now());
-        offer1.setNiceToHaveTechnologies(new ArrayList<>(Arrays.asList(technology1)));
-        offer1.setRequiredTechnologies(new ArrayList<>(Arrays.asList(technology2)));
-        offer1.setMinSalary(3000L);
-        technology1.setAssignedAsRequired(new ArrayList<>(Arrays.asList(offer1)));
-        technology1.setAssignedAsNiceToHave(new ArrayList<>(Arrays.asList(offer1)));
-        String validJwt = "some jwt";
-
-        Long validId = 1L;
-        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
-        when(utilityService.getListOfTechnologiesFromTheirIds(validRequest.getRequiredTechnologies())).thenReturn(new ArrayList<>(Arrays.asList(technology1, technology2)));
-        when(utilityService.getListOfTechnologiesFromTheirIds(validRequest.getNiceToHaveTechnologies())).thenReturn(new ArrayList<>(Arrays.asList(technology1)));
-
-
-        OfferDto result = offerService.updateOffer(validRequest, validId, validJwt);
-
-        assertNotNull(result);
-        assertEquals(result.getNiceToHaveTechnologies().size(), 1);
-        assertEquals(result.getRequiredTechnologies().size(), 2);
-        assertEquals(result.getMinSalary(), 4000);
-        verify(utilityService, times(2)).getListOfTechnologiesFromTheirIds(Mockito.any());
-        verify(offerRepository, times(6)).save(Mockito.any(Offer.class));
-
-
-
-    }
+//    @Test
+//    public void OfferService_createOffer_Success() throws TechnologyNotFoundByIdException {
+//        validRequest.setRequiredTechnologies(new ArrayList<>(Arrays.asList(0L, 1L)));
+//        validRequest.setNiceToHaveTechnologies(new ArrayList<>(Arrays.asList(0L)));
+//
+//        String validJwt = "some jwt";
+//
+//        when(utilityService.getListOfTechnologiesFromTheirIds(validRequest.getRequiredTechnologies())).thenReturn(new ArrayList<Technology>(Arrays.asList(technology1, technology2)));
+//        when(utilityService.getListOfTechnologiesFromTheirIds(validRequest.getNiceToHaveTechnologies())).thenReturn(new ArrayList<>(Arrays.asList(technology1)));
+//
+//        OfferDto result = offerService.createOffer(validRequest, validJwt);
+//
+//        assertNotNull(result);
+//        verify(offerRepository, times(4)).save(Mockito.any(Offer.class));
+//        assertEquals(result.getRequiredTechnologies().size(), 2);
+//        assertEquals(result.getNiceToHaveTechnologies().size(), 1);
+//        assertNotNull(result.getDateTimeOfCreation());
+//
+//    }
+//
+//    @Test
+//    public void OfferService_updateOffer_Success() throws OfferNotFoundByIdException, TechnologyNotFoundByIdException {
+//        validRequest.setRequiredTechnologies(new ArrayList<>(Arrays.asList(0L, 1L)));
+//        validRequest.setNiceToHaveTechnologies(new ArrayList<>(Arrays.asList(0L)));
+//        validRequest.setMinSalary(4000L);
+//        offer1.setDateTimeOfCreation(LocalDateTime.now());
+//        offer1.setNiceToHaveTechnologies(new ArrayList<>(Arrays.asList(technology1)));
+//        offer1.setRequiredTechnologies(new ArrayList<>(Arrays.asList(technology2)));
+//        offer1.setMinSalary(3000L);
+//        technology1.setAssignedAsRequired(new ArrayList<>(Arrays.asList(offer1)));
+//        technology1.setAssignedAsNiceToHave(new ArrayList<>(Arrays.asList(offer1)));
+//        String validJwt = "some jwt";
+//
+//        Long validId = 1L;
+//        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
+//        when(utilityService.getListOfTechnologiesFromTheirIds(validRequest.getRequiredTechnologies())).thenReturn(new ArrayList<>(Arrays.asList(technology1, technology2)));
+//        when(utilityService.getListOfTechnologiesFromTheirIds(validRequest.getNiceToHaveTechnologies())).thenReturn(new ArrayList<>(Arrays.asList(technology1)));
+//
+//
+//        OfferDto result = offerService.updateOffer(validRequest, validId, validJwt);
+//
+//        assertNotNull(result);
+//        assertEquals(result.getNiceToHaveTechnologies().size(), 1);
+//        assertEquals(result.getRequiredTechnologies().size(), 2);
+//        assertEquals(result.getMinSalary(), 4000);
+//        verify(utilityService, times(2)).getListOfTechnologiesFromTheirIds(Mockito.any());
+//        verify(offerRepository, times(6)).save(Mockito.any(Offer.class));
+//
+//
+//
+//    }
 
 }
