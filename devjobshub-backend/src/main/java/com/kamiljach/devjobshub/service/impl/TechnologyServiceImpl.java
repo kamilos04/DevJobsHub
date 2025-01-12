@@ -1,14 +1,15 @@
 package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.dto.TechnologyDto;
-import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyWithThisNameAlreadyExistsException;
+import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
+import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
+import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
+import com.kamiljach.devjobshub.service.UserService;
 import com.kamiljach.devjobshub.service.UtilityService;
 import com.kamiljach.devjobshub.service.TechnologyService;
 import jakarta.validation.Valid;
@@ -23,18 +24,21 @@ public class TechnologyServiceImpl implements TechnologyService {
     private TechnologyRepository technologyRepository;
 
     private OfferRepository offerRepository;
+
+    private UserService userService;
     
     private UtilityService utilityService;
 
 
-    public TechnologyServiceImpl(TechnologyRepository technologyRepository, OfferRepository offerRepository, UtilityService utilityService) {
+    public TechnologyServiceImpl(TechnologyRepository technologyRepository, OfferRepository offerRepository, UserService userService, UtilityService utilityService) {
         this.technologyRepository = technologyRepository;
         this.offerRepository = offerRepository;
+        this.userService = userService;
         this.utilityService = utilityService;
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public TechnologyDto createTechnology(@Valid CreateTechnologyRequest technologyRequest, String jwt) throws OfferNotFoundByIdException, TechnologyWithThisNameAlreadyExistsException {
+    public TechnologyDto createTechnology(@Valid CreateTechnologyRequest technologyRequest, String jwt) throws TechnologyWithThisNameAlreadyExistsException{
         Optional<Technology> optionalTechnology = technologyRepository.findByName(technologyRequest.getName());
         if(optionalTechnology.isPresent()){throw new TechnologyWithThisNameAlreadyExistsException();}
 
@@ -46,7 +50,10 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException {
+    public void deleteTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+        User user = userService.findUserByJwt(jwt);
+        utilityService.validatePermissionIsAdmin(user);
+
         Optional<Technology> optionalTechnology = technologyRepository.findById(id);
         if (optionalTechnology.isEmpty()) {
             throw new TechnologyNotFoundByIdException();
@@ -67,7 +74,10 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public TechnologyDto updateTechnology(@Valid CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException {
+    public TechnologyDto updateTechnology(@Valid CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+        User user = userService.findUserByJwt(jwt);
+        utilityService.validatePermissionIsAdmin(user);
+
         Optional<Technology> optionalTechnology = technologyRepository.findById(id);
         if (optionalTechnology.isEmpty()) {
             throw new TechnologyNotFoundByIdException();
@@ -84,7 +94,7 @@ public class TechnologyServiceImpl implements TechnologyService {
         if(optionalTechnology.isEmpty()){throw new TechnologyNotFoundByIdException();}
         return Technology.mapTechnologyToTechnologyDtoShallow(optionalTechnology.get());
     }
-    
+
 
 
 

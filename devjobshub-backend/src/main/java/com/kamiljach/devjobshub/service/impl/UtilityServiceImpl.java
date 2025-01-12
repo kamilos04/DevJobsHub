@@ -1,9 +1,6 @@
 package com.kamiljach.devjobshub.service.impl;
 
-import com.kamiljach.devjobshub.exceptions.exceptions.FirmAccountCanNotDoThatException;
-import com.kamiljach.devjobshub.exceptions.exceptions.NotFirmAccountCanNotDoThatException;
-import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.TechnologyNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
@@ -97,5 +94,11 @@ public class UtilityServiceImpl implements UtilityService {
 
     public void isFirmOrThrowException(User user) throws NotFirmAccountCanNotDoThatException {
         if (!user.getIsFirm()) throw new NotFirmAccountCanNotDoThatException();
+    }
+
+    public void validatePermissionIsAdmin(User user) throws NoPermissionException {
+        if(!user.getIsAdmin()){
+            throw new NoPermissionException();
+        }
     }
 }
