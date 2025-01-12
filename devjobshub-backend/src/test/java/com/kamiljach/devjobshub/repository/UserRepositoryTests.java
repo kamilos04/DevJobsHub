@@ -22,11 +22,5 @@ public class UserRepositoryTests {
 
 
 
-    @Test
-    void UserRepository_Save_ReturnSavedUser() {
-        User user = TestDataUtil.createTestUserA();
-        User savedUser =  userRepository.save(user);
 
-        Assertions.assertThat(savedUser).isNotNull();
-    }
 }

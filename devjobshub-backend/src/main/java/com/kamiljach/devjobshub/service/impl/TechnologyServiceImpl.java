@@ -54,11 +54,7 @@ public class TechnologyServiceImpl implements TechnologyService {
         User user = userService.findUserByJwt(jwt);
         utilityService.validatePermissionIsAdmin(user);
 
-        Optional<Technology> optionalTechnology = technologyRepository.findById(id);
-        if (optionalTechnology.isEmpty()) {
-            throw new TechnologyNotFoundByIdException();
-        }
-        Technology technology = optionalTechnology.get();
+        Technology technology = technologyRepository.findById(id).orElseThrow(TechnologyNotFoundByIdException::new);
 
         for(int i = technology.getAssignedAsRequired().size()-1; i >= 0; i--){
             Offer offer = technology.getAssignedAsRequired().get(i);
