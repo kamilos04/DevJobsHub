@@ -13,7 +13,6 @@ import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.service.impl.TechnologyServiceImpl;
-import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,25 +38,31 @@ public class TechnologyServiceImplTests {
     @Mock
     private UtilityService utilityService;
 
-    private CreateTechnologyRequest validRequests;
+    private CreateTechnologyRequest validRequest;
+
+    private User testUserAdminA;
+    private User testUserA;
 
     @InjectMocks
     private TechnologyServiceImpl technologyService;
 
     @BeforeEach
     void setUp(){
-        validRequests = new CreateTechnologyRequest();
-        validRequests.setName("New Technology");
+        validRequest = new CreateTechnologyRequest();
+        validRequest.setName("New Technology");
+
+        testUserAdminA = TestDataUtil.createTestUserAdminA();
+        testUserA = TestDataUtil.createTestUserA();
     }
 
     @Test
     public void TechnologyService_createTechnology_Success() throws TechnologyWithThisNameAlreadyExistsException{
         when(technologyRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.empty());
 
-        TechnologyDto result = technologyService.createTechnology(validRequests, "some jwt");
+        TechnologyDto result = technologyService.createTechnology(validRequest, "some jwt");
 
         assertNotNull(result);
-        assertEquals(result.getName(), validRequests.getName());
+        assertEquals(result.getName(), validRequest.getName());
         verify(technologyRepository, times(1)).save(Mockito.any(Technology.class));
 
     }
@@ -70,14 +75,13 @@ public class TechnologyServiceImplTests {
         when(technologyRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(existingTechnology));
 
         assertThrows(TechnologyWithThisNameAlreadyExistsException.class, () -> {
-            technologyService.createTechnology(validRequests, "some jwt");}
+            technologyService.createTechnology(validRequest, "some jwt");}
         );
         verify(technologyRepository, never()).save(any(Technology.class));
     }
 
     @Test
     public void TechnologyService_deleteTechnologyById_Success() throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
-        User testUserAdminA = TestDataUtil.createTestUserAdminA();
         when(userService.findUserByJwt(Mockito.any(String.class))).thenReturn(testUserAdminA);
 
 
@@ -108,7 +112,6 @@ public class TechnologyServiceImplTests {
     public void TechnologyService_deleteTechnologyById_ThrowsTechnologyNotFoundByIdException() throws UserNotFoundByJwtException, NoPermissionException, TechnologyNotFoundByIdException {
         when(technologyRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        User testUserAdminA = TestDataUtil.createTestUserAdminA();
         when(userService.findUserByJwt(Mockito.any(String.class))).thenReturn(testUserAdminA);
 
         Long invalidId = 1L;
@@ -120,7 +123,6 @@ public class TechnologyServiceImplTests {
 
     @Test
     public void TechnologyService_deleteTechnologyById_ThrowsNoPermissionException() throws UserNotFoundByJwtException, NoPermissionException, TechnologyNotFoundByIdException {
-        User testUserAdminA = TestDataUtil.createTestUserAdminA();
         when(userService.findUserByJwt(Mockito.any(String.class))).thenReturn(testUserAdminA);
         doThrow(new NoPermissionException()).when(utilityService).validatePermissionIsAdmin(testUserAdminA);
 
@@ -130,38 +132,52 @@ public class TechnologyServiceImplTests {
         verify(technologyRepository, never()).delete(Mockito.any(Technology.class));
         verify(offerRepository, never()).save(Mockito.any(Offer.class));
     }
-//
-//    @Test
-//    public void TechnologyService_updateTechnology_ReturnsTechnologyDto() throws TechnologyNotFoundByIdException{
-//        Long validId = 1L;
-//        String validJwt = "some jwt";
-//        Technology existingTechnology = new Technology();
-//        existingTechnology.setName("Existing");
-//
-//        when(technologyRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(existingTechnology));
-//
-//        TechnologyDto result = technologyService.updateTechnology(validRequests, validId, validJwt);
-//
-//
-//        assertNotNull(result);
-//        assertNotEquals(result.getName(), "Existing");
-//        verify(technologyRepository, times(1)).save(Mockito.any(Technology.class));
-//
-//    }
-//
-//    @Test
-//    public void TechnologyService_updateTechnology_ThrowsTechnologyNotFoundByIdException() throws TechnologyNotFoundByIdException {
-//        Long validId = 1L;
-//        String validJwt = "some jwt";
-//
-//        when(technologyRepository.findById(validId)).thenReturn(Optional.empty());
-//
-//        assertThrows(TechnologyNotFoundByIdException.class, () -> {
-//            technologyService.updateTechnology(validRequests, validId, validJwt);
-//        });
-//
-//        verify(technologyRepository, never()).save(Mockito.any(Technology.class));
-//    }
+
+    @Test
+    public void TechnologyService_updateTechnology_ReturnsTechnologyDto() throws UserNotFoundByJwtException, NoPermissionException, TechnologyNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        Technology existingTechnology = new Technology();
+        existingTechnology.setName("Existing");
+
+        when(userService.findUserByJwt(validJwt)).thenReturn(testUserAdminA);
+
+        when(technologyRepository.findById(validId)).thenReturn(Optional.of(existingTechnology));
+
+        TechnologyDto result = technologyService.updateTechnology(validRequest, validId, validJwt);
+
+        assertNotNull(result);
+        assertEquals(result.getName(), validRequest.getName());
+        verify(technologyRepository, times(1)).save(existingTechnology);
+    }
+
+    @Test
+    public void TechnologyService_updateTechnology_ThrowsTechnologyNotFoundByIdException() throws UserNotFoundByJwtException, NoPermissionException, TechnologyNotFoundByIdException {
+        Long id = 1L;
+        String validJwt = "some jwt";
+
+        when(userService.findUserByJwt(validJwt)).thenReturn(testUserAdminA);
+
+        when(technologyRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(TechnologyNotFoundByIdException.class, () -> technologyService.updateTechnology(validRequest, id, validJwt));
+    }
+
+    @Test
+    public void TechnologyService_updateTechnology_ThrowsNoPermissionException() throws UserNotFoundByJwtException, NoPermissionException, TechnologyNotFoundByIdException {
+        Long id = 1L;
+        String validJwt = "some jwt";
+
+        when(userService.findUserByJwt(validJwt)).thenReturn(testUserAdminA);
+
+        doThrow(new NoPermissionException()).when(utilityService).validatePermissionIsAdmin(testUserAdminA);
+
+        assertThrows(NoPermissionException.class, () -> technologyService.updateTechnology(validRequest, id, validJwt));
+    }
+
+
+
+
 //
 //    @Test
 //    public void TechnologyService_getTechnologyById_ReturnsTechnologyDto() throws TechnologyNotFoundByIdException {

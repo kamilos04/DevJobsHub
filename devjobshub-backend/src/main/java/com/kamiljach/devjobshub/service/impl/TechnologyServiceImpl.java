@@ -38,7 +38,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public TechnologyDto createTechnology(@Valid CreateTechnologyRequest technologyRequest, String jwt) throws TechnologyWithThisNameAlreadyExistsException{
+    public TechnologyDto createTechnology(CreateTechnologyRequest technologyRequest, String jwt) throws TechnologyWithThisNameAlreadyExistsException{
         Optional<Technology> optionalTechnology = technologyRepository.findByName(technologyRequest.getName());
         if(optionalTechnology.isPresent()){throw new TechnologyWithThisNameAlreadyExistsException();}
 
@@ -70,15 +70,12 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public TechnologyDto updateTechnology(@Valid CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
         User user = userService.findUserByJwt(jwt);
         utilityService.validatePermissionIsAdmin(user);
 
-        Optional<Technology> optionalTechnology = technologyRepository.findById(id);
-        if (optionalTechnology.isEmpty()) {
-            throw new TechnologyNotFoundByIdException();
-        }
-        Technology technology = optionalTechnology.get();
+        Technology technology = technologyRepository.findById(id).orElseThrow(TechnologyNotFoundByIdException::new);
+
         technology.setName(technologyRequest.getName());
         technologyRepository.save(technology);
         return Technology.mapTechnologyToTechnologyDtoShallow(technology);
