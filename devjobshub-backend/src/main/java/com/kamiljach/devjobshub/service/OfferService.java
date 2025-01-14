@@ -24,7 +24,7 @@ public interface OfferService {
 
     public void removeLikeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsNotLikedByUserException, NoPermissionException;
 
-    public void addApplicationToFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException;
+    public void addApplicationToFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, UserNotFoundByJwtException, NoPermissionException;
     public void removeApplicationFromFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException;
 
     public void removeRecruiterFromOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException;

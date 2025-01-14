@@ -97,7 +97,7 @@ public class OfferController {
     public ResponseEntity<MessageResponse> addApplicationToFavourites(@RequestParam("offerId") Long offerId,
                                                                       @RequestParam("applicationId") Long applicationId,
                                                                       @RequestHeader("Authorization") String jwt)
-            throws ApplicationNotFoundByIdException, OfferNotFoundByIdException, ApplicationAlreadyIsInFavouritesException {
+            throws ApplicationNotFoundByIdException, OfferNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, UserNotFoundByJwtException, NoPermissionException {
         offerService.addApplicationToFavourites(offerId, applicationId, jwt);
         MessageResponse messageResponse = new MessageResponse("Application has been added to favourites");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
