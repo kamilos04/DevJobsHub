@@ -84,12 +84,16 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException {
-        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
-        if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
-        Offer offer = Offer.mapCreateOfferRequestToExistingOffer(createOfferRequest, optionalOffer.get());
+    public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+        Offer offerToUpdate = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
 
+        //Validate permissions
+        User user = userService.findUserByJwt(jwt);
+        validatePermissionUpdateOffer(user, offerToUpdate);
 
+        Offer offer = Offer.mapCreateOfferRequestToExistingOffer(createOfferRequest, offerToUpdate);
+
+        //Update nice to have technologies
         if(createOfferRequest.getNiceToHaveTechnologies() != null){
             for(int i = offer.getNiceToHaveTechnologies().size()-1; i >= 0; i--){
                 Technology technology = offer.getNiceToHaveTechnologies().get(i);
@@ -103,6 +107,7 @@ public class OfferServiceImpl implements OfferService {
             });
         }
 
+        //Update required technologies
         if(createOfferRequest.getRequiredTechnologies() != null){
             for(int i = offer.getRequiredTechnologies().size()-1; i >= 0; i--){
                 Technology technology = offer.getRequiredTechnologies().get(i);
@@ -303,6 +308,14 @@ public class OfferServiceImpl implements OfferService {
         return new PageResponse<>(offersDto, offersPage);
     }
 
-
+    public void validatePermissionUpdateOffer(User user, Offer offer) throws NoPermissionException {
+        if (user.getIsAdmin()){
+            return;
+        }
+        else if (offer.getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
 
 }

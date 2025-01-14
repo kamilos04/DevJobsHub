@@ -12,7 +12,7 @@ public interface OfferService {
 
     public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NotFirmAccountCanNotDoThatException;
 
-    public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException;
+    public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException;
 
     public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException;
 

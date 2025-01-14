@@ -35,7 +35,7 @@ public class OfferController {
     }
 
     @PutMapping("/offer/{offerId}")
-    public ResponseEntity<OfferDto> updateOffer(@Valid @RequestBody CreateOfferRequest createOfferRequest, @PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException {
+    public ResponseEntity<OfferDto> updateOffer(@Valid @RequestBody CreateOfferRequest createOfferRequest, @PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
         OfferDto updatedOfferDto = offerService.updateOffer(createOfferRequest, offerId, jwt);
         return new ResponseEntity<>(updatedOfferDto, HttpStatus.OK);
     }
