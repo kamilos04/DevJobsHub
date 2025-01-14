@@ -18,7 +18,7 @@ public interface OfferService {
 
     public PageResponse<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest, String jwt);
 
-    public void deleteOfferById(Long id, String jwt) throws OfferNotFoundByIdException;
+    public void deleteOfferById(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException;
 
     public void likeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsAlreadyLikedByUserException;
 

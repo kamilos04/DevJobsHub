@@ -69,7 +69,7 @@ public class OfferController {
     }
 
     @DeleteMapping("/offer/{offerId}")
-    public ResponseEntity<MessageResponse> deleteOfferById(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException {
+    public ResponseEntity<MessageResponse> deleteOfferById(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
         offerService.deleteOfferById(offerId, jwt);
         MessageResponse messageResponse = new MessageResponse();
         messageResponse.setMessage("Offer deleted");

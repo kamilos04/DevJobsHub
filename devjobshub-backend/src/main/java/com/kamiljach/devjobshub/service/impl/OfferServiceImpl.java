@@ -154,29 +154,35 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteOfferById(Long id, String jwt) throws OfferNotFoundByIdException{
-        Optional<Offer> optionalOffer = offerRepository.findById(id);
-        if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
-        Offer offer = optionalOffer.get();
+    public void deleteOfferById(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+        Offer offer = offerRepository.findById(id).orElseThrow(OfferNotFoundByIdException::new);
+        User userFromJwt = userService.findUserByJwt(jwt);
+        
+        //Validate permission
+        validatePermissionDeleteOffer(userFromJwt, offer);
 
+        //Remove connections with users who liked offer
         for(int i = offer.getLikedByUsers().size()-1; i>=0; i--){
             User user = offer.getLikedByUsers().get(i);
             user.removeLikedOffer(offer);
             userRepository.save(user);
         }
 
+        //Remove connections with required technologies
         for(int i = offer.getRequiredTechnologies().size()-1; i>=0; i--){
             Technology technology = offer.getRequiredTechnologies().get(i);
             offer.removeRequiredTechnology(technology);
             technologyRepository.save(technology);
         }
 
+        //Remove connections with nice to have technologies
         for(int i = offer.getNiceToHaveTechnologies().size()-1; i>=0; i--){
             Technology technology = offer.getNiceToHaveTechnologies().get(i);
             offer.removeNiceToHaveTechnology(technology);
             technologyRepository.save(technology);
         }
 
+        //Remove application from offer
         for(int i = offer.getApplications().size()-1; i>=0; i--){
             Application application = offer.getApplications().get(i);
             utilityService.deleteApplication(application);
@@ -309,6 +315,16 @@ public class OfferServiceImpl implements OfferService {
     }
 
     public void validatePermissionUpdateOffer(User user, Offer offer) throws NoPermissionException {
+        if (user.getIsAdmin()){
+            return;
+        }
+        else if (offer.getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
+    public void validatePermissionDeleteOffer(User user, Offer offer) throws NoPermissionException {
         if (user.getIsAdmin()){
             return;
         }
