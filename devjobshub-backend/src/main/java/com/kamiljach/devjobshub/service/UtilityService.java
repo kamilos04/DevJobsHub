@@ -20,7 +20,7 @@ public interface UtilityService {
 
     public void isFirmFalseOrThrowException(User user) throws FirmAccountCanNotDoThatException;
 
-    public void isFirmOrThrowException(User user) throws NotFirmAccountCanNotDoThatException;
+    public void isFirmOrThrowException(User user) throws NoFirmAccountCanNotDoThatException;
 
     public void validatePermissionIsAdmin(User user) throws NoPermissionException;
 }

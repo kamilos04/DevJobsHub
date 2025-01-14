@@ -51,7 +51,7 @@ public class OfferServiceImpl implements OfferService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NotFirmAccountCanNotDoThatException {
+    public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoFirmAccountCanNotDoThatException {
         User user = userService.findUserByJwt(jwt);
         //Validation account type
         utilityService.isFirmOrThrowException(user);

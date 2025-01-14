@@ -92,8 +92,8 @@ public class UtilityServiceImpl implements UtilityService {
         if (user.getIsFirm()) throw new FirmAccountCanNotDoThatException();
     }
 
-    public void isFirmOrThrowException(User user) throws NotFirmAccountCanNotDoThatException {
-        if (!user.getIsFirm()) throw new NotFirmAccountCanNotDoThatException();
+    public void isFirmOrThrowException(User user) throws NoFirmAccountCanNotDoThatException {
+        if (!user.getIsFirm()) throw new NoFirmAccountCanNotDoThatException();
     }
 
     public void validatePermissionIsAdmin(User user) throws NoPermissionException {
