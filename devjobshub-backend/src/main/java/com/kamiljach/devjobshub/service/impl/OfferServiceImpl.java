@@ -55,6 +55,7 @@ public class OfferServiceImpl implements OfferService {
     @Transactional(rollbackFor = Exception.class)
     public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NotFirmAccountCanNotDoThatException {
         User user = userService.findUserByJwt(jwt);
+        //Validation account type
         utilityService.isFirmOrThrowException(user);
 
         Offer newOffer = Offer.mapCreateOfferRequestToOffer(createOfferRequest);
@@ -63,6 +64,7 @@ public class OfferServiceImpl implements OfferService {
         newOffer.addRecruiter(user);
         userRepository.save(user);
 
+        //Adding required technologies
         if(createOfferRequest.getRequiredTechnologies() != null){
             ArrayList<Technology> requiredTechnologies = utilityService.getListOfTechnologiesFromTheirIds(createOfferRequest.getRequiredTechnologies());
             requiredTechnologies.forEach(element -> {
@@ -71,6 +73,8 @@ public class OfferServiceImpl implements OfferService {
             });
 
         }
+
+        //Adding nice to have technologies
         if(createOfferRequest.getNiceToHaveTechnologies() != null){
             ArrayList<Technology> niceToHaveTechnologies = utilityService.getListOfTechnologiesFromTheirIds(createOfferRequest.getNiceToHaveTechnologies());
             niceToHaveTechnologies.forEach(element -> {
@@ -157,7 +161,7 @@ public class OfferServiceImpl implements OfferService {
     public void deleteOfferById(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
         Offer offer = offerRepository.findById(id).orElseThrow(OfferNotFoundByIdException::new);
         User userFromJwt = userService.findUserByJwt(jwt);
-        
+
         //Validate permission
         validatePermissionDeleteOffer(userFromJwt, offer);
 
@@ -192,12 +196,11 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void likeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsAlreadyLikedByUserException {
+    public void likeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsAlreadyLikedByUserException, NoPermissionException {
         User user = userService.findUserByJwt(jwt);
-        Optional<Offer> optionalOffer = offerRepository.findById(id);
-        if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
+        Offer offer = offerRepository.findById(id).orElseThrow(OfferNotFoundByIdException::new);
+        validatePermissionLikeOffer(user);
 
-        Offer offer = optionalOffer.get();
         if (user.getLikedOffers().contains(offer)){
             throw new OfferIsAlreadyLikedByUserException();
         }
@@ -207,12 +210,13 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void removeLikeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsNotLikedByUserException {
+    public void removeLikeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsNotLikedByUserException, NoPermissionException {
         User user = userService.findUserByJwt(jwt);
-        Optional<Offer> optionalOffer = offerRepository.findById(id);
-        if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
 
-        Offer offer = optionalOffer.get();
+        Offer offer = offerRepository.findById(id).orElseThrow(OfferNotFoundByIdException::new);
+
+        validatePermissionRemoveLikeOffer(user);
+
         if (!user.getLikedOffers().contains(offer)){
             throw new OfferIsNotLikedByUserException();
         }
@@ -223,14 +227,9 @@ public class OfferServiceImpl implements OfferService {
 
     @Transactional(rollbackFor = Exception.class)
     public void addApplicationToFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException {
-        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
-        Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
+        Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
 
-        if (optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
-        if (optionalApplication.isEmpty()){throw new ApplicationNotFoundByIdException();}
-
-        Offer offer = optionalOffer.get();
-        Application application = optionalApplication.get();
+        Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
 
         if(offer.getFavouriteApplications().contains(application)){throw new ApplicationAlreadyIsInFavouritesException();}
 
@@ -329,6 +328,20 @@ public class OfferServiceImpl implements OfferService {
             return;
         }
         else if (offer.getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
+    public void validatePermissionLikeOffer(User user) throws NoPermissionException {
+        if(!user.getIsFirm()){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
+    public void validatePermissionRemoveLikeOffer(User user) throws NoPermissionException {
+        if(!user.getIsFirm()){
             return;
         }
         throw new NoPermissionException();

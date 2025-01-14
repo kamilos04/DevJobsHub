@@ -79,8 +79,7 @@ public class OfferController {
     @PostMapping("/likeOffer/{offerId}")
     public ResponseEntity<MessageResponse> likeOffer(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException,
             OfferIsAlreadyLikedByUserException,
-            OfferNotFoundByIdException
-    {
+            OfferNotFoundByIdException, NoPermissionException {
         offerService.likeOffer(offerId, jwt);
         MessageResponse messageResponse = new MessageResponse("Liked the offer");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
@@ -88,8 +87,7 @@ public class OfferController {
 
     @PostMapping("/removeLikeOffer/{offerId}")
     public ResponseEntity<MessageResponse> removeLikeOffer(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException,
-            OfferNotFoundByIdException, OfferIsNotLikedByUserException
-    {
+            OfferNotFoundByIdException, OfferIsNotLikedByUserException, NoPermissionException {
         offerService.removeLikeOffer(offerId, jwt);
         MessageResponse messageResponse = new MessageResponse("Like has been removed");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
