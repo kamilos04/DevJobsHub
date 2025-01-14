@@ -108,7 +108,7 @@ public class OfferController {
     public ResponseEntity<MessageResponse> removeApplicationFromFavourites(@RequestParam("offerId") Long offerId,
                                                                            @RequestParam("applicationId") Long applicationId,
                                                                            @RequestHeader("Authorization") String jwt)
-            throws ApplicationNotFoundByIdException, OfferNotFoundByIdException, ApplicationIsNotInFavouritesException {
+            throws ApplicationNotFoundByIdException, OfferNotFoundByIdException, ApplicationIsNotInFavouritesException, UserNotFoundByJwtException, NoPermissionException {
         offerService.removeApplicationFromFavourites(offerId, applicationId, jwt);
         MessageResponse messageResponse = new MessageResponse("Application has been removed from favourites");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
@@ -117,7 +117,7 @@ public class OfferController {
     @PostMapping("/offer/addRecruiter")
     public ResponseEntity<MessageResponse> addRecruiter(@RequestParam("offerId") Long offerId,
                                                         @RequestParam("userId") Long userId,
-                                                        @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException {
+                                                        @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException, UserNotFoundByJwtException {
         offerService.addRecruiterToOffer(offerId, userId, jwt);
         MessageResponse messageResponse = new MessageResponse("Recruiter has been added to the offer");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
@@ -126,7 +126,7 @@ public class OfferController {
     @PostMapping("/offer/removeRecruiter")
     public ResponseEntity<MessageResponse> removeRecruiter(@RequestParam("offerId") Long offerId,
                                                            @RequestParam("userId") Long userId,
-                                                           @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException {
+                                                           @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException, UserNotFoundByJwtException, NoPermissionException {
         offerService.removeRecruiterFromOffer(offerId, userId, jwt);
         MessageResponse messageResponse = new MessageResponse("Recruiter has been removed from the offer");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
@@ -145,7 +145,7 @@ public class OfferController {
                                                                          @RequestParam("pageNumber") Integer pageNumber,
                                                                          @RequestParam("sortBy") String sortBy,
                                                                          @RequestParam("sortDirection") String sortDirection,
-                                                                         @RequestHeader("Authorization") String jwt) throws UserNotFoundByIdException {
+                                                                         @RequestHeader("Authorization") String jwt) throws UserNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
         PageResponse<OfferDto> pageResponse = offerService.getOffersFromRecruiter(recruiterId, isActive, numberOfElements, pageNumber, sortBy, sortDirection, jwt);
         return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }

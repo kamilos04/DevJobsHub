@@ -17,7 +17,6 @@ import com.kamiljach.devjobshub.response.PageResponse;
 import com.kamiljach.devjobshub.service.OfferService;
 import com.kamiljach.devjobshub.service.UserService;
 import com.kamiljach.devjobshub.service.UtilityService;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -230,7 +228,7 @@ public class OfferServiceImpl implements OfferService {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
         User user = userService.findUserByJwt(jwt);
         Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
-        validatePermissionsAddApplicationToFavourites(user, offer);
+        validatePermissionAddApplicationToFavourites(user, offer);
 
 
         if(offer.getFavouriteApplications().contains(application)){throw new ApplicationAlreadyIsInFavouritesException();}
@@ -241,15 +239,12 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void removeApplicationFromFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException {
-        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
-        Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
+    public void removeApplicationFromFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, UserNotFoundByJwtException, NoPermissionException {
+        Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
+        User user = userService.findUserByJwt(jwt);
+        Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
 
-        if (optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
-        if (optionalApplication.isEmpty()){throw new ApplicationNotFoundByIdException();}
-
-        Offer offer = optionalOffer.get();
-        Application application = optionalApplication.get();
+        validatePermissionRemoveApplicationFromFavourites(user, offer);
 
         if(!offer.getFavouriteApplications().contains(application)){throw new ApplicationIsNotInFavouritesException();}
 
@@ -260,9 +255,12 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void addRecruiterToOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException {
+    public void addRecruiterToOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException, UserNotFoundByJwtException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
         User recruiter = userRepository.findById(recruiterId).orElseThrow(UserNotFoundByIdException::new);
+        User user = userService.findUserByJwt(jwt);
+
+        validatePermissionAddRecruiterToOffer(user, offer);
 
         if (offer.getRecruiters().contains(recruiter)) throw new UserIsAlreadyRecruiterException();
 
@@ -272,9 +270,12 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void removeRecruiterFromOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException {
+    public void removeRecruiterFromOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException, UserNotFoundByJwtException, NoPermissionException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
         User recruiter = userRepository.findById(recruiterId).orElseThrow(UserNotFoundByIdException::new);
+        User user = userService.findUserByJwt(jwt);
+
+        validatePermissionRemoveRecruiterFromOffer(user, offer, recruiter);
 
         if (!offer.getRecruiters().contains(recruiter)) throw new UserIsNotRecruiterException();
 
@@ -297,8 +298,10 @@ public class OfferServiceImpl implements OfferService {
         return new PageResponse<>(offersDto, offersPage);
     }
 
-    public PageResponse<OfferDto> getOffersFromRecruiter(Long recruiterId, Boolean isActive, Integer numberOfElements, Integer pageNumber, String sortBy, String sortDirection, String jwt) throws UserNotFoundByIdException {
+    public PageResponse<OfferDto> getOffersFromRecruiter(Long recruiterId, Boolean isActive, Integer numberOfElements, Integer pageNumber, String sortBy, String sortDirection, String jwt) throws UserNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
         User recruiter = userRepository.findById(recruiterId).orElseThrow(UserNotFoundByIdException::new);
+        User user = userService.findUserByJwt(jwt);
+        validatePermissionGetOffersFromRecruiter(user, recruiter);
 
         Pageable pageable;
         System.out.println(sortBy);
@@ -349,11 +352,44 @@ public class OfferServiceImpl implements OfferService {
         throw new NoPermissionException();
     }
 
-    public void validatePermissionsAddApplicationToFavourites(User user, Offer offer) throws NoPermissionException {
+    public void validatePermissionAddApplicationToFavourites(User user, Offer offer) throws NoPermissionException {
         if (offer.getRecruiters().contains(user)){
             return;
         }
         throw new NoPermissionException();
     }
 
+    public void validatePermissionRemoveApplicationFromFavourites(User user, Offer offer) throws NoPermissionException {
+        if (offer.getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
+    public void validatePermissionAddRecruiterToOffer(User user, Offer offer) throws NoPermissionException {
+        if (offer.getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
+    public void validatePermissionRemoveRecruiterFromOffer(User user, Offer offer, User recruiter) throws NoPermissionException {
+        if (offer.getRecruiters().contains(user)){
+            if(!user.equals(recruiter)){
+                return;
+            }
+        }
+        throw new NoPermissionException();
+    }
+
+
+    public void validatePermissionGetOffersFromRecruiter(User user, User recruiter) throws NoPermissionException {
+        if (user.getIsAdmin()){
+            return;
+        }
+        else if (recruiter.equals(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
 }
