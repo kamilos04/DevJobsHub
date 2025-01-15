@@ -193,6 +193,13 @@ public class OfferServiceImpl implements OfferService {
             applicationService.deleteApplication(application);
         }
 
+        //Remove recruiters from offer
+        for (int i = offer.getRecruiters().size()-1; i>=0; i--){
+            User recruiter = offer.getRecruiters().get(i);
+            offer.removeRecruiter(recruiter);
+            userRepository.save(recruiter);
+        }
+
         offerRepository.delete(offer);
     }
 
@@ -307,7 +314,6 @@ public class OfferServiceImpl implements OfferService {
         validatePermissionGetOffersFromRecruiter(user, recruiter);
 
         Pageable pageable;
-        System.out.println(sortBy);
         if(sortDirection.equals("asc")) pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by(sortBy).ascending());
         else pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by(sortBy).descending());
 
