@@ -164,7 +164,7 @@ public class OfferServiceImpl implements OfferService {
         User userFromJwt = userService.findUserByJwt(jwt);
 
         //Validate permission
-        validatePermissionDeleteOffer(userFromJwt, offer);
+        validatePermissionDeleteOfferById(userFromJwt, offer);
 
         //Remove connections with users who liked offer
         for(int i = offer.getLikedByUsers().size()-1; i>=0; i--){
@@ -337,7 +337,7 @@ public class OfferServiceImpl implements OfferService {
         throw new NoPermissionException();
     }
 
-    public void validatePermissionDeleteOffer(User user, Offer offer) throws NoPermissionException {
+    public void validatePermissionDeleteOfferById(User user, Offer offer) throws NoPermissionException {
         if (user.getIsAdmin()){
             return;
         }

@@ -22,7 +22,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -48,11 +47,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Transactional(rollbackFor = Exception.class)
     public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, QuestionOrAnswerIsIncorrectException, OfferExpiredException, FirmAccountCanNotDoThatException, UserAlreadyAppliedForThisOfferException {
-        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
-        if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
+        Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
 
         User user = userService.findUserByJwt(jwt);
-        Offer offer = optionalOffer.get();
         utilityService.isFirmFalseOrThrowException(user);
         ifUserAlreadyAppliedForOfferThrowException(user, offer);
 
@@ -63,16 +60,16 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         Application newApplication = ApplicationMapper.INSTANCE.createApplicationRequestToApplication(createApplicationRequest);
 
-        validateAllQuestionsInApplication(newApplication, optionalOffer.get());
+        validateAllQuestionsInApplication(newApplication, offer);
 
         newApplication.setDateTimeOfCreation(LocalDateTime.now());
 
 
-        newApplication.setUser(user);
+        newApplication.putUser(user);
         userRepository.save(user);
 
 
-        newApplication.setOffer(offer);
+        newApplication.putOffer(offer);
         offerRepository.save(offer);
 
         applicationRepository.save(newApplication);
