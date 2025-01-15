@@ -13,6 +13,8 @@ import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
+import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
+import com.kamiljach.devjobshub.response.PageResponse;
 import com.kamiljach.devjobshub.service.impl.OfferServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -73,6 +77,7 @@ public class OfferServiceImplTests {
         technology2 = new Technology();
         offer1 = new Offer();
         offer1.setDateTimeOfCreation(LocalDateTime.parse("02-01-2026 23:59:59", Constants.dateTimeFormatter));
+        offer1.setExpirationDate(LocalDateTime.parse("02-03-2026 23:59:59", Constants.dateTimeFormatter));
         testUserA = TestDataUtil.createTestUserA();
         testUserAdminA = TestDataUtil.createTestUserAdminA();
 
@@ -259,7 +264,32 @@ public class OfferServiceImplTests {
 
     }
 
-    
+
+    @Test
+    public void OfferService_searchOffer_ReturnsPageResponse() {
+        SearchOffersRequest searchOffersRequest = new SearchOffersRequest();
+        searchOffersRequest.setText("test");
+        searchOffersRequest.setSortBy("name");
+        searchOffersRequest.setPageNumber(1);
+        searchOffersRequest.setNumberOfElements(1);
+        searchOffersRequest.setLocalizations(Arrays.asList("warszawa"));
+        searchOffersRequest.setJobLevels(Arrays.asList("SENIOR"));
+        searchOffersRequest.setOperatingModes(Arrays.asList("STATIONARY"));
+        searchOffersRequest.setSortingDirection("dsc");
+        String validJwt = "some jwt";
+        Page<Offer> page = new PageImpl<>(Arrays.asList(offer1));
+        when(offerRepository.searchOffers(any(), any(), any(), any(), any(), any(), any())).thenReturn(page);
+
+        PageResponse<OfferDto> result = offerService.searchOffer(searchOffersRequest, validJwt);
+
+        assertNotNull(result);
+        assertEquals(result.getContent().getFirst().getName(), offer1.getName());
+        assertEquals(result.getTotalElements(), 1);
+
+
+    }
+
+
 
 
 
