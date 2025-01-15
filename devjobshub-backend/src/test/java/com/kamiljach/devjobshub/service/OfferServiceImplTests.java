@@ -289,6 +289,30 @@ public class OfferServiceImplTests {
 
     }
 
+    @Test
+    public void OfferService_getOffer_ReturnsOfferDto() throws OfferNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
+
+        OfferDto result = offerService.getOffer(validId, validJwt);
+
+        assertNotNull(result);
+        assertEquals(offer1.getName(), result.getName());
+
+    }
+
+    @Test
+    public void OfferService_getOffer_ThrowsOfferNotFoundByIdException() throws OfferNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        when(offerRepository.findById(validId)).thenReturn(Optional.empty());
+
+
+        assertThrows(OfferNotFoundByIdException.class, () -> offerService.getOffer(validId, validJwt));
+
+    }
+
 
 
 
