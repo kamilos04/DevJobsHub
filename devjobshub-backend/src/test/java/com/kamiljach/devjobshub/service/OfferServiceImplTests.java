@@ -6,6 +6,7 @@ import com.kamiljach.devjobshub.TestDataUtil;
 import com.kamiljach.devjobshub.config.Constants;
 import com.kamiljach.devjobshub.dto.OfferDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
+import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.model.User;
@@ -49,8 +50,12 @@ public class OfferServiceImplTests {
     @Mock
     private UserService userService;
 
+    @Mock
+    private ApplicationService applicationService;
+
     @InjectMocks
     private OfferServiceImpl offerService;
+
 
     @Spy
     @InjectMocks
@@ -62,7 +67,13 @@ public class OfferServiceImplTests {
     private Technology technology2;
 
     private User testUserA;
+
+    private User testUserB;
+
+    private User testUserC;
     private User testUserAdminA;
+
+    private Application testApplicationA;
 
     private Offer offer1;
 
@@ -79,8 +90,10 @@ public class OfferServiceImplTests {
         offer1.setDateTimeOfCreation(LocalDateTime.parse("02-01-2026 23:59:59", Constants.dateTimeFormatter));
         offer1.setExpirationDate(LocalDateTime.parse("02-03-2026 23:59:59", Constants.dateTimeFormatter));
         testUserA = TestDataUtil.createTestUserA();
+        testUserB = TestDataUtil.createTestUserB();
+        testUserC = TestDataUtil.createTestUserC();
         testUserAdminA = TestDataUtil.createTestUserAdminA();
-
+        testApplicationA = TestDataUtil.createApplicationA();
 
     }
 
@@ -312,6 +325,107 @@ public class OfferServiceImplTests {
         assertThrows(OfferNotFoundByIdException.class, () -> offerService.getOffer(validId, validJwt));
 
     }
+
+
+    @Test
+    public void OfferService_deleteOfferById_Success() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+
+        offer1.getRequiredTechnologies().add(technology1);
+        technology1.getAssignedAsRequired().add(offer1);
+
+        offer1.getNiceToHaveTechnologies().add(technology2);
+        technology2.getAssignedAsNiceToHave().add(offer1);
+
+        offer1.getNiceToHaveTechnologies().add(technology1);
+        technology1.getAssignedAsNiceToHave().add(offer1);
+
+        offer1.getApplications().add(testApplicationA);
+        testApplicationA.setOffer(offer1);
+
+        offer1.getLikedByUsers().add(testUserB);
+        testUserB.getLikedOffers().add(offer1);
+
+
+        offer1.getRecruiters().add(testUserC);
+        testUserC.getOffers().add(offer1);
+
+
+
+        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        doNothing().when(offerServiceSpy).validatePermissionDeleteOfferById(userA, offer1);
+
+        offerServiceSpy.deleteOfferById(validId, validJwt);
+
+        verify(offerRepository, times(1)).delete(offer1);
+        verify(technologyRepository, times(3)).save(any());
+        verify(userRepository, times(2)).save(any());
+        verify(applicationService, times(1)).deleteApplication(any());
+
+
+
+    }
+
+
+    @Test
+    public void OfferService_deleteOfferById_ThrowsOfferNotFoundException() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+
+        when(offerRepository.findById(validId)).thenReturn(Optional.empty());
+
+
+        assertThrows(OfferNotFoundByIdException.class, () -> offerServiceSpy.deleteOfferById(validId, validJwt));
+        verify(offerRepository, never()).save(any());
+        verify(technologyRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
+        verify(applicationService, never()).deleteApplication(any());
+
+
+    }
+
+    @Test
+    public void OfferService_deleteOfferById_ThrowsUserNotFoundByJwtException() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+
+
+        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
+        when(userService.findUserByJwt(validJwt)).thenThrow(UserNotFoundByJwtException.class);
+
+        assertThrows(UserNotFoundByJwtException.class, () -> offerServiceSpy.deleteOfferById(validId, validJwt));
+        verify(offerRepository, never()).save(any());
+        verify(technologyRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
+        verify(applicationService, never()).deleteApplication(any());
+
+    }
+
+    @Test
+    public void OfferService_deleteOfferById_ThrowsNoPermissionException() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+
+        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        doThrow(NoPermissionException.class).when(offerServiceSpy).validatePermissionDeleteOfferById(userA, offer1);
+
+        assertThrows(NoPermissionException.class, () -> offerServiceSpy.deleteOfferById(validId, validJwt));
+        verify(offerRepository, never()).save(any());
+        verify(technologyRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
+        verify(applicationService, never()).deleteApplication(any());
+
+
+
+    }
+
 
 
 
