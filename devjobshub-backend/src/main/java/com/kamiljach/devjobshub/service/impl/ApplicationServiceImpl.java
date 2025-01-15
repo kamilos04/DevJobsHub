@@ -87,10 +87,20 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Transactional(rollbackFor = Exception.class)
     public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException {
-        Optional<Application> optionalApplication = applicationRepository.findById(id);
-        if(optionalApplication.isEmpty()){throw new ApplicationNotFoundByIdException();}
-        utilityService.deleteApplication(optionalApplication.get());
+        Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundByIdException::new);
 
+        deleteApplication(application);
+    }
+
+    @Transactional
+    public void deleteApplication(Application application){
+        Offer offer = application.getOffer();
+        User user = application.getUser();
+        application.removeOffer();
+        application.removeUser();
+        offerRepository.save(offer);
+        userRepository.save(user);
+        applicationRepository.delete(application);
     }
 
 

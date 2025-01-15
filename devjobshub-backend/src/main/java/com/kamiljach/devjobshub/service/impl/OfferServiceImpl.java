@@ -14,6 +14,7 @@ import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.request.offer.SearchOffersRequest;
 import com.kamiljach.devjobshub.response.PageResponse;
+import com.kamiljach.devjobshub.service.ApplicationService;
 import com.kamiljach.devjobshub.service.OfferService;
 import com.kamiljach.devjobshub.service.UserService;
 import com.kamiljach.devjobshub.service.UtilityService;
@@ -38,17 +39,19 @@ public class OfferServiceImpl implements OfferService {
 
     private UserService userService;
 
+    private ApplicationService applicationService;
+
     private ApplicationRepository applicationRepository;
 
-    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository, TechnologyRepository technologyRepository, UtilityService utilityService, UserService userService, ApplicationRepository applicationRepository) {
+    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository, TechnologyRepository technologyRepository, UtilityService utilityService, UserService userService, ApplicationService applicationService, ApplicationRepository applicationRepository) {
         this.offerRepository = offerRepository;
         this.userRepository = userRepository;
         this.technologyRepository = technologyRepository;
         this.utilityService = utilityService;
         this.userService = userService;
+        this.applicationService = applicationService;
         this.applicationRepository = applicationRepository;
     }
-
 
     @Transactional(rollbackFor = Exception.class)
     public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoFirmAccountCanNotDoThatException {
@@ -187,7 +190,7 @@ public class OfferServiceImpl implements OfferService {
         //Remove application from offer
         for(int i = offer.getApplications().size()-1; i>=0; i--){
             Application application = offer.getApplications().get(i);
-            utilityService.deleteApplication(application);
+            applicationService.deleteApplication(application);
         }
 
         offerRepository.delete(offer);
