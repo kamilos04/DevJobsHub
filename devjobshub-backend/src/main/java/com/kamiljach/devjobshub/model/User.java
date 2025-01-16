@@ -64,6 +64,7 @@ public class User {
         return Objects.equals(id, user.id);
     }
 
+
     public void addLikedOffer(Offer offer){
         if(!likedOffers.contains(offer)){
             likedOffers.add(offer);
@@ -93,8 +94,5 @@ public class User {
 
         return userDto;
     }
-
-
-
 
 }

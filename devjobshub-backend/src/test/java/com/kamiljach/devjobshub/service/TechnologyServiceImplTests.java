@@ -81,7 +81,7 @@ public class TechnologyServiceImplTests {
     }
 
     @Test
-    public void TechnologyService_deleteTechnologyById_Success() throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+    public void TechnologyService_deleteTechnologyById_Success() throws TechnologyNotFoundByIdException, NoPermissionException {
         when(userService.findUserByJwt(Mockito.any(String.class))).thenReturn(testUserAdminA);
 
 
@@ -109,7 +109,7 @@ public class TechnologyServiceImplTests {
     }
 
     @Test
-    public void TechnologyService_deleteTechnologyById_ThrowsTechnologyNotFoundByIdException() throws UserNotFoundByJwtException, NoPermissionException, TechnologyNotFoundByIdException {
+    public void TechnologyService_deleteTechnologyById_ThrowsTechnologyNotFoundByIdException() throws NoPermissionException, TechnologyNotFoundByIdException {
         when(technologyRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         when(userService.findUserByJwt(Mockito.any(String.class))).thenReturn(testUserAdminA);
@@ -122,7 +122,7 @@ public class TechnologyServiceImplTests {
     }
 
     @Test
-    public void TechnologyService_deleteTechnologyById_ThrowsNoPermissionException() throws UserNotFoundByJwtException, NoPermissionException, TechnologyNotFoundByIdException {
+    public void TechnologyService_deleteTechnologyById_ThrowsNoPermissionException() throws NoPermissionException, TechnologyNotFoundByIdException {
         when(userService.findUserByJwt(Mockito.any(String.class))).thenReturn(testUserAdminA);
         doThrow(new NoPermissionException()).when(utilityService).validatePermissionIsAdmin(testUserAdminA);
 
@@ -134,7 +134,7 @@ public class TechnologyServiceImplTests {
     }
 
     @Test
-    public void TechnologyService_updateTechnology_ReturnsTechnologyDto() throws UserNotFoundByJwtException, NoPermissionException, TechnologyNotFoundByIdException {
+    public void TechnologyService_updateTechnology_ReturnsTechnologyDto() throws NoPermissionException, TechnologyNotFoundByIdException {
         Long validId = 1L;
         String validJwt = "some jwt";
         Technology existingTechnology = new Technology();
@@ -152,7 +152,7 @@ public class TechnologyServiceImplTests {
     }
 
     @Test
-    public void TechnologyService_updateTechnology_ThrowsTechnologyNotFoundByIdException() throws UserNotFoundByJwtException, NoPermissionException, TechnologyNotFoundByIdException {
+    public void TechnologyService_updateTechnology_ThrowsTechnologyNotFoundByIdException() throws NoPermissionException, TechnologyNotFoundByIdException {
         Long id = 1L;
         String validJwt = "some jwt";
 
@@ -164,7 +164,7 @@ public class TechnologyServiceImplTests {
     }
 
     @Test
-    public void TechnologyService_updateTechnology_ThrowsNoPermissionException() throws UserNotFoundByJwtException, NoPermissionException, TechnologyNotFoundByIdException {
+    public void TechnologyService_updateTechnology_ThrowsNoPermissionException() throws  NoPermissionException, TechnologyNotFoundByIdException {
         Long id = 1L;
         String validJwt = "some jwt";
 

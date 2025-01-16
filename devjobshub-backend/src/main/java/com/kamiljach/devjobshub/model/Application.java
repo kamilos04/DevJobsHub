@@ -49,14 +49,14 @@ public class Application {
     @ManyToOne(fetch = FetchType.LAZY)
     private Offer assignedAsFavourite;
 
-    public void setOffer(Offer offer){
+    public void putOffer(Offer offer){
         if(!offer.getApplications().contains(this)){
             offer.getApplications().add(this);
             this.offer = offer;
         }
     }
 
-    public void setUser(User user){
+    public void putUser(User user){
         if(!user.getApplications().contains(this)){
             user.getApplications().add(this);
             this.user = user;

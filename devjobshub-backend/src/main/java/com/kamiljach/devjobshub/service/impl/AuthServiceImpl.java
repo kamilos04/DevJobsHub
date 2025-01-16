@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public LoginResponse changePasswordByJwt(ChangePasswordRequest changePasswordRequest, String jwt) throws UserNotFoundByJwtException{
+    public LoginResponse changePasswordByJwt(ChangePasswordRequest changePasswordRequest, String jwt){
         User user = userService.findUserByJwt(jwt);
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         userRepository.save(user);

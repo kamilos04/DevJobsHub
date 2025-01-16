@@ -12,15 +12,10 @@ public interface UtilityService {
     public ArrayList<Technology> getListOfTechnologiesFromTheirIds(ArrayList<Long> list) throws TechnologyNotFoundByIdException;
     public ArrayList<Offer> getListOfOffersFromTheirIds(ArrayList<Long> list) throws OfferNotFoundByIdException;
 
-    public void removeOfferFromApplication(Application application);
-
-    public void removeUserFromApplication(Application application);
-
-    public void deleteApplication(Application application);
 
     public void isFirmFalseOrThrowException(User user) throws FirmAccountCanNotDoThatException;
 
-    public void isFirmOrThrowException(User user) throws NotFirmAccountCanNotDoThatException;
+    public void isFirmOrThrowException(User user) throws NoFirmAccountCanNotDoThatException;
 
     public void validatePermissionIsAdmin(User user) throws NoPermissionException;
 }

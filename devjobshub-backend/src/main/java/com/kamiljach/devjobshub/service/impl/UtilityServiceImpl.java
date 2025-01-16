@@ -64,36 +64,13 @@ public class UtilityServiceImpl implements UtilityService {
         return offerList;
     }
 
-    @Transactional
-    public void deleteApplication(Application application){
-        removeOfferFromApplication(application);
-        removeUserFromApplication(application);
-        applicationRepository.delete(application);
-
-    }
-
-    @Transactional
-    public void removeOfferFromApplication(Application application){
-        Offer offer = application.getOffer();
-        application.removeOffer();
-        offerRepository.save(offer);
-        applicationRepository.save(application);
-    }
-
-    @Transactional
-    public void removeUserFromApplication(Application application){
-        User user = application.getUser();
-        application.removeUser();
-        userRepository.save(user);
-        applicationRepository.save(application);
-    }
 
     public void isFirmFalseOrThrowException(User user) throws FirmAccountCanNotDoThatException {
         if (user.getIsFirm()) throw new FirmAccountCanNotDoThatException();
     }
 
-    public void isFirmOrThrowException(User user) throws NotFirmAccountCanNotDoThatException {
-        if (!user.getIsFirm()) throw new NotFirmAccountCanNotDoThatException();
+    public void isFirmOrThrowException(User user) throws NoFirmAccountCanNotDoThatException {
+        if (!user.getIsFirm()) throw new NoFirmAccountCanNotDoThatException();
     }
 
     public void validatePermissionIsAdmin(User user) throws NoPermissionException {

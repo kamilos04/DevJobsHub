@@ -156,8 +156,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
-    @ExceptionHandler(NotFirmAccountCanNotDoThatException.class)
-    public ResponseEntity<ApiError> handleNotFirmAccountCanNotDoThatException(NotFirmAccountCanNotDoThatException ex){
+    @ExceptionHandler(NoFirmAccountCanNotDoThatException.class)
+    public ResponseEntity<ApiError> handleNotFirmAccountCanNotDoThatException(NoFirmAccountCanNotDoThatException ex){
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ex.getMessage(), ex);
 
         return new ResponseEntity<>(apiError, apiError.getStatus());
