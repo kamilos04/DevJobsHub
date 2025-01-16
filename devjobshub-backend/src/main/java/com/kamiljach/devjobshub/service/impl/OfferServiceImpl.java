@@ -294,7 +294,7 @@ public class OfferServiceImpl implements OfferService {
         offerRepository.save(offer);
     }
 
-    public PageResponse<OfferDto> getLikedOffersFromJwt(Integer numberOfElements, Integer pageNumber, String jwt) throws UserNotFoundByJwtException {
+    public PageResponse<OfferDto> getLikedOffersFromJwt(Integer numberOfElements, Integer pageNumber, String jwt) {
         User user = userService.findUserByJwt(jwt);
 
         Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("expirationDate").ascending());
