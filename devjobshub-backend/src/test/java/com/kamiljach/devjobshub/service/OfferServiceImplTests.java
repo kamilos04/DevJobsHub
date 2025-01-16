@@ -397,7 +397,7 @@ public class OfferServiceImplTests {
     }
 
     @Test
-    public void OfferService_likeOffer_OfferNotFoundByIdException() throws  NoPermissionException, OfferIsAlreadyLikedByUserException, OfferNotFoundByIdException {
+    public void OfferService_likeOffer_ThrowsOfferNotFoundByIdException() throws  NoPermissionException, OfferIsAlreadyLikedByUserException, OfferNotFoundByIdException {
         Long validId = 1L;
         String validJwt = "some jwt";
         User userA = mock(User.class);
@@ -412,24 +412,43 @@ public class OfferServiceImplTests {
         verify(userRepository, never()).save(any());
     }
 
-//    @Test
-//    public void OfferService_likeOffer_Success() throws UserNotFoundByJwtException, NoPermissionException, OfferIsAlreadyLikedByUserException, OfferNotFoundByIdException {
-//        Long validId = 1L;
-//        String validJwt = "some jwt";
-//        User userA = mock(User.class);
-//        List<Offer> listOffer = mock(List.class);
-//        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
-//        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
-//        doNothing().when(offerServiceSpy).validatePermissionLikeOffer(userA);
-//        when(userA.getLikedOffers()).thenReturn(listOffer);
-//        when(listOffer.contains(offer1)).thenReturn(false);
-//
-//        offerServiceSpy.likeOffer(validId, validJwt);
-//
-//        verify(userA, times(1)).addLikedOffer(offer1);
-//        verify(offerRepository, times(1)).save(offer1);
-//        verify(userRepository, times(1)).save(userA);
-//    }
+    @Test
+    public void OfferService_likeOffer_ThrowsOfferIsAlreadyLikedByUserException() throws NoPermissionException, OfferIsAlreadyLikedByUserException, OfferNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        List<Offer> listOffer = mock(List.class);
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
+        doNothing().when(offerServiceSpy).validatePermissionLikeOffer(userA);
+        when(userA.getLikedOffers()).thenReturn(listOffer);
+        when(listOffer.contains(offer1)).thenReturn(true);
+
+        assertThrows(OfferIsAlreadyLikedByUserException.class, () -> offerServiceSpy.likeOffer(validId, validJwt));
+
+        verify(userA, never()).addLikedOffer(any());
+        verify(offerRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    public void OfferService_likeOffer_ThrowsNoPermissionException() throws NoPermissionException, OfferIsAlreadyLikedByUserException, OfferNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
+        doThrow(NoPermissionException.class).when(offerServiceSpy).validatePermissionLikeOffer(userA);
+
+        assertThrows(NoPermissionException.class, () -> offerServiceSpy.likeOffer(validId, validJwt));
+
+        verify(userA, never()).addLikedOffer(any());
+        verify(offerRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
+    }
+
+
 
 
 
