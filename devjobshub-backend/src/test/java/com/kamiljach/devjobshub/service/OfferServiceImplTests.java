@@ -1021,4 +1021,52 @@ public class OfferServiceImplTests {
     }
 
 
+    @Test
+    public void OfferService_getOffersFromRecruiter_ReturnsPageResponse() throws NoPermissionException, UserNotFoundByIdException {
+        String validJwt = "some jwt";
+        Long validRecruiterId = 1L;
+        User userA = mock(User.class);
+        User recruiterA = mock(User.class);
+        Page<Offer> page = new PageImpl<>(Arrays.asList(offer1));
+
+        when(userRepository.findById(validRecruiterId)).thenReturn(Optional.of(recruiterA));
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        doNothing().when(offerServiceSpy).validatePermissionGetOffersFromRecruiter(userA, recruiterA);
+        when(offerRepository.getOffersFromRecruiter(any(Long.class), any(Boolean.class), any(LocalDateTime.class), any(Pageable.class))).thenReturn(page);
+
+        PageResponse<OfferDto> result = offerServiceSpy.getOffersFromRecruiter(validRecruiterId, true, 10, 0, "name", "dsc", validJwt);
+
+        assertNotNull(result);
+        assertEquals(offer1.getName(), result.getContent().getFirst().getName());
+    }
+
+
+    @Test
+    public void OfferService_getOffersFromRecruiter_ThrowsUserNotFoundByIdException() throws NoPermissionException, UserNotFoundByIdException {
+        String validJwt = "some jwt";
+        Long validRecruiterId = 1L;
+
+
+        when(userRepository.findById(validRecruiterId)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundByIdException.class, () -> offerServiceSpy.getOffersFromRecruiter(validRecruiterId, true, 10, 0, "name", "dsc", validJwt));
+
+    }
+
+    @Test
+    public void OfferService_getOffersFromRecruiter_ThrowsNoPermissionException() throws NoPermissionException, UserNotFoundByIdException {
+        String validJwt = "some jwt";
+        Long validRecruiterId = 1L;
+        User userA = mock(User.class);
+        User recruiterA = mock(User.class);
+
+        when(userRepository.findById(validRecruiterId)).thenReturn(Optional.of(recruiterA));
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        doThrow(NoPermissionException.class).when(offerServiceSpy).validatePermissionGetOffersFromRecruiter(userA, recruiterA);
+
+        assertThrows(NoPermissionException.class, () -> offerServiceSpy.getOffersFromRecruiter(validRecruiterId, true, 10, 0, "name", "dsc", validJwt));
+
+    }
+
+
 }
