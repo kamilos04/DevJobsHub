@@ -31,6 +31,7 @@ import org.springframework.data.domain.PageImpl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -98,7 +99,7 @@ public class OfferServiceImplTests {
     }
 
     @Test
-    public void OfferService_createOffer_ReturnsOfferDto() throws UserNotFoundByJwtException, TechnologyNotFoundByIdException, NoFirmAccountCanNotDoThatException {
+    public void OfferService_createOffer_ReturnsOfferDto() throws  TechnologyNotFoundByIdException, NoFirmAccountCanNotDoThatException {
         String validJwt = "some jwt";
         Technology technologyA = mock(Technology.class);
         Technology technologyB = mock(Technology.class);
@@ -123,7 +124,7 @@ public class OfferServiceImplTests {
 
 
     @Test
-    public void OfferService_createOffer_ThrowsNoFirmAccountCanNotDoThatException() throws UserNotFoundByJwtException, TechnologyNotFoundByIdException, NoFirmAccountCanNotDoThatException {
+    public void OfferService_createOffer_ThrowsNoFirmAccountCanNotDoThatException() throws  TechnologyNotFoundByIdException, NoFirmAccountCanNotDoThatException {
         String validJwt = "some jwt";
 
         User userA = mock(User.class);
@@ -141,25 +142,9 @@ public class OfferServiceImplTests {
     }
 
 
-    @Test
-    public void OfferService_createOffer_ThrowsUserNotFoundByJwtException() throws UserNotFoundByJwtException, TechnologyNotFoundByIdException, NoFirmAccountCanNotDoThatException {
-        String incorrectJwt = "some jwt";
-
-        doThrow(UserNotFoundByJwtException.class).when(userService).findUserByJwt(eq(incorrectJwt));
-
-
-        assertThrows(UserNotFoundByJwtException.class, () -> offerService.createOffer(validRequest, incorrectJwt));
-
-
-        verify(userRepository, never()).save(any());
-        verify(technologyRepository, never()).save(any());
-        verify(offerRepository, never()).save(any());
-
-    }
-
 
     @Test
-    public void OfferService_createOffer_ThrowsTechnologyNotFoundByIdException() throws UserNotFoundByJwtException, TechnologyNotFoundByIdException, NoFirmAccountCanNotDoThatException {
+    public void OfferService_createOffer_ThrowsTechnologyNotFoundByIdException() throws  TechnologyNotFoundByIdException, NoFirmAccountCanNotDoThatException {
         String validJwt = "some jwt";
         Technology technologyA = mock(Technology.class);
         Technology technologyB = mock(Technology.class);
@@ -180,7 +165,7 @@ public class OfferServiceImplTests {
     }
 
     @Test
-    public void OfferService_updateOffer_ReturnsOfferDto() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException, TechnologyNotFoundByIdException {
+    public void OfferService_updateOffer_ReturnsOfferDto() throws  NoPermissionException, OfferNotFoundByIdException, TechnologyNotFoundByIdException {
 
         String validJwt = "some jwt";
         Long validId = 1L;
@@ -212,7 +197,7 @@ public class OfferServiceImplTests {
 
 
     @Test
-    public void OfferService_updateOffer_ThrowsOfferNotFoundException() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException, TechnologyNotFoundByIdException {
+    public void OfferService_updateOffer_ThrowsOfferNotFoundException() throws  NoPermissionException, OfferNotFoundByIdException, TechnologyNotFoundByIdException {
         String validJwt = "some jwt";
         Long incorrectId = 1L;
         when(offerRepository.findById(incorrectId)).thenReturn(Optional.empty());
@@ -225,7 +210,7 @@ public class OfferServiceImplTests {
 
 
     @Test
-    public void OfferService_updateOffer_ThrowsTechnologyNotFoundByIdException() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException, TechnologyNotFoundByIdException {
+    public void OfferService_updateOffer_ThrowsTechnologyNotFoundByIdException() throws  NoPermissionException, OfferNotFoundByIdException, TechnologyNotFoundByIdException {
         String validJwt = "some jwt";
         Long validId = 1L;
         User userA = mock(User.class);
@@ -244,24 +229,9 @@ public class OfferServiceImplTests {
 
     }
 
-    @Test
-    public void OfferService_updateOffer_ThrowsUserNotFoundByJwtException() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException, TechnologyNotFoundByIdException {
-        String invalidJwt = "some jwt";
-        Long validId = 1L;
-
-        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
-
-        when(userService.findUserByJwt(invalidJwt)).thenThrow(UserNotFoundByJwtException.class);
-
-        assertThrows(UserNotFoundByJwtException.class, () -> offerService.updateOffer(validRequest, validId, invalidJwt));
-        verify(offerRepository, never()).save(any());
-        verify(technologyRepository, never()).save(any());
-
-
-    }
 
     @Test
-    public void OfferService_updateOffer_ThrowsNoPermissionException() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException, TechnologyNotFoundByIdException {
+    public void OfferService_updateOffer_ThrowsNoPermissionException() throws  NoPermissionException, OfferNotFoundByIdException, TechnologyNotFoundByIdException {
         String validJwt = "some jwt";
         Long validId = 1L;
         User userA = mock(User.class);
@@ -328,7 +298,7 @@ public class OfferServiceImplTests {
 
 
     @Test
-    public void OfferService_deleteOfferById_Success() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException {
+    public void OfferService_deleteOfferById_Success() throws  NoPermissionException, OfferNotFoundByIdException {
         Long validId = 1L;
         String validJwt = "some jwt";
         User userA = mock(User.class);
@@ -371,7 +341,7 @@ public class OfferServiceImplTests {
 
 
     @Test
-    public void OfferService_deleteOfferById_ThrowsOfferNotFoundException() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException {
+    public void OfferService_deleteOfferById_ThrowsOfferNotFoundException() throws NoPermissionException, OfferNotFoundByIdException {
         Long validId = 1L;
         String validJwt = "some jwt";
         User userA = mock(User.class);
@@ -388,26 +358,9 @@ public class OfferServiceImplTests {
 
     }
 
-    @Test
-    public void OfferService_deleteOfferById_ThrowsUserNotFoundByJwtException() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException {
-        Long validId = 1L;
-        String validJwt = "some jwt";
-        User userA = mock(User.class);
-
-
-        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
-        when(userService.findUserByJwt(validJwt)).thenThrow(UserNotFoundByJwtException.class);
-
-        assertThrows(UserNotFoundByJwtException.class, () -> offerServiceSpy.deleteOfferById(validId, validJwt));
-        verify(offerRepository, never()).save(any());
-        verify(technologyRepository, never()).save(any());
-        verify(userRepository, never()).save(any());
-        verify(applicationService, never()).deleteApplication(any());
-
-    }
 
     @Test
-    public void OfferService_deleteOfferById_ThrowsNoPermissionException() throws UserNotFoundByJwtException, NoPermissionException, OfferNotFoundByIdException {
+    public void OfferService_deleteOfferById_ThrowsNoPermissionException() throws NoPermissionException, OfferNotFoundByIdException {
         Long validId = 1L;
         String validJwt = "some jwt";
         User userA = mock(User.class);
@@ -422,9 +375,62 @@ public class OfferServiceImplTests {
         verify(userRepository, never()).save(any());
         verify(applicationService, never()).deleteApplication(any());
 
-
-
     }
+
+    @Test
+    public void OfferService_likeOffer_Success() throws NoPermissionException, OfferIsAlreadyLikedByUserException, OfferNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        List<Offer> listOffer = mock(List.class);
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
+        doNothing().when(offerServiceSpy).validatePermissionLikeOffer(userA);
+        when(userA.getLikedOffers()).thenReturn(listOffer);
+        when(listOffer.contains(offer1)).thenReturn(false);
+
+        offerServiceSpy.likeOffer(validId, validJwt);
+
+        verify(userA, times(1)).addLikedOffer(offer1);
+        verify(offerRepository, times(1)).save(offer1);
+        verify(userRepository, times(1)).save(userA);
+    }
+
+    @Test
+    public void OfferService_likeOffer_OfferNotFoundByIdException() throws  NoPermissionException, OfferIsAlreadyLikedByUserException, OfferNotFoundByIdException {
+        Long validId = 1L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(offerRepository.findById(validId)).thenReturn(Optional.empty());
+
+
+        assertThrows(OfferNotFoundByIdException.class, () -> offerServiceSpy.likeOffer(validId, validJwt));
+
+        verify(userA, never()).addLikedOffer(any());
+        verify(offerRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
+    }
+
+//    @Test
+//    public void OfferService_likeOffer_Success() throws UserNotFoundByJwtException, NoPermissionException, OfferIsAlreadyLikedByUserException, OfferNotFoundByIdException {
+//        Long validId = 1L;
+//        String validJwt = "some jwt";
+//        User userA = mock(User.class);
+//        List<Offer> listOffer = mock(List.class);
+//        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+//        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
+//        doNothing().when(offerServiceSpy).validatePermissionLikeOffer(userA);
+//        when(userA.getLikedOffers()).thenReturn(listOffer);
+//        when(listOffer.contains(offer1)).thenReturn(false);
+//
+//        offerServiceSpy.likeOffer(validId, validJwt);
+//
+//        verify(userA, times(1)).addLikedOffer(offer1);
+//        verify(offerRepository, times(1)).save(offer1);
+//        verify(userRepository, times(1)).save(userA);
+//    }
+
 
 
 
