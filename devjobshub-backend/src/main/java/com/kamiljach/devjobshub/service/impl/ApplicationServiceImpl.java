@@ -46,7 +46,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, QuestionOrAnswerIsIncorrectException, OfferExpiredException, FirmAccountCanNotDoThatException, UserAlreadyAppliedForThisOfferException {
+    public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, QuestionOrAnswerIsIncorrectException, OfferExpiredException, FirmAccountCanNotDoThatException, UserAlreadyAppliedForThisOfferException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
 
         User user = userService.findUserByJwt(jwt);
@@ -100,6 +100,42 @@ public class ApplicationServiceImpl implements ApplicationService {
         applicationRepository.delete(application);
     }
 
+
+    public void ifUserAlreadyAppliedForOfferThrowException(User user, Offer offer) throws UserAlreadyAppliedForThisOfferException {
+        for (Application application : user.getApplications()){
+            if(application.getOffer().equals(offer)) throw new UserAlreadyAppliedForThisOfferException();
+        }
+    }
+
+    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException {
+        Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
+        Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
+
+
+        Page<Application> page = applicationRepository.getApplicationsFromOffer(offerId, pageable);
+        ArrayList<Application> applications = new ArrayList<>(page.getContent());
+        ArrayList<ApplicationDto> applicationDtos = new ArrayList<>();
+
+        applications.forEach(element -> {applicationDtos.add(Application.mapApplicationToApplicationDtoShallow(element));});
+
+        PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
+        return pageResponse;
+    }
+
+    public PageResponse<ApplicationDto> getFavouriteApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException {
+        Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
+        Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
+
+
+        Page<Application> page = applicationRepository.getFavouriteApplicationsFromOffer(offerId, pageable);
+        ArrayList<Application> applications = new ArrayList<>(page.getContent());
+        ArrayList<ApplicationDto> applicationDtos = new ArrayList<>();
+
+        applications.forEach(element -> {applicationDtos.add(Application.mapApplicationToApplicationDtoShallow(element));});
+
+        PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
+        return pageResponse;
+    }
 
     public boolean validateQuestion(QuestionAndAnswer questionAndAnswer, Question question){
         if(!questionAndAnswer.getNumber().equals(question.getNumber())){
@@ -165,42 +201,4 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
     }
-
-    public void ifUserAlreadyAppliedForOfferThrowException(User user, Offer offer) throws UserAlreadyAppliedForThisOfferException {
-        for (Application application : user.getApplications()){
-            if(application.getOffer().equals(offer)) throw new UserAlreadyAppliedForThisOfferException();
-        }
-    }
-
-    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException {
-        Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
-        Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
-
-
-        Page<Application> page = applicationRepository.getApplicationsFromOffer(offerId, pageable);
-        ArrayList<Application> applications = new ArrayList<>(page.getContent());
-        ArrayList<ApplicationDto> applicationDtos = new ArrayList<>();
-
-        applications.forEach(element -> {applicationDtos.add(Application.mapApplicationToApplicationDtoShallow(element));});
-
-        PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
-        return pageResponse;
-    }
-
-    public PageResponse<ApplicationDto> getFavouriteApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException {
-        Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
-        Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
-
-
-        Page<Application> page = applicationRepository.getFavouriteApplicationsFromOffer(offerId, pageable);
-        ArrayList<Application> applications = new ArrayList<>(page.getContent());
-        ArrayList<ApplicationDto> applicationDtos = new ArrayList<>();
-
-        applications.forEach(element -> {applicationDtos.add(Application.mapApplicationToApplicationDtoShallow(element));});
-
-        PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
-        return pageResponse;
-    }
-
-
 }

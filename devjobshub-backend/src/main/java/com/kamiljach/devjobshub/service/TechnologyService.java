@@ -8,10 +8,10 @@ import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 
 public interface TechnologyService {
     public TechnologyDto createTechnology(CreateTechnologyRequest technologyRequest, String jwt) throws  TechnologyWithThisNameAlreadyExistsException;
-    public void deleteTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException;
+    public void deleteTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException, NoPermissionException;
 
     public TechnologyDto getTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException;
 
-    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException;
+    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException, NoPermissionException;
 
 }

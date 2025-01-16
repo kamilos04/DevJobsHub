@@ -14,5 +14,5 @@ public interface AuthService {
 
     public LoginResponse register(RegisterRequest registerRequest) throws AccountAlreadyExistsException;
 
-    public LoginResponse changePasswordByJwt(ChangePasswordRequest changePasswordRequest, String jwt) throws UserNotFoundByJwtException, JwtIsOnBlackListException;
+    public LoginResponse changePasswordByJwt(ChangePasswordRequest changePasswordRequest, String jwt) throws JwtIsOnBlackListException;
 }

@@ -37,17 +37,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByJwt(String jwt) throws UserNotFoundByJwtException {
+    public User findUserByJwt(String jwt) {
         jwt = jwt.substring(7);
         Claims claims = jwtConfig.parseJwtClaims(jwt);
         String stringId = jwtConfig.getId(claims);
-        Optional<User> optionalUser = userRepository.findById(Long.parseLong(stringId));
-        if(optionalUser.isPresent()){
-            return optionalUser.get();
-        }
-        else{
-            throw new UserNotFoundByJwtException();
-        }
+
+        return userRepository.findById(Long.parseLong(stringId)).get();
     }
 
     @Transactional

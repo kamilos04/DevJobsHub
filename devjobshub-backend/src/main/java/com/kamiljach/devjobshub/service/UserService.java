@@ -8,7 +8,7 @@ import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.request.user.UpdateUserRequest;
 
 public interface UserService {
-    public User findUserByJwt(String jwt) throws UserNotFoundByJwtException;
+    public User findUserByJwt(String jwt);
     public void addLikedOffer(User user, Offer offer);
 
     public void updateUser(UpdateUserRequest updateUserRequest, String jwt) throws UserNotFoundByIdException, InvalidRequestException;

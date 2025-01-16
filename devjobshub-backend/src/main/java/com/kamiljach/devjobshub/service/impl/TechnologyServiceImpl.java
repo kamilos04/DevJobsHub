@@ -50,7 +50,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+    public void deleteTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException, NoPermissionException {
         User user = userService.findUserByJwt(jwt);
         utilityService.validatePermissionIsAdmin(user);
 
@@ -70,7 +70,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+    public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException, NoPermissionException {
         User user = userService.findUserByJwt(jwt);
         utilityService.validatePermissionIsAdmin(user);
 

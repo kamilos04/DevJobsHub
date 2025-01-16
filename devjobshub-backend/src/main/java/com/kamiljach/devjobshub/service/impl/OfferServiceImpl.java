@@ -54,7 +54,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoFirmAccountCanNotDoThatException {
+    public OfferDto createOffer(CreateOfferRequest createOfferRequest, String jwt) throws TechnologyNotFoundByIdException, NoFirmAccountCanNotDoThatException {
         User user = userService.findUserByJwt(jwt);
         //Validation account type
         utilityService.isFirmOrThrowException(user);
@@ -89,7 +89,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+    public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException, NoPermissionException {
         Offer offerToUpdate = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
 
         //Validate permissions
@@ -159,7 +159,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteOfferById(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+    public void deleteOfferById(Long id, String jwt) throws OfferNotFoundByIdException, NoPermissionException {
         Offer offer = offerRepository.findById(id).orElseThrow(OfferNotFoundByIdException::new);
         User userFromJwt = userService.findUserByJwt(jwt);
 
@@ -204,7 +204,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void likeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsAlreadyLikedByUserException, NoPermissionException {
+    public void likeOffer(Long id, String jwt) throws OfferNotFoundByIdException, OfferIsAlreadyLikedByUserException, NoPermissionException {
         User user = userService.findUserByJwt(jwt);
         Offer offer = offerRepository.findById(id).orElseThrow(OfferNotFoundByIdException::new);
         validatePermissionLikeOffer(user);
@@ -218,7 +218,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void removeLikeOffer(Long id, String jwt) throws OfferNotFoundByIdException, UserNotFoundByJwtException, OfferIsNotLikedByUserException, NoPermissionException {
+    public void removeLikeOffer(Long id, String jwt) throws OfferNotFoundByIdException, OfferIsNotLikedByUserException, NoPermissionException {
         User user = userService.findUserByJwt(jwt);
 
         Offer offer = offerRepository.findById(id).orElseThrow(OfferNotFoundByIdException::new);
@@ -234,7 +234,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void addApplicationToFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, UserNotFoundByJwtException, NoPermissionException {
+    public void addApplicationToFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, NoPermissionException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
         User user = userService.findUserByJwt(jwt);
         Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
@@ -249,7 +249,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void removeApplicationFromFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, UserNotFoundByJwtException, NoPermissionException {
+    public void removeApplicationFromFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, NoPermissionException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
         User user = userService.findUserByJwt(jwt);
         Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
@@ -265,7 +265,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void addRecruiterToOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException, UserNotFoundByJwtException {
+    public void addRecruiterToOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
         User recruiter = userRepository.findById(recruiterId).orElseThrow(UserNotFoundByIdException::new);
         User user = userService.findUserByJwt(jwt);
@@ -280,7 +280,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void removeRecruiterFromOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException, UserNotFoundByJwtException, NoPermissionException {
+    public void removeRecruiterFromOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException, NoPermissionException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
         User recruiter = userRepository.findById(recruiterId).orElseThrow(UserNotFoundByIdException::new);
         User user = userService.findUserByJwt(jwt);
@@ -308,7 +308,7 @@ public class OfferServiceImpl implements OfferService {
         return new PageResponse<>(offersDto, offersPage);
     }
 
-    public PageResponse<OfferDto> getOffersFromRecruiter(Long recruiterId, Boolean isActive, Integer numberOfElements, Integer pageNumber, String sortBy, String sortDirection, String jwt) throws UserNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+    public PageResponse<OfferDto> getOffersFromRecruiter(Long recruiterId, Boolean isActive, Integer numberOfElements, Integer pageNumber, String sortBy, String sortDirection, String jwt) throws UserNotFoundByIdException, NoPermissionException {
         User recruiter = userRepository.findById(recruiterId).orElseThrow(UserNotFoundByIdException::new);
         User user = userService.findUserByJwt(jwt);
         validatePermissionGetOffersFromRecruiter(user, recruiter);
