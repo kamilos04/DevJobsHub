@@ -638,8 +638,6 @@ public class OfferServiceImplTests {
         when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(applicationA));
         doThrow(NoPermissionException.class).when(offerServiceSpy).validatePermissionAddApplicationToFavourites(userA, offerA);
 
-//        when(offerA.getFavouriteApplications()).thenReturn(listApplications);
-//        when(listApplications.contains(applicationA)).thenReturn(false);
 
         assertThrows(NoPermissionException.class, () -> offerServiceSpy.addApplicationToFavourites(validOfferId, validApplicationId, validJwt));
 
@@ -650,7 +648,127 @@ public class OfferServiceImplTests {
     }
 
 
+/////fggg
 
+    @Test
+    public void OfferService_removeApplicationFromFavourites_Success() throws NoPermissionException, ApplicationIsNotInFavouritesException, ApplicationNotFoundByIdException, OfferNotFoundByIdException {
+        Long validOfferId = 1L;
+        Long validApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        Offer offerA = mock(Offer.class);
+        Application applicationA = mock(Application.class);
+        List<Application> listApplications = mock(List.class);
+
+        when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(applicationA));
+
+        doNothing().when(offerServiceSpy).validatePermissionRemoveApplicationFromFavourites(userA, offerA);
+        when(offerA.getFavouriteApplications()).thenReturn(listApplications);
+        when(listApplications.contains(applicationA)).thenReturn(true);
+
+        offerServiceSpy.removeApplicationFromFavourites(validOfferId, validApplicationId, validJwt);
+
+        verify(offerA).removeFavouriteApplication(applicationA);
+        verify(offerRepository).save(offerA);
+        verify(applicationRepository).save(applicationA);
+
+
+    }
+
+
+    @Test
+    public void OfferService_removeApplicationFromFavourites_ThrowsOfferNotFoundByIdException() {
+        Long invalidOfferId = 1L;
+        Long validApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        Offer offerA = mock(Offer.class);
+        Application applicationA = mock(Application.class);
+
+        when(offerRepository.findById(invalidOfferId)).thenReturn(Optional.empty());
+
+
+        assertThrows(OfferNotFoundByIdException.class, () -> offerServiceSpy.removeApplicationFromFavourites(invalidOfferId, validApplicationId, validJwt));
+
+        verify(offerA, never()).removeFavouriteApplication(any());
+        verify(offerRepository, never()).save(any());
+        verify(applicationRepository, never()).save(any());
+
+
+    }
+
+    @Test
+    public void OfferService_removeApplicationFromFavourites_ThrowsApplicationNotFoundByIdException() {
+        Long validOfferId = 1L;
+        Long invalidApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        Offer offerA = mock(Offer.class);
+        Application applicationA = mock(Application.class);
+        when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
+        when(applicationRepository.findById(invalidApplicationId)).thenReturn(Optional.empty());
+
+
+        assertThrows(ApplicationNotFoundByIdException.class, () -> offerServiceSpy.removeApplicationFromFavourites(validOfferId, invalidApplicationId, validJwt));
+
+        verify(offerA, never()).removeFavouriteApplication(any());
+        verify(offerRepository, never()).save(any());
+        verify(applicationRepository, never()).save(any());
+
+
+    }
+//
+    @Test
+    public void OfferService_removeApplicationFromFavourites_ThrowsApplicationIsNotInFavouritesException() throws NoPermissionException {
+        Long validOfferId = 1L;
+        Long validApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        Offer offerA = mock(Offer.class);
+        Application applicationA = mock(Application.class);
+        List<Application> listApplications = mock(List.class);
+
+        when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(applicationA));
+        doNothing().when(offerServiceSpy).validatePermissionRemoveApplicationFromFavourites(userA, offerA);
+
+        when(offerA.getFavouriteApplications()).thenReturn(listApplications);
+        when(listApplications.contains(applicationA)).thenReturn(false);
+
+        assertThrows(ApplicationIsNotInFavouritesException.class, () -> offerServiceSpy.removeApplicationFromFavourites(validOfferId, validApplicationId, validJwt));
+
+        verify(offerA, never()).removeFavouriteApplication(any());
+        verify(offerRepository, never()).save(any());
+        verify(applicationRepository, never()).save(any());
+
+    }
+
+    @Test
+    public void OfferService_removeApplicationFromFavourites_ThrowsNoPermissionException() throws NoPermissionException {
+        Long validOfferId = 1L;
+        Long validApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        Offer offerA = mock(Offer.class);
+        Application applicationA = mock(Application.class);
+        List<Application> listApplications = mock(List.class);
+
+        when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(applicationA));
+        doThrow(NoPermissionException.class).when(offerServiceSpy).validatePermissionRemoveApplicationFromFavourites(userA, offerA);
+
+
+        assertThrows(NoPermissionException.class, () -> offerServiceSpy.removeApplicationFromFavourites(validOfferId, validApplicationId, validJwt));
+
+        verify(offerA, never()).addFavouriteApplication(any());
+        verify(offerRepository, never()).save(any());
+        verify(applicationRepository, never()).save(any());
+
+    }
 
 
 
