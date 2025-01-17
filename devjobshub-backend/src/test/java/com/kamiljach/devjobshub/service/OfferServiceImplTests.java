@@ -264,11 +264,10 @@ public class OfferServiceImplTests {
         searchOffersRequest.setJobLevels(Arrays.asList("SENIOR"));
         searchOffersRequest.setOperatingModes(Arrays.asList("STATIONARY"));
         searchOffersRequest.setSortingDirection("dsc");
-        String validJwt = "some jwt";
         Page<Offer> page = new PageImpl<>(Arrays.asList(offer1));
         when(offerRepository.searchOffers(any(), any(), any(), any(), any(), any(), any())).thenReturn(page);
 
-        PageResponse<OfferDto> result = offerService.searchOffer(searchOffersRequest, validJwt);
+        PageResponse<OfferDto> result = offerService.searchOffer(searchOffersRequest);
 
         assertNotNull(result);
         assertEquals(result.getContent().getFirst().getName(), offer1.getName());
@@ -280,10 +279,9 @@ public class OfferServiceImplTests {
     @Test
     public void OfferService_getOffer_ReturnsOfferDto() throws OfferNotFoundByIdException {
         Long validId = 1L;
-        String validJwt = "some jwt";
         when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
 
-        OfferDto result = offerService.getOffer(validId, validJwt);
+        OfferDto result = offerService.getOffer(validId);
 
         assertNotNull(result);
         assertEquals(offer1.getName(), result.getName());
@@ -293,11 +291,10 @@ public class OfferServiceImplTests {
     @Test
     public void OfferService_getOffer_ThrowsOfferNotFoundByIdException() throws OfferNotFoundByIdException {
         Long validId = 1L;
-        String validJwt = "some jwt";
         when(offerRepository.findById(validId)).thenReturn(Optional.empty());
 
 
-        assertThrows(OfferNotFoundByIdException.class, () -> offerService.getOffer(validId, validJwt));
+        assertThrows(OfferNotFoundByIdException.class, () -> offerService.getOffer(validId));
 
     }
 

@@ -39,8 +39,8 @@ public class OfferController {
     }
 
     @GetMapping("/offer/{offerId}")
-    public ResponseEntity<OfferDto> getOfferById(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException {
-        OfferDto offerDto = offerService.getOffer(offerId, jwt);
+    public ResponseEntity<OfferDto> getOfferById(@PathVariable("offerId") Long offerId) throws OfferNotFoundByIdException {
+        OfferDto offerDto = offerService.getOffer(offerId);
         return new ResponseEntity<>(offerDto, HttpStatus.OK);
     }
 
@@ -51,7 +51,7 @@ public class OfferController {
                                                             @RequestParam(required = false) List<Long> technologies,
                                                             @RequestParam String sortingDirection,
                                                             @RequestParam String sortBy, @RequestParam Integer pageNumber,
-                                                            @RequestParam Integer numberOfElements, @RequestHeader("Authorization") String jwt){
+                                                            @RequestParam Integer numberOfElements){
         SearchOffersRequest searchOffersRequest = new SearchOffersRequest();
         searchOffersRequest.setText(text);
         searchOffersRequest.setLocalizations(localizations);
@@ -62,7 +62,7 @@ public class OfferController {
         searchOffersRequest.setNumberOfElements(numberOfElements);
         searchOffersRequest.setTechnologies(technologies);
         searchOffersRequest.setOperatingModes(operatingModes);
-        PageResponse<OfferDto> result = offerService.searchOffer(searchOffersRequest, jwt);
+        PageResponse<OfferDto> result = offerService.searchOffer(searchOffersRequest);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
