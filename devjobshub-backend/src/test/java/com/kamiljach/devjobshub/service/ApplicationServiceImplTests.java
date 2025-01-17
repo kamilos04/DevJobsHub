@@ -246,4 +246,55 @@ public class ApplicationServiceImplTests {
 
         assertThrows(NoPermissionException.class, () -> applicationServiceSpy.getApplicationById(validApplicationId, validJwt));
     }
+
+    @Test
+    public void ApplicationService_deleteApplicationById_Success() throws NoPermissionException, ApplicationNotFoundByIdException {
+        Long validApplicationId = 1L;
+        String validJwt = "some jwt";
+        Application applicationA = mock(Application.class);
+
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(applicationA));
+        when(userService.findUserByJwt(validJwt)).thenReturn(user1);
+        doNothing().when(applicationServiceSpy).validatePermissionDeleteApplicationById(user1, applicationA);
+
+        doNothing().when(applicationServiceSpy).deleteApplication(applicationA);
+
+        applicationServiceSpy.deleteApplicationById(validApplicationId, validJwt);
+
+        verify(applicationServiceSpy).deleteApplication(applicationA);
+
+    }
+
+    @Test
+    public void ApplicationService_deleteApplicationById_ThrowsApplicationNotFoundByIdException() throws NoPermissionException, ApplicationNotFoundByIdException {
+        Long invalidApplicationId = 1L;
+        String validJwt = "some jwt";
+
+        when(applicationRepository.findById(invalidApplicationId)).thenReturn(Optional.empty());
+
+
+        assertThrows(ApplicationNotFoundByIdException.class, () -> applicationServiceSpy.deleteApplicationById(invalidApplicationId, validJwt));
+
+        verify(applicationServiceSpy, never()).deleteApplication(any());
+
+    }
+
+    @Test
+    public void ApplicationService_deleteApplicationById_ThrowsNoPermissionException() throws NoPermissionException, ApplicationNotFoundByIdException {
+        Long validApplicationId = 1L;
+        String validJwt = "some jwt";
+        Application applicationA = mock(Application.class);
+
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(applicationA));
+        when(userService.findUserByJwt(validJwt)).thenReturn(user1);
+        doThrow(NoPermissionException.class).when(applicationServiceSpy).validatePermissionDeleteApplicationById(user1, applicationA);
+
+
+        assertThrows(NoPermissionException.class, () -> applicationServiceSpy.deleteApplicationById(validApplicationId, validJwt));
+
+        verify(applicationServiceSpy, never()).deleteApplication(any());
+
+    }
+
+
 }
