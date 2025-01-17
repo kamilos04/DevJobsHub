@@ -12,6 +12,7 @@ import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import com.kamiljach.devjobshub.service.impl.ApplicationServiceImpl;
+import org.assertj.core.condition.MappedCondition;
 import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -201,6 +202,48 @@ public class ApplicationServiceImplTests {
 
     }
 
+    @Test
+    public void ApplicationService_getApplicationById_ReturnsApplicationDto() throws NoPermissionException, ApplicationNotFoundByIdException {
+        Long validApplicationId = 1L;
+        String validJwt = "some jwt";
+        Application applicationA = mock(Application.class);
+        ApplicationDto applicationDtoA = mock(ApplicationDto.class);
 
 
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(applicationA));
+        when(userService.findUserByJwt(validJwt)).thenReturn(user1);
+        doNothing().when(applicationServiceSpy).validatePermissionGetApplicationById(user1, applicationA);
+        when(applicationA.mapToApplicationDtoShallow()).thenReturn(applicationDtoA);
+
+        ApplicationDto result = applicationServiceSpy.getApplicationById(validApplicationId, validJwt);
+
+        assertNotNull(result);
+    }
+
+
+    @Test
+    public void ApplicationService_getApplicationById_ThrowsApplicationNotFoundByIdException() throws NoPermissionException, ApplicationNotFoundByIdException {
+        Long validApplicationId = 1L;
+        String validJwt = "some jwt";
+
+
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.empty());
+
+
+        assertThrows(ApplicationNotFoundByIdException.class, () -> applicationServiceSpy.getApplicationById(validApplicationId, validJwt));
+    }
+
+
+    @Test
+    public void ApplicationService_getApplicationById_ThrowsNoPermissionException() throws NoPermissionException, ApplicationNotFoundByIdException {
+        Long validApplicationId = 1L;
+        String validJwt = "some jwt";
+        Application applicationA = mock(Application.class);
+
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(applicationA));
+        when(userService.findUserByJwt(validJwt)).thenReturn(user1);
+        doThrow(NoPermissionException.class).when(applicationServiceSpy).validatePermissionGetApplicationById(user1, applicationA);
+
+        assertThrows(NoPermissionException.class, () -> applicationServiceSpy.getApplicationById(validApplicationId, validJwt));
+    }
 }
