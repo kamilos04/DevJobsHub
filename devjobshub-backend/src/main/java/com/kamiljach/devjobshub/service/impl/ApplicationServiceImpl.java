@@ -101,14 +101,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
 
-    public void ifUserAlreadyAppliedForOfferThrowException(User user, Offer offer) throws UserAlreadyAppliedForThisOfferException {
-        for (Application application : user.getApplications()){
-            if(application.getOffer().equals(offer)) throw new UserAlreadyAppliedForThisOfferException();
-        }
-    }
-
-    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException {
+    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException, NoPermissionException {
         Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
+        User user = userService.findUserByJwt(jwt);
+        validatePermissionGetApplicationsFromOffer(user, offer);
+
         Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
 
 
@@ -122,8 +119,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         return pageResponse;
     }
 
-    public PageResponse<ApplicationDto> getFavouriteApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException {
+    public PageResponse<ApplicationDto> getFavouriteApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException, NoPermissionException {
         Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
+        User user = userService.findUserByJwt(jwt);
+        validatePermissionGetFavouriteApplicationsFromOffer(user, offer);
+
         Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
 
 
@@ -135,6 +135,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
         return pageResponse;
+    }
+
+    public void ifUserAlreadyAppliedForOfferThrowException(User user, Offer offer) throws UserAlreadyAppliedForThisOfferException {
+        for (Application application : user.getApplications()){
+            if(application.getOffer().equals(offer)) throw new UserAlreadyAppliedForThisOfferException();
+        }
     }
 
     public boolean validateQuestion(QuestionAndAnswer questionAndAnswer, Question question){
@@ -217,6 +223,27 @@ public class ApplicationServiceImpl implements ApplicationService {
             return;
         }
         if (application.getOffer().getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
+
+    public void validatePermissionGetApplicationsFromOffer(User user, Offer offer) throws NoPermissionException {
+        if(user.getIsAdmin()){
+            return;
+        }
+        if (offer.getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
+    public void validatePermissionGetFavouriteApplicationsFromOffer(User user, Offer offer) throws NoPermissionException {
+        if(user.getIsAdmin()){
+            return;
+        }
+        if (offer.getRecruiters().contains(user)){
             return;
         }
         throw new NoPermissionException();
