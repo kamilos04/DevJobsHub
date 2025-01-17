@@ -132,7 +132,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional
-    public PageResponse<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest, String jwt){
+    public PageResponse<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest){
         Pageable pageable;
         if(searchOffersRequest.getSortingDirection().equals("dsc")){
             pageable = PageRequest.of(searchOffersRequest.getPageNumber(), searchOffersRequest.getNumberOfElements(), Sort.by(searchOffersRequest.getSortBy()).descending());
@@ -152,7 +152,7 @@ public class OfferServiceImpl implements OfferService {
         return pageResponse;
     }
 
-    public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException {
+    public OfferDto getOffer(Long offerId) throws OfferNotFoundByIdException {
         Optional<Offer> optionalOffer = offerRepository.findById(offerId);
         if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
         return Offer.mapOfferToOfferDto(optionalOffer.get());
