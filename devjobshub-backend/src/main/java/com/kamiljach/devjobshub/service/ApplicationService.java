@@ -8,10 +8,10 @@ import com.kamiljach.devjobshub.response.PageResponse;
 
 public interface ApplicationService {
     public ApplicationDto applyForOffer(CreateApplicationRequest createApplicationRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, QuestionOrAnswerIsIncorrectException, OfferExpiredException, FirmAccountCanNotDoThatException, UserAlreadyAppliedForThisOfferException;
-    public ApplicationDto getApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException;
+    public ApplicationDto getApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException;
 
     public void deleteApplication(Application application);
-    public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException;
+    public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException;
 
     public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException;
 

@@ -30,12 +30,12 @@ public class ApplicationController {
     }
 
     @GetMapping("/application/{applicationId}")
-    public ResponseEntity<ApplicationDto> getApplicationById(@PathVariable("applicationId") Long applicationId, @RequestHeader("Authorization")String jwt) throws ApplicationNotFoundByIdException {
+    public ResponseEntity<ApplicationDto> getApplicationById(@PathVariable("applicationId") Long applicationId, @RequestHeader("Authorization")String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
         return new ResponseEntity<ApplicationDto>(applicationService.getApplicationById(applicationId, jwt), HttpStatus.OK);
     }
 
     @DeleteMapping("/application/{applicationId}")
-    public ResponseEntity<MessageResponse> deleteApplicationById(@PathVariable("applicationId") Long applicationId, @RequestHeader("Authorization")String jwt) throws ApplicationNotFoundByIdException {
+    public ResponseEntity<MessageResponse> deleteApplicationById(@PathVariable("applicationId") Long applicationId, @RequestHeader("Authorization")String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
         applicationService.deleteApplicationById(applicationId, jwt);
         MessageResponse messageResponse = new MessageResponse();
         messageResponse.setMessage("Deleted application");

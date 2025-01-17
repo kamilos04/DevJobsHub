@@ -76,16 +76,18 @@ public class ApplicationServiceImpl implements ApplicationService {
         return Application.mapApplicationToApplicationDtoShallow(newApplication);
     }
 
-    public ApplicationDto getApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException {
-        Optional<Application> optionalApplication = applicationRepository.findById(id);
-        if(optionalApplication.isEmpty()){throw new ApplicationNotFoundByIdException();}
-        return Application.mapApplicationToApplicationDtoShallow(optionalApplication.get());
+    public ApplicationDto getApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
+        Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundByIdException::new);
+        User user = userService.findUserByJwt(jwt);
+        validatePermissionGetApplicationById(user, application);
+        return Application.mapApplicationToApplicationDtoShallow(application);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException {
+    public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
         Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundByIdException::new);
-
+        User user = userService.findUserByJwt(jwt);
+        validatePermissionDeleteApplicationById(user, application);
         deleteApplication(application);
     }
 
@@ -200,5 +202,25 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
 
 
+    }
+
+    public void validatePermissionGetApplicationById(User user, Application application) throws NoPermissionException {
+        if(user.getIsAdmin()){
+            return;
+        }
+        if (application.getOffer().getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
+    public void validatePermissionDeleteApplicationById(User user, Application application) throws NoPermissionException {
+        if(user.getIsAdmin()){
+            return;
+        }
+        if (application.getOffer().getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
     }
 }
