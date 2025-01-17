@@ -6,6 +6,7 @@ import com.kamiljach.devjobshub.mappers.ApplicationMapper;
 import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestionAndAnswer;
 import com.kamiljach.devjobshub.model.embeddable.QuestionAndAnswer;
 import com.kamiljach.devjobshub.model.embeddable.RadioQuestionAndAnswer;
+import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -85,14 +86,15 @@ public class Application {
         return Objects.equals(id, application.id);
     }
 
-    public static ApplicationDto mapApplicationToApplicationDtoShallow(Application application){
-        ApplicationDto applicationDto = ApplicationMapper.INSTANCE.applicationToApplicationDto(application);
+    public ApplicationDto mapToApplicationDtoShallow(){
+        ApplicationDto applicationDto = ApplicationMapper.INSTANCE.applicationToApplicationDto(this);
         applicationDto.setOffer(null);
         applicationDto.setUser(null);
 
-        applicationDto.setDateTimeOfCreation(application.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
+        applicationDto.setDateTimeOfCreation(this.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
 
         return applicationDto;
     }
+
 
 }

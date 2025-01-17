@@ -2,7 +2,6 @@ package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.dto.ApplicationDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
-import com.kamiljach.devjobshub.mappers.ApplicationMapper;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.User;
@@ -24,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
@@ -58,7 +56,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new OfferExpiredException();
         }
 
-        Application newApplication = ApplicationMapper.INSTANCE.createApplicationRequestToApplication(createApplicationRequest);
+        Application newApplication = createApplicationRequest.mapToApplication();
 
         validateAllQuestionsInApplication(newApplication, offer);
 
@@ -73,14 +71,14 @@ public class ApplicationServiceImpl implements ApplicationService {
         offerRepository.save(offer);
 
         applicationRepository.save(newApplication);
-        return Application.mapApplicationToApplicationDtoShallow(newApplication);
+        return newApplication.mapToApplicationDtoShallow();
     }
 
     public ApplicationDto getApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
         Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundByIdException::new);
         User user = userService.findUserByJwt(jwt);
         validatePermissionGetApplicationById(user, application);
-        return Application.mapApplicationToApplicationDtoShallow(application);
+        return application.mapToApplicationDtoShallow();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -118,7 +116,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         ArrayList<Application> applications = new ArrayList<>(page.getContent());
         ArrayList<ApplicationDto> applicationDtos = new ArrayList<>();
 
-        applications.forEach(element -> {applicationDtos.add(Application.mapApplicationToApplicationDtoShallow(element));});
+        applications.forEach(element -> {applicationDtos.add(element.mapToApplicationDtoShallow());});
 
         PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
         return pageResponse;
@@ -133,7 +131,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         ArrayList<Application> applications = new ArrayList<>(page.getContent());
         ArrayList<ApplicationDto> applicationDtos = new ArrayList<>();
 
-        applications.forEach(element -> {applicationDtos.add(Application.mapApplicationToApplicationDtoShallow(element));});
+        applications.forEach(element -> {applicationDtos.add(element.mapToApplicationDtoShallow());});
 
         PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
         return pageResponse;

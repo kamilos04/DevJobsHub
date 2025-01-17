@@ -1,5 +1,7 @@
 package com.kamiljach.devjobshub.request.application;
 
+import com.kamiljach.devjobshub.mappers.ApplicationMapper;
+import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestionAndAnswer;
 import com.kamiljach.devjobshub.model.embeddable.QuestionAndAnswer;
 import com.kamiljach.devjobshub.model.embeddable.RadioQuestionAndAnswer;
@@ -24,4 +26,9 @@ public class CreateApplicationRequest {
     private List<RadioQuestionAndAnswer> radioQuestionsAndAnswers = new ArrayList<>();
 
     private List<MultipleChoiceQuestionAndAnswer> multipleChoiceQuestionsAndAnswers = new ArrayList<>();
+
+    public Application mapToApplication(){
+        Application application = ApplicationMapper.INSTANCE.createApplicationRequestToApplication(this);
+        return application;
+    }
 }
