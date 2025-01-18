@@ -331,7 +331,7 @@ public class ApplicationServiceImplTests {
         Page<Application> page = new PageImpl<>(Arrays.asList(application1, application2));
         when(applicationRepository.getApplicationsFromOffer(eq(validOfferId), any(Pageable.class))).thenReturn(page);
 
-        PageResponse<ApplicationDto> result = applicationServiceSpy.getApplicationsFromOffer(validOfferId, 10, 0, validJwt);
+        PageResponse<ApplicationDto> result = applicationServiceSpy.getApplicationsFromOffer(validOfferId, 10, 0, false, validJwt);
         assertNotNull(result);
         assertEquals(result.getTotalElements(), 2);
     }
@@ -343,7 +343,7 @@ public class ApplicationServiceImplTests {
 
         when(offerRepository.findById(invalidOfferId)).thenReturn(Optional.empty());
 
-        assertThrows(OfferNotFoundByIdException.class, () -> applicationServiceSpy.getApplicationsFromOffer(invalidOfferId, 10, 0, validJwt));
+        assertThrows(OfferNotFoundByIdException.class, () -> applicationServiceSpy.getApplicationsFromOffer(invalidOfferId, 10, 0, false, validJwt));
 
         verify(applicationRepository, never()).getApplicationsFromOffer(any(), any());
     }
@@ -359,9 +359,11 @@ public class ApplicationServiceImplTests {
         doThrow(NoPermissionException.class).when(applicationServiceSpy).validatePermissionGetApplicationsFromOffer(user, offer);
 
 
-        assertThrows(NoPermissionException.class, () -> applicationServiceSpy.getApplicationsFromOffer(validOfferId, 10, 0, validJwt));
+        assertThrows(NoPermissionException.class, () -> applicationServiceSpy.getApplicationsFromOffer(validOfferId, 10, 0, false, validJwt));
 
         verify(applicationRepository, never()).getApplicationsFromOffer(any(), any());
     }
+
+
 
 }
