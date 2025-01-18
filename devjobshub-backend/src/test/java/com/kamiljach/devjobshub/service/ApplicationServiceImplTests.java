@@ -11,6 +11,7 @@ import com.kamiljach.devjobshub.repository.ApplicationRepository;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
+import com.kamiljach.devjobshub.response.PageResponse;
 import com.kamiljach.devjobshub.service.impl.ApplicationServiceImpl;
 import org.assertj.core.condition.MappedCondition;
 import org.checkerframework.checker.units.qual.C;
@@ -22,6 +23,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -58,16 +62,25 @@ public class ApplicationServiceImplTests {
     private ApplicationServiceImpl applicationServiceSpy;
 
     private User user1;
+    private Application application1;
+    private Application application2;
+    private String validJwt;
 
     @BeforeEach
     void setUp() {
         User user1 = new User();
+        validJwt = "someJwt";
+        application1 = new Application();
+        application1.setCvUrl("test url");
+        application1.setDateTimeOfCreation(LocalDateTime.parse("02-01-2024 23:59:59", Constants.dateTimeFormatter));
+        application2 = new Application();
+        application2.setCvUrl("test url2");
+        application2.setDateTimeOfCreation(LocalDateTime.parse("02-01-2024 21:59:59", Constants.dateTimeFormatter));
     }
 
     @Test
     public void ApplicationService_applyForOffer_ReturnsApplicationDto() throws UserAlreadyAppliedForThisOfferException, QuestionOrAnswerIsIncorrectException, FirmAccountCanNotDoThatException, OfferExpiredException, OfferNotFoundByIdException {
         Long validOfferId = 1L;
-        String validJwt = "some jwt";
         CreateApplicationRequest validRequest = mock(CreateApplicationRequest.class);
         Offer offerA = mock(Offer.class);
         Application applicationA = mock(Application.class);
@@ -95,7 +108,6 @@ public class ApplicationServiceImplTests {
     @Test
     public void ApplicationService_applyForOffer_ThrowsOfferNotFoundByIdException() throws UserAlreadyAppliedForThisOfferException, QuestionOrAnswerIsIncorrectException, FirmAccountCanNotDoThatException, OfferExpiredException, OfferNotFoundByIdException {
         Long invalidOfferId = 1L;
-        String validJwt = "some jwt";
         CreateApplicationRequest validRequest = mock(CreateApplicationRequest.class);
 
 
@@ -113,7 +125,6 @@ public class ApplicationServiceImplTests {
     @Test
     public void ApplicationService_applyForOffer_ThrowsQuestionOrAnswerIsIncorrectException() throws UserAlreadyAppliedForThisOfferException, QuestionOrAnswerIsIncorrectException, FirmAccountCanNotDoThatException, OfferExpiredException, OfferNotFoundByIdException {
         Long validOfferId = 1L;
-        String validJwt = "some jwt";
         CreateApplicationRequest invalidRequest = mock(CreateApplicationRequest.class);
         Offer offerA = mock(Offer.class);
         Application applicationA = mock(Application.class);
@@ -139,7 +150,6 @@ public class ApplicationServiceImplTests {
     @Test
     public void ApplicationService_applyForOffer_ThrowsOfferExpiredException() throws UserAlreadyAppliedForThisOfferException, QuestionOrAnswerIsIncorrectException, FirmAccountCanNotDoThatException, OfferExpiredException, OfferNotFoundByIdException {
         Long validOfferId = 1L;
-        String validJwt = "some jwt";
         CreateApplicationRequest validRequest = mock(CreateApplicationRequest.class);
         Offer offerA = mock(Offer.class);
 
@@ -162,7 +172,6 @@ public class ApplicationServiceImplTests {
     @Test
     public void ApplicationService_applyForOffer_ThrowsFirmAccountCanNotDoThatException() throws UserAlreadyAppliedForThisOfferException, QuestionOrAnswerIsIncorrectException, FirmAccountCanNotDoThatException, OfferExpiredException, OfferNotFoundByIdException {
         Long validOfferId = 1L;
-        String validJwt = "some jwt";
         CreateApplicationRequest validRequest = mock(CreateApplicationRequest.class);
         Offer offerA = mock(Offer.class);
 
@@ -183,7 +192,6 @@ public class ApplicationServiceImplTests {
     @Test
     public void ApplicationService_applyForOffer_ThrowsUserAlreadyAppliedForThisOfferException() throws UserAlreadyAppliedForThisOfferException, QuestionOrAnswerIsIncorrectException, FirmAccountCanNotDoThatException, OfferExpiredException, OfferNotFoundByIdException {
         Long validOfferId = 1L;
-        String validJwt = "some jwt";
         CreateApplicationRequest validRequest = mock(CreateApplicationRequest.class);
         Offer offerA = mock(Offer.class);
 
@@ -205,7 +213,6 @@ public class ApplicationServiceImplTests {
     @Test
     public void ApplicationService_getApplicationById_ReturnsApplicationDto() throws NoPermissionException, ApplicationNotFoundByIdException {
         Long validApplicationId = 1L;
-        String validJwt = "some jwt";
         Application applicationA = mock(Application.class);
         ApplicationDto applicationDtoA = mock(ApplicationDto.class);
 
@@ -224,7 +231,6 @@ public class ApplicationServiceImplTests {
     @Test
     public void ApplicationService_getApplicationById_ThrowsApplicationNotFoundByIdException() throws NoPermissionException, ApplicationNotFoundByIdException {
         Long validApplicationId = 1L;
-        String validJwt = "some jwt";
 
 
         when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.empty());
@@ -237,7 +243,6 @@ public class ApplicationServiceImplTests {
     @Test
     public void ApplicationService_getApplicationById_ThrowsNoPermissionException() throws NoPermissionException, ApplicationNotFoundByIdException {
         Long validApplicationId = 1L;
-        String validJwt = "some jwt";
         Application applicationA = mock(Application.class);
 
         when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(applicationA));
@@ -250,7 +255,6 @@ public class ApplicationServiceImplTests {
     @Test
     public void ApplicationService_deleteApplicationById_Success() throws NoPermissionException, ApplicationNotFoundByIdException {
         Long validApplicationId = 1L;
-        String validJwt = "some jwt";
         Application applicationA = mock(Application.class);
 
         when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(applicationA));
@@ -268,7 +272,6 @@ public class ApplicationServiceImplTests {
     @Test
     public void ApplicationService_deleteApplicationById_ThrowsApplicationNotFoundByIdException() throws NoPermissionException, ApplicationNotFoundByIdException {
         Long invalidApplicationId = 1L;
-        String validJwt = "some jwt";
 
         when(applicationRepository.findById(invalidApplicationId)).thenReturn(Optional.empty());
 
@@ -282,7 +285,6 @@ public class ApplicationServiceImplTests {
     @Test
     public void ApplicationService_deleteApplicationById_ThrowsNoPermissionException() throws NoPermissionException, ApplicationNotFoundByIdException {
         Long validApplicationId = 1L;
-        String validJwt = "some jwt";
         Application applicationA = mock(Application.class);
 
         when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(applicationA));
@@ -296,5 +298,70 @@ public class ApplicationServiceImplTests {
 
     }
 
+
+    @Test
+    public void ApplicationService_deleteApplication_Success(){
+        Offer offer = mock(Offer.class);
+        User user = mock(User.class);
+        Application application = mock(Application.class);
+
+        when(application.getOffer()).thenReturn(offer);
+        when(application.getUser()).thenReturn(user);
+
+
+        applicationService.deleteApplication(application);
+
+        verify(application).removeUser();
+        verify(application).removeOffer();
+        verify(offerRepository).save(offer);
+        verify(userRepository).save(user);
+        verify(applicationRepository).delete(application);
+    }
+
+    @Test
+    public void ApplicationService_getApplicationsFromOffer_ReturnsPageResponse() throws NoPermissionException, OfferNotFoundByIdException {
+        Long validOfferId = 1L;
+        Offer offer = mock(Offer.class);
+        User user = mock(User.class);
+
+        when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offer));
+        when(userService.findUserByJwt(validJwt)).thenReturn(user);
+        doNothing().when(applicationServiceSpy).validatePermissionGetApplicationsFromOffer(user, offer);
+
+        Page<Application> page = new PageImpl<>(Arrays.asList(application1, application2));
+        when(applicationRepository.getApplicationsFromOffer(eq(validOfferId), any(Pageable.class))).thenReturn(page);
+
+        PageResponse<ApplicationDto> result = applicationServiceSpy.getApplicationsFromOffer(validOfferId, 10, 0, validJwt);
+        assertNotNull(result);
+        assertEquals(result.getTotalElements(), 2);
+    }
+
+
+    @Test
+    public void ApplicationService_getApplicationsFromOffer_ThrowsOfferNotFoundByIdException() throws NoPermissionException, OfferNotFoundByIdException {
+        Long invalidOfferId = 1L;
+
+        when(offerRepository.findById(invalidOfferId)).thenReturn(Optional.empty());
+
+        assertThrows(OfferNotFoundByIdException.class, () -> applicationServiceSpy.getApplicationsFromOffer(invalidOfferId, 10, 0, validJwt));
+
+        verify(applicationRepository, never()).getApplicationsFromOffer(any(), any());
+    }
+
+    @Test
+    public void ApplicationService_getApplicationsFromOffer_ThrowsNoPermissionException() throws NoPermissionException, OfferNotFoundByIdException {
+        Long validOfferId = 1L;
+        Offer offer = mock(Offer.class);
+        User user = mock(User.class);
+
+        when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offer));
+        when(userService.findUserByJwt(validJwt)).thenReturn(user);
+        doThrow(NoPermissionException.class).when(applicationServiceSpy).validatePermissionGetApplicationsFromOffer(user, offer);
+
+
+        assertThrows(NoPermissionException.class, () -> applicationServiceSpy.getApplicationsFromOffer(validOfferId, 10, 0, validJwt));
+
+        verify(applicationRepository, never()).getApplicationsFromOffer(any(), any());
+    }
 
 }
