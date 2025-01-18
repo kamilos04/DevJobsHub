@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Service
 public class OfferServiceImpl implements OfferService {
@@ -59,7 +58,7 @@ public class OfferServiceImpl implements OfferService {
         //Validation account type
         utilityService.isFirmOrThrowException(user);
 
-        Offer newOffer = Offer.mapCreateOfferRequestToOffer(createOfferRequest);
+        Offer newOffer = createOfferRequest.mapToOffer();
         newOffer.setDateTimeOfCreation(LocalDateTime.now());
 
         newOffer.addRecruiter(user);
@@ -85,7 +84,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         offerRepository.save(newOffer);
-        return Offer.mapOfferToOfferDtoShallow(newOffer);
+        return newOffer.mapToOfferDtoShallow();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -96,7 +95,7 @@ public class OfferServiceImpl implements OfferService {
         User user = userService.findUserByJwt(jwt);
         validatePermissionUpdateOffer(user, offerToUpdate);
 
-        Offer offer = Offer.mapCreateOfferRequestToExistingOffer(createOfferRequest, offerToUpdate);
+        Offer offer = createOfferRequest.mapToExistingOffer(offerToUpdate);
 
         //Update nice to have technologies
         if(createOfferRequest.getNiceToHaveTechnologies() != null){
@@ -127,7 +126,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         offerRepository.save(offer);
-        return Offer.mapOfferToOfferDtoShallow(offer);
+        return offer.mapToOfferDtoShallow();
 
     }
 
@@ -146,16 +145,15 @@ public class OfferServiceImpl implements OfferService {
         ArrayList<Offer> offers = new ArrayList<>(page.getContent());
 
         ArrayList<OfferDto> offersDto = new ArrayList<>();
-        offers.forEach(element -> {offersDto.add(Offer.mapOfferToOfferDtoShallow(element));});
+        offers.forEach(element -> {offersDto.add(element.mapToOfferDtoShallow());});
 
         PageResponse<OfferDto> pageResponse = new PageResponse<OfferDto>(offersDto, page);
         return pageResponse;
     }
 
     public OfferDto getOffer(Long offerId) throws OfferNotFoundByIdException {
-        Optional<Offer> optionalOffer = offerRepository.findById(offerId);
-        if(optionalOffer.isEmpty()){throw new OfferNotFoundByIdException();}
-        return Offer.mapOfferToOfferDto(optionalOffer.get());
+        Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
+        return offer.mapToOfferDtoShallow();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -303,7 +301,7 @@ public class OfferServiceImpl implements OfferService {
         ArrayList<Offer> offers = new ArrayList<>(offersPage.getContent());
 
         ArrayList<OfferDto> offersDto = new ArrayList<>();
-        offers.forEach(element -> {offersDto.add(Offer.mapOfferToOfferDtoShallow(element));});
+        offers.forEach(element -> {offersDto.add(element.mapToOfferDtoShallow());});
 
         return new PageResponse<>(offersDto, offersPage);
     }
@@ -322,7 +320,7 @@ public class OfferServiceImpl implements OfferService {
         ArrayList<Offer> offers = new ArrayList<>(offersPage.getContent());
 
         ArrayList<OfferDto> offersDto = new ArrayList<>();
-        offers.forEach(element -> {offersDto.add(Offer.mapOfferToOfferDtoShallow(element));});
+        offers.forEach(element -> {offersDto.add(element.mapToOfferDtoShallow());});
 
         return new PageResponse<>(offersDto, offersPage);
     }

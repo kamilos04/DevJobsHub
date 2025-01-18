@@ -82,18 +82,17 @@ public class User {
         }
     }
 
-    public static UserDto mapUserToUserDtoShallow(User user){
-        UserDto userDto = UserMapper.INSTANCE.userToUserDto(user);
-
+    public UserDto mapToUserDtoShallow(){
+        UserDto userDto = UserMapper.INSTANCE.userToUserDto(this);
         return userDto;
     }
 
-    public static UserDto mapUserToUserDto(User user){
-        UserDto userDto = UserMapper.INSTANCE.userToUserDto(user);
+    public UserDto mapToUserDto(){
+        UserDto userDto = UserMapper.INSTANCE.userToUserDto(this);
 
-        userDto.setApplications(user.getApplications().stream().map(element -> element.mapToApplicationDtoShallow()).collect(Collectors.toList()));
-        userDto.setOffers(user.getOffers().stream().map(element -> Offer.mapOfferToOfferDtoShallow(element)).collect(Collectors.toList()));
-        userDto.setLikedOffers(user.getLikedOffers().stream().map(element -> Offer.mapOfferToOfferDtoShallow(element)).collect(Collectors.toList()));
+        userDto.setApplications(this.getApplications().stream().map(element -> element.mapToApplicationDtoShallow()).collect(Collectors.toList()));
+        userDto.setOffers(this.getOffers().stream().map(element -> element.mapToOfferDtoShallow()).collect(Collectors.toList()));
+        userDto.setLikedOffers(this.getLikedOffers().stream().map(element -> element.mapToOfferDtoShallow()).collect(Collectors.toList()));
 
         return userDto;
     }

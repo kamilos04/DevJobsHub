@@ -1,5 +1,7 @@
 package com.kamiljach.devjobshub.request.offer;
 
+import com.kamiljach.devjobshub.config.Constants;
+import com.kamiljach.devjobshub.mappers.OfferMapper;
 import com.kamiljach.devjobshub.model.*;
 import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestion;
 import com.kamiljach.devjobshub.model.embeddable.Question;
@@ -11,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,4 +82,21 @@ public class CreateOfferRequest {
 
     @NotBlank(message = "expirationDate can not be blank")
     private String expirationDate;
+
+
+    public Offer mapToExistingOffer(Offer existingOffer) {
+        Offer offer = OfferMapper.INSTANCE.createOfferRequestToExistingOffer(this, existingOffer);
+        offer.setExpirationDate(LocalDateTime.parse(this.getExpirationDate(), Constants.dateTimeFormatter));
+
+        return offer;
+
+    }
+
+    public Offer mapToOffer() {
+        Offer offer = OfferMapper.INSTANCE.createOfferRequestToOffer(this);
+
+        offer.setExpirationDate(LocalDateTime.parse(this.getExpirationDate(), Constants.dateTimeFormatter));
+
+        return offer;
+    }
 }

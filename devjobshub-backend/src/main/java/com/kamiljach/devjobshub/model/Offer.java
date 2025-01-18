@@ -6,7 +6,6 @@ import com.kamiljach.devjobshub.mappers.OfferMapper;
 import com.kamiljach.devjobshub.model.embeddable.MultipleChoiceQuestion;
 import com.kamiljach.devjobshub.model.embeddable.Question;
 import com.kamiljach.devjobshub.model.embeddable.RadioQuestion;
-import com.kamiljach.devjobshub.request.offer.CreateOfferRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -191,41 +190,23 @@ public class Offer {
     }
 
 
-    public static Offer mapCreateOfferRequestToExistingOffer(CreateOfferRequest createOfferRequest, Offer existingOffer) {
-        Offer offer = OfferMapper.INSTANCE.createOfferRequestToExistingOffer(createOfferRequest, existingOffer);
-        offer.setExpirationDate(LocalDateTime.parse(createOfferRequest.getExpirationDate(), Constants.dateTimeFormatter));
-
-        return offer;
-
-    }
-
-    public static Offer mapCreateOfferRequestToOffer(CreateOfferRequest createOfferRequest) {
-        Offer offer = OfferMapper.INSTANCE.createOfferRequestToOffer(createOfferRequest);
-
-        offer.setExpirationDate(LocalDateTime.parse(createOfferRequest.getExpirationDate(), Constants.dateTimeFormatter));
-
-        return offer;
-    }
-
-
-    public static OfferDto mapOfferToOfferDto(Offer offer) {
-        OfferDto newOfferDto = OfferMapper.INSTANCE.offerToOfferDto(offer);
-        newOfferDto.setDateTimeOfCreation(offer.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
-        newOfferDto.setExpirationDate(offer.getExpirationDate().format(Constants.dateTimeFormatter));
-        newOfferDto.setRequiredTechnologies(offer.getRequiredTechnologies().stream().map(element -> Technology.mapTechnologyToTechnologyDtoShallow(element)).collect(Collectors.toList()));
-        newOfferDto.setNiceToHaveTechnologies(offer.getNiceToHaveTechnologies().stream().map(element -> Technology.mapTechnologyToTechnologyDtoShallow(element)).collect(Collectors.toList()));
-//        newOfferDto.setApplications(offer.getApplications().stream().map(element -> Application.mapApplicationToApplicationDtoShallow(element)).collect(Collectors.toList()));
-        newOfferDto.setRecruiters(offer.getRecruiters().stream().map(element -> User.mapUserToUserDtoShallow(element)).toList());
+    public OfferDto mapToOfferDto() {
+        OfferDto newOfferDto = OfferMapper.INSTANCE.offerToOfferDto(this);
+        newOfferDto.setDateTimeOfCreation(this.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
+        newOfferDto.setExpirationDate(this.getExpirationDate().format(Constants.dateTimeFormatter));
+        newOfferDto.setRequiredTechnologies(this.getRequiredTechnologies().stream().map(element -> element.mapToTechnologyDtoShallow()).collect(Collectors.toList()));
+        newOfferDto.setNiceToHaveTechnologies(this.getNiceToHaveTechnologies().stream().map(element -> element.mapToTechnologyDtoShallow()).collect(Collectors.toList()));
+        newOfferDto.setRecruiters(this.getRecruiters().stream().map(element -> element.mapToUserDtoShallow()).toList());
 
         return newOfferDto;
     }
 
-    public static OfferDto mapOfferToOfferDtoShallow(Offer offer) {
-        OfferDto newOfferDto = OfferMapper.INSTANCE.offerToOfferDto(offer);
-        newOfferDto.setDateTimeOfCreation(offer.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
-        newOfferDto.setExpirationDate(offer.getExpirationDate().format(Constants.dateTimeFormatter));
-        newOfferDto.setRequiredTechnologies(offer.getRequiredTechnologies().stream().map(element -> Technology.mapTechnologyToTechnologyDtoShallow(element)).collect(Collectors.toList()));
-        newOfferDto.setNiceToHaveTechnologies(offer.getNiceToHaveTechnologies().stream().map(element -> Technology.mapTechnologyToTechnologyDtoShallow(element)).collect(Collectors.toList()));
+    public OfferDto mapToOfferDtoShallow() {
+        OfferDto newOfferDto = OfferMapper.INSTANCE.offerToOfferDto(this);
+        newOfferDto.setDateTimeOfCreation(this.getDateTimeOfCreation().format(Constants.dateTimeFormatter));
+        newOfferDto.setExpirationDate(this.getExpirationDate().format(Constants.dateTimeFormatter));
+        newOfferDto.setRequiredTechnologies(this.getRequiredTechnologies().stream().map(element -> element.mapToTechnologyDtoShallow()).collect(Collectors.toList()));
+        newOfferDto.setNiceToHaveTechnologies(this.getNiceToHaveTechnologies().stream().map(element -> element.mapToTechnologyDtoShallow()).collect(Collectors.toList()));
         return newOfferDto;
     }
 }

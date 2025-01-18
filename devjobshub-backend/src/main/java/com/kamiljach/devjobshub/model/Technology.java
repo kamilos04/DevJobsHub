@@ -65,8 +65,8 @@ public class Technology {
         }
     }
 
-    public static TechnologyDto mapTechnologyToTechnologyDtoShallow(Technology technology){
-        TechnologyDto technologyDto = TechnologyMapper.INSTANCE.technologyToTechnologyDto(technology);
+    public TechnologyDto mapToTechnologyDtoShallow(){
+        TechnologyDto technologyDto = TechnologyMapper.INSTANCE.technologyToTechnologyDto(this);
         return technologyDto;
     }
 
