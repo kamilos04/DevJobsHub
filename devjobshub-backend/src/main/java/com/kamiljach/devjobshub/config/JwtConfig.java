@@ -1,9 +1,10 @@
 package com.kamiljach.devjobshub.config;
 
-import com.kamiljach.devjobshub.exceptions.exceptions.JwtIsOnBlackListException;
-import com.kamiljach.devjobshub.model.BlackListJwt;
+import com.kamiljach.devjobshub.exceptions.exceptions.JwtIsBlockedException;
+import com.kamiljach.devjobshub.model.Jwt;
 import com.kamiljach.devjobshub.model.User;
-import com.kamiljach.devjobshub.repository.BlackListJwtRepository;
+import com.kamiljach.devjobshub.repository.JwtRepository;
+import com.kamiljach.devjobshub.service.JwtService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,14 +30,15 @@ public class JwtConfig {
 
     private Key key;
 
-    private BlackListJwtRepository blackListJwtRepository;
-    public JwtConfig(BlackListJwtRepository blackListJwtRepository) {
+    private JwtService jwtService;
+
+
+    public JwtConfig(JwtService jwtService) {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
         this.jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
-        this.blackListJwtRepository = blackListJwtRepository;
+        this.jwtService = jwtService;
+
     }
-
-
 
     public String createToken(User user) {
         Claims claims = Jwts.claims().setSubject(Long.toString(user.getId()));
@@ -53,10 +55,11 @@ public class JwtConfig {
         return jwtParser.parseClaimsJws(token).getBody();
     }
 
-    public Claims resolveClaims(HttpServletRequest req) throws JwtIsOnBlackListException {
+    public Claims resolveClaims(HttpServletRequest req) throws JwtIsBlockedException {
         try {
             String token = resolveToken(req);
             if(token != null) {
+                jwtService.ifJwtIsBlockedThrowException(token);
                 return parseJwtClaims(token);
             }
             return null;
@@ -69,11 +72,12 @@ public class JwtConfig {
         }
     }
 
-    public String resolveToken(HttpServletRequest req) throws JwtIsOnBlackListException {
+    public String resolveToken(HttpServletRequest req) throws JwtIsBlockedException {
         String bearerToken = req.getHeader(TOKEN_HEADER);
-        ifJwtIsOnBlackListThrowException(bearerToken);
+
         if(bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
             return bearerToken.substring(TOKEN_PREFIX.length());
+
         }
         return null;
     }
@@ -90,9 +94,6 @@ public class JwtConfig {
         return claims.getSubject();
     }
 
-    public void ifJwtIsOnBlackListThrowException(String jwt) throws JwtIsOnBlackListException {
-        Optional<BlackListJwt> optionalBlackListJwt = blackListJwtRepository.findByJwt(jwt);
-        if(optionalBlackListJwt.isPresent()){throw new JwtIsOnBlackListException();}
-    }
+
 
 }

@@ -1,7 +1,7 @@
 package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.config.JwtConfig;
-import com.kamiljach.devjobshub.exceptions.exceptions.JwtIsOnBlackListException;
+import com.kamiljach.devjobshub.exceptions.exceptions.JwtIsBlockedException;
 import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByEmailException;
 import com.kamiljach.devjobshub.exceptions.exceptions.AccountAlreadyExistsException;
 import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
@@ -51,7 +51,7 @@ public class AuthController {
     }
 
     @PostMapping("/api/changePassword")
-    public ResponseEntity<LoginResponse> changePasswordByJwt(@Valid @RequestBody ChangePasswordRequest changePasswordRequest, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException, JwtIsOnBlackListException {
+    public ResponseEntity<LoginResponse> changePasswordByJwt(@Valid @RequestBody ChangePasswordRequest changePasswordRequest, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException, JwtIsBlockedException {
         LoginResponse loginResponse = authService.changePasswordByJwt(changePasswordRequest, jwt);
         return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
 

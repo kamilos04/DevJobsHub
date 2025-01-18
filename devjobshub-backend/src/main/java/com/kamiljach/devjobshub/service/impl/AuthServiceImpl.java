@@ -2,18 +2,17 @@ package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.config.JwtConfig;
 import com.kamiljach.devjobshub.exceptions.exceptions.AccountAlreadyExistsException;
-import com.kamiljach.devjobshub.exceptions.exceptions.JwtIsOnBlackListException;
 import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByEmailException;
-import com.kamiljach.devjobshub.exceptions.exceptions.UserNotFoundByJwtException;
-import com.kamiljach.devjobshub.model.BlackListJwt;
+import com.kamiljach.devjobshub.model.Jwt;
 import com.kamiljach.devjobshub.model.User;
-import com.kamiljach.devjobshub.repository.BlackListJwtRepository;
+import com.kamiljach.devjobshub.repository.JwtRepository;
 import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.auth.ChangePasswordRequest;
 import com.kamiljach.devjobshub.request.auth.LoginRequest;
 import com.kamiljach.devjobshub.request.auth.RegisterRequest;
 import com.kamiljach.devjobshub.response.login.LoginResponse;
 import com.kamiljach.devjobshub.service.AuthService;
+import com.kamiljach.devjobshub.service.JwtService;
 import com.kamiljach.devjobshub.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,15 +33,15 @@ public class AuthServiceImpl implements AuthService {
 
     private UserService userService;
 
-    private BlackListJwtRepository blackListJwtRepository;
+    private JwtService jwtService;
 
-    public AuthServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, JwtConfig jwtConfig, PasswordEncoder passwordEncoder, UserService userService, BlackListJwtRepository blackListJwtRepository) {
+    public AuthServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, JwtConfig jwtConfig, PasswordEncoder passwordEncoder, UserService userService, JwtService jwtService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.jwtConfig = jwtConfig;
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
-        this.blackListJwtRepository = blackListJwtRepository;
+        this.jwtService = jwtService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -54,12 +53,9 @@ public class AuthServiceImpl implements AuthService {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getId(), passwordFromRequest));
 
-        String stringId = authentication.getName();
-        User u = new User();
-        u.setId(Long.parseLong(stringId));
+        String token = jwtConfig.createToken(user);
 
-
-        String token = jwtConfig.createToken(u);
+        jwtService.createJwt(token, user);
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setEmail(user.getEmail());
@@ -85,11 +81,9 @@ public class AuthServiceImpl implements AuthService {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(newUser.getId(), registerRequest.getPassword()));
 
-        String stringId = authentication.getName();
-        User user = new User();
-        user.setId(Long.parseLong(stringId));
+        String token = jwtConfig.createToken(newUser);
 
-        String token = jwtConfig.createToken(user);
+        jwtService.createJwt(token, newUser);
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setEmail(newUser.getEmail());
@@ -104,18 +98,13 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         userRepository.save(user);
 
+        jwtService.blockAllJwtFromUser(user);
+
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getId(), changePasswordRequest.getNewPassword()));
-
-        BlackListJwt blackListJwt = new BlackListJwt();
-        blackListJwt.setJwt(jwt);
-        blackListJwtRepository.save(blackListJwt);
-
-        String stringId = authentication.getName();
-        User u = new User();
-        u.setId(Long.parseLong(stringId));
 
         String token = jwtConfig.createToken(user);
 
+        jwtService.createJwt(token, user);
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setEmail(user.getEmail());

@@ -56,6 +56,9 @@ public class User {
     @ManyToMany(mappedBy = "recruiters")
     private List<Offer> offers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Jwt> jwtList = new ArrayList<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
