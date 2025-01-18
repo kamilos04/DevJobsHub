@@ -13,18 +13,5 @@ public class Constants {
     public static String prefix = "Bearer ";
 
     public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-
-//    public List<String> cities = List.of(
-//            "Warszawa", "Kraków", "Łódź", "Wrocław", "Poznań",
-//            "Gdańsk", "Szczecin", "Bydgoszcz", "Lublin", "Białystok",
-//            "Katowice", "Gdynia", "Czestochowa", "Radom", "Sosnowiec",
-//            "Tychy", "Gliwice", "Zabrze", "Ruda Śląska", "Rybnik",
-//            "Olsztyn", "Opole", "Elbląg", "Toruń", "Jaworzno",
-//            "Płock", "Dąbrowa Górnicza", "Słupsk", "Zielona Góra", "Kalisz",
-//            "Koszalin", "Mysłowice", "Gorzów Wielkopolski", "Siedlce", "Legnica",
-//            "Grudziądz", "Świętochłowice", "Nowy Sącz", "Tarnobrzeg", "Bielsko-Biała",
-//            "Stalowa Wola", "Pabianice", "Rybnik", "Zamość", "Jelenia Góra",
-//            "Hajnówka", "Łomża", "Włocławek"
-//    );
     
 }

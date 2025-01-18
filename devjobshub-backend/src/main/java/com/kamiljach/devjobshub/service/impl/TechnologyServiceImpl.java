@@ -7,12 +7,10 @@ import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
-import com.kamiljach.devjobshub.repository.UserRepository;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.service.UserService;
 import com.kamiljach.devjobshub.service.UtilityService;
 import com.kamiljach.devjobshub.service.TechnologyService;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +44,7 @@ public class TechnologyServiceImpl implements TechnologyService {
         newTechnology.setName(technologyRequest.getName());
 
         technologyRepository.save(newTechnology);
-        return Technology.mapTechnologyToTechnologyDtoShallow(newTechnology);
+        return newTechnology.mapToTechnologyDtoShallow();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -78,14 +76,13 @@ public class TechnologyServiceImpl implements TechnologyService {
 
         technology.setName(technologyRequest.getName());
         technologyRepository.save(technology);
-        return Technology.mapTechnologyToTechnologyDtoShallow(technology);
+        return technology.mapToTechnologyDtoShallow();
 
     }
 
     public TechnologyDto getTechnologyById(Long id, String jwt) throws TechnologyNotFoundByIdException {
-        Optional<Technology> optionalTechnology = technologyRepository.findById(id);
-        if(optionalTechnology.isEmpty()){throw new TechnologyNotFoundByIdException();}
-        return Technology.mapTechnologyToTechnologyDtoShallow(optionalTechnology.get());
+        Technology technology = technologyRepository.findById(id).orElseThrow(TechnologyNotFoundByIdException::new);
+        return technology.mapToTechnologyDtoShallow();
     }
 
 
