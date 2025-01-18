@@ -132,66 +132,66 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
     }
 
-    public boolean validateQuestion(QuestionAndAnswer questionAndAnswer, Question question){
+    public void validateQuestion(QuestionAndAnswer questionAndAnswer, Question question) throws QuestionOrAnswerIsIncorrectException {
         if(!questionAndAnswer.getNumber().equals(question.getNumber())){
-            return(false);
+            throw new QuestionOrAnswerIsIncorrectException();
         }
         if(!questionAndAnswer.getQuestion().equals(question.getQuestion())){
-            return(false);
+            throw new QuestionOrAnswerIsIncorrectException();
         }
-        return(true);
 
     }
 
-    public boolean validateRadioQuestion(RadioQuestionAndAnswer radioQuestionAndAnswer, RadioQuestion radioQuestion){
+    public void validateRadioQuestion(RadioQuestionAndAnswer radioQuestionAndAnswer, RadioQuestion radioQuestion) throws QuestionOrAnswerIsIncorrectException {
         if(!radioQuestionAndAnswer.getNumber().equals(radioQuestion.getNumber())){
-            return false;
+            throw new QuestionOrAnswerIsIncorrectException();
         }
         if(!radioQuestionAndAnswer.getQuestion().equals(radioQuestion.getQuestion())){
-            return false;
+            throw new QuestionOrAnswerIsIncorrectException();
         }
 
         if(!(radioQuestionAndAnswer.getAnswer()>=0 && radioQuestionAndAnswer.getAnswer()<radioQuestion.getPossibleAnswers().size())){
-            return false;
+            throw new QuestionOrAnswerIsIncorrectException();
         }
-        return(true);
 
     }
 
-    public boolean validateMultipleChoiceQuestion(MultipleChoiceQuestionAndAnswer multipleChoiceQuestionAndAnswer, MultipleChoiceQuestion multipleChoiceQuestion){
+    public void validateMultipleChoiceQuestion(MultipleChoiceQuestionAndAnswer multipleChoiceQuestionAndAnswer, MultipleChoiceQuestion multipleChoiceQuestion) throws QuestionOrAnswerIsIncorrectException {
         if(!multipleChoiceQuestionAndAnswer.getNumber().equals(multipleChoiceQuestion.getNumber())){
-            return(false);
+            throw new QuestionOrAnswerIsIncorrectException();
         }
         if(!multipleChoiceQuestionAndAnswer.getQuestion().equals(multipleChoiceQuestion.getQuestion())){
-            return(false);
+            throw new QuestionOrAnswerIsIncorrectException();
         }
         for(int i = 0; i < multipleChoiceQuestionAndAnswer.getAnswers().size(); i++){
             Integer answer = multipleChoiceQuestionAndAnswer.getAnswers().get(i);
             if(!(answer>=0 && answer < multipleChoiceQuestion.getPossibleAnswers().size())){
-                return false;
+                throw new QuestionOrAnswerIsIncorrectException();
             }
         }
-        return(true);
 
     }
 
     public void validateAllQuestionsInApplication(Application application, Offer offer) throws QuestionOrAnswerIsIncorrectException {
+        if(application.getQuestionsAndAnswers().size() != offer.getQuestions().size()){
+            throw new QuestionOrAnswerIsIncorrectException();
+        }
         for(int i = 0; i < application.getQuestionsAndAnswers().size(); i++){
-            if(!validateQuestion(application.getQuestionsAndAnswers().get(i), offer.getQuestions().get(i))){
-                throw new QuestionOrAnswerIsIncorrectException();
-            }
+            validateQuestion(application.getQuestionsAndAnswers().get(i), offer.getQuestions().get(i));
         }
 
+        if(application.getRadioQuestionsAndAnswers().size() != offer.getRadioQuestions().size()){
+            throw new QuestionOrAnswerIsIncorrectException();
+        }
         for(int i = 0; i < application.getRadioQuestionsAndAnswers().size(); i++){
-            if(!validateRadioQuestion(application.getRadioQuestionsAndAnswers().get(i), offer.getRadioQuestions().get(i))){
-                throw new QuestionOrAnswerIsIncorrectException();
-            }
+            validateRadioQuestion(application.getRadioQuestionsAndAnswers().get(i), offer.getRadioQuestions().get(i));
         }
 
+        if(application.getMultipleChoiceQuestionsAndAnswers().size() != offer.getMultipleChoiceQuestions().size()){
+            throw new QuestionOrAnswerIsIncorrectException();
+        }
         for(int i = 0; i < application.getMultipleChoiceQuestionsAndAnswers().size(); i++){
-            if(!validateMultipleChoiceQuestion(application.getMultipleChoiceQuestionsAndAnswers().get(i), offer.getMultipleChoiceQuestions().get(i))){
-                throw new QuestionOrAnswerIsIncorrectException();
-            }
+            validateMultipleChoiceQuestion(application.getMultipleChoiceQuestionsAndAnswers().get(i), offer.getMultipleChoiceQuestions().get(i));
         }
 
 
@@ -219,16 +219,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
     public void validatePermissionGetApplicationsFromOffer(User user, Offer offer) throws NoPermissionException {
-        if(user.getIsAdmin()){
-            return;
-        }
-        if (offer.getRecruiters().contains(user)){
-            return;
-        }
-        throw new NoPermissionException();
-    }
-
-    public void validatePermissionGetFavouriteApplicationsFromOffer(User user, Offer offer) throws NoPermissionException {
         if(user.getIsAdmin()){
             return;
         }
