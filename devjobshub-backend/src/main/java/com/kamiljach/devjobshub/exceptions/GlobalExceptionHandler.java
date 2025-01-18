@@ -142,8 +142,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
-    @ExceptionHandler(JwtIsOnBlackListException.class)
-    public ResponseEntity<ApiError> handleJwtIsOnBlackListException(JwtIsOnBlackListException ex){
+    @ExceptionHandler(JwtIsBlockedException.class)
+    public ResponseEntity<ApiError> handleJwtIsOnBlackListException(JwtIsBlockedException ex){
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN,ex.getMessage(), ex);
 
         return new ResponseEntity<>(apiError, apiError.getStatus());
