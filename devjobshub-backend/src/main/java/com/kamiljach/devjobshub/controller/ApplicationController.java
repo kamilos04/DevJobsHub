@@ -30,12 +30,12 @@ public class ApplicationController {
     }
 
     @GetMapping("/application/{applicationId}")
-    public ResponseEntity<ApplicationDto> getApplicationById(@PathVariable("applicationId") Long applicationId, @RequestHeader("Authorization")String jwt) throws ApplicationNotFoundByIdException {
+    public ResponseEntity<ApplicationDto> getApplicationById(@PathVariable("applicationId") Long applicationId, @RequestHeader("Authorization")String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
         return new ResponseEntity<ApplicationDto>(applicationService.getApplicationById(applicationId, jwt), HttpStatus.OK);
     }
 
     @DeleteMapping("/application/{applicationId}")
-    public ResponseEntity<MessageResponse> deleteApplicationById(@PathVariable("applicationId") Long applicationId, @RequestHeader("Authorization")String jwt) throws ApplicationNotFoundByIdException {
+    public ResponseEntity<MessageResponse> deleteApplicationById(@PathVariable("applicationId") Long applicationId, @RequestHeader("Authorization")String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
         applicationService.deleteApplicationById(applicationId, jwt);
         MessageResponse messageResponse = new MessageResponse();
         messageResponse.setMessage("Deleted application");
@@ -43,14 +43,13 @@ public class ApplicationController {
     }
 
     @GetMapping("/application/fromOffer/{offerId}")
-    public ResponseEntity<PageResponse<ApplicationDto>> getApplicationsFromOffer(@PathVariable("offerId") Long offerId, @RequestParam("numberOfElements") Integer numberOfElements, @RequestParam("pageNumber") Integer pageNumber, @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException {
-        PageResponse<ApplicationDto> pageResponse = applicationService.getApplicationsFromOffer(offerId, numberOfElements, pageNumber, jwt);
+    public ResponseEntity<PageResponse<ApplicationDto>> getApplicationsFromOffer(@PathVariable("offerId") Long offerId,
+                                                                                 @RequestParam("numberOfElements") Integer numberOfElements,
+                                                                                 @RequestParam("pageNumber") Integer pageNumber,
+                                                                                 @RequestParam("isFavourite") Boolean isFavourite,
+                                                                                 @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, NoPermissionException {
+        PageResponse<ApplicationDto> pageResponse = applicationService.getApplicationsFromOffer(offerId, numberOfElements, pageNumber, isFavourite, jwt);
         return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/application/favouriteFromOffer/{offerId}")
-    public ResponseEntity<PageResponse<ApplicationDto>> getFavouriteApplicationsFromOffer(@PathVariable("offerId") Long offerId, @RequestParam("numberOfElements") Integer numberOfElements, @RequestParam("pageNumber") Integer pageNumber, @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException {
-        PageResponse<ApplicationDto> pageResponse = applicationService.getFavouriteApplicationsFromOffer(offerId, numberOfElements, pageNumber, jwt);
-        return new ResponseEntity<>(pageResponse, HttpStatus.OK);
-    }
 }

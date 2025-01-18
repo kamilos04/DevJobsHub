@@ -2,7 +2,6 @@ package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.dto.ApplicationDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
-import com.kamiljach.devjobshub.mappers.ApplicationMapper;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.User;
@@ -24,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
@@ -58,7 +56,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new OfferExpiredException();
         }
 
-        Application newApplication = ApplicationMapper.INSTANCE.createApplicationRequestToApplication(createApplicationRequest);
+        Application newApplication = createApplicationRequest.mapToApplication();
 
         validateAllQuestionsInApplication(newApplication, offer);
 
@@ -73,19 +71,21 @@ public class ApplicationServiceImpl implements ApplicationService {
         offerRepository.save(offer);
 
         applicationRepository.save(newApplication);
-        return Application.mapApplicationToApplicationDtoShallow(newApplication);
+        return newApplication.mapToApplicationDtoShallow();
     }
 
-    public ApplicationDto getApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException {
-        Optional<Application> optionalApplication = applicationRepository.findById(id);
-        if(optionalApplication.isEmpty()){throw new ApplicationNotFoundByIdException();}
-        return Application.mapApplicationToApplicationDtoShallow(optionalApplication.get());
+    public ApplicationDto getApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
+        Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundByIdException::new);
+        User user = userService.findUserByJwt(jwt);
+        validatePermissionGetApplicationById(user, application);
+        return application.mapToApplicationDtoShallow();
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException {
+    public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
         Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundByIdException::new);
-
+        User user = userService.findUserByJwt(jwt);
+        validatePermissionDeleteApplicationById(user, application);
         deleteApplication(application);
     }
 
@@ -101,104 +101,130 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
 
+    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, Boolean isFavourite, String jwt) throws OfferNotFoundByIdException, NoPermissionException {
+        Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
+        User user = userService.findUserByJwt(jwt);
+        validatePermissionGetApplicationsFromOffer(user, offer);
+
+        Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
+
+        Page<Application> page;
+        if(isFavourite){
+            page = applicationRepository.getFavouriteApplicationsFromOffer(offerId, pageable);
+        }
+        else{
+            page = applicationRepository.getApplicationsFromOffer(offerId, pageable);
+        }
+
+        ArrayList<Application> applications = new ArrayList<>(page.getContent());
+        ArrayList<ApplicationDto> applicationDtos = new ArrayList<>();
+
+        applications.forEach(element -> {applicationDtos.add(element.mapToApplicationDtoShallow());});
+
+        PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
+        return pageResponse;
+    }
+
+
     public void ifUserAlreadyAppliedForOfferThrowException(User user, Offer offer) throws UserAlreadyAppliedForThisOfferException {
         for (Application application : user.getApplications()){
             if(application.getOffer().equals(offer)) throw new UserAlreadyAppliedForThisOfferException();
         }
     }
 
-    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException {
-        Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
-        Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
-
-
-        Page<Application> page = applicationRepository.getApplicationsFromOffer(offerId, pageable);
-        ArrayList<Application> applications = new ArrayList<>(page.getContent());
-        ArrayList<ApplicationDto> applicationDtos = new ArrayList<>();
-
-        applications.forEach(element -> {applicationDtos.add(Application.mapApplicationToApplicationDtoShallow(element));});
-
-        PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
-        return pageResponse;
-    }
-
-    public PageResponse<ApplicationDto> getFavouriteApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, String jwt) throws OfferNotFoundByIdException {
-        Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
-        Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
-
-
-        Page<Application> page = applicationRepository.getFavouriteApplicationsFromOffer(offerId, pageable);
-        ArrayList<Application> applications = new ArrayList<>(page.getContent());
-        ArrayList<ApplicationDto> applicationDtos = new ArrayList<>();
-
-        applications.forEach(element -> {applicationDtos.add(Application.mapApplicationToApplicationDtoShallow(element));});
-
-        PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
-        return pageResponse;
-    }
-
-    public boolean validateQuestion(QuestionAndAnswer questionAndAnswer, Question question){
+    public void validateQuestion(QuestionAndAnswer questionAndAnswer, Question question) throws QuestionOrAnswerIsIncorrectException {
         if(!questionAndAnswer.getNumber().equals(question.getNumber())){
-            return(false);
+            throw new QuestionOrAnswerIsIncorrectException();
         }
         if(!questionAndAnswer.getQuestion().equals(question.getQuestion())){
-            return(false);
+            throw new QuestionOrAnswerIsIncorrectException();
         }
-        return(true);
 
     }
 
-    public boolean validateRadioQuestion(RadioQuestionAndAnswer radioQuestionAndAnswer, RadioQuestion radioQuestion){
+    public void validateRadioQuestion(RadioQuestionAndAnswer radioQuestionAndAnswer, RadioQuestion radioQuestion) throws QuestionOrAnswerIsIncorrectException {
         if(!radioQuestionAndAnswer.getNumber().equals(radioQuestion.getNumber())){
-            return false;
+            throw new QuestionOrAnswerIsIncorrectException();
         }
         if(!radioQuestionAndAnswer.getQuestion().equals(radioQuestion.getQuestion())){
-            return false;
+            throw new QuestionOrAnswerIsIncorrectException();
         }
 
         if(!(radioQuestionAndAnswer.getAnswer()>=0 && radioQuestionAndAnswer.getAnswer()<radioQuestion.getPossibleAnswers().size())){
-            return false;
+            throw new QuestionOrAnswerIsIncorrectException();
         }
-        return(true);
 
     }
 
-    public boolean validateMultipleChoiceQuestion(MultipleChoiceQuestionAndAnswer multipleChoiceQuestionAndAnswer, MultipleChoiceQuestion multipleChoiceQuestion){
+    public void validateMultipleChoiceQuestion(MultipleChoiceQuestionAndAnswer multipleChoiceQuestionAndAnswer, MultipleChoiceQuestion multipleChoiceQuestion) throws QuestionOrAnswerIsIncorrectException {
         if(!multipleChoiceQuestionAndAnswer.getNumber().equals(multipleChoiceQuestion.getNumber())){
-            return(false);
+            throw new QuestionOrAnswerIsIncorrectException();
         }
         if(!multipleChoiceQuestionAndAnswer.getQuestion().equals(multipleChoiceQuestion.getQuestion())){
-            return(false);
+            throw new QuestionOrAnswerIsIncorrectException();
         }
         for(int i = 0; i < multipleChoiceQuestionAndAnswer.getAnswers().size(); i++){
             Integer answer = multipleChoiceQuestionAndAnswer.getAnswers().get(i);
             if(!(answer>=0 && answer < multipleChoiceQuestion.getPossibleAnswers().size())){
-                return false;
+                throw new QuestionOrAnswerIsIncorrectException();
             }
         }
-        return(true);
 
     }
 
     public void validateAllQuestionsInApplication(Application application, Offer offer) throws QuestionOrAnswerIsIncorrectException {
+        if(application.getQuestionsAndAnswers().size() != offer.getQuestions().size()){
+            throw new QuestionOrAnswerIsIncorrectException();
+        }
         for(int i = 0; i < application.getQuestionsAndAnswers().size(); i++){
-            if(!validateQuestion(application.getQuestionsAndAnswers().get(i), offer.getQuestions().get(i))){
-                throw new QuestionOrAnswerIsIncorrectException();
-            }
+            validateQuestion(application.getQuestionsAndAnswers().get(i), offer.getQuestions().get(i));
         }
 
+        if(application.getRadioQuestionsAndAnswers().size() != offer.getRadioQuestions().size()){
+            throw new QuestionOrAnswerIsIncorrectException();
+        }
         for(int i = 0; i < application.getRadioQuestionsAndAnswers().size(); i++){
-            if(!validateRadioQuestion(application.getRadioQuestionsAndAnswers().get(i), offer.getRadioQuestions().get(i))){
-                throw new QuestionOrAnswerIsIncorrectException();
-            }
+            validateRadioQuestion(application.getRadioQuestionsAndAnswers().get(i), offer.getRadioQuestions().get(i));
         }
 
+        if(application.getMultipleChoiceQuestionsAndAnswers().size() != offer.getMultipleChoiceQuestions().size()){
+            throw new QuestionOrAnswerIsIncorrectException();
+        }
         for(int i = 0; i < application.getMultipleChoiceQuestionsAndAnswers().size(); i++){
-            if(!validateMultipleChoiceQuestion(application.getMultipleChoiceQuestionsAndAnswers().get(i), offer.getMultipleChoiceQuestions().get(i))){
-                throw new QuestionOrAnswerIsIncorrectException();
-            }
+            validateMultipleChoiceQuestion(application.getMultipleChoiceQuestionsAndAnswers().get(i), offer.getMultipleChoiceQuestions().get(i));
         }
 
 
+    }
+
+    public void validatePermissionGetApplicationById(User user, Application application) throws NoPermissionException {
+        if(user.getIsAdmin()){
+            return;
+        }
+        if (application.getOffer().getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
+    public void validatePermissionDeleteApplicationById(User user, Application application) throws NoPermissionException {
+        if(user.getIsAdmin()){
+            return;
+        }
+        if (application.getOffer().getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
+
+    public void validatePermissionGetApplicationsFromOffer(User user, Offer offer) throws NoPermissionException {
+        if(user.getIsAdmin()){
+            return;
+        }
+        if (offer.getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
     }
 }

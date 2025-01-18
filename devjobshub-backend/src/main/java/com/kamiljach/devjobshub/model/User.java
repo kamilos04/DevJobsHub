@@ -88,7 +88,7 @@ public class User {
     public static UserDto mapUserToUserDto(User user){
         UserDto userDto = UserMapper.INSTANCE.userToUserDto(user);
 
-        userDto.setApplications(user.getApplications().stream().map(element -> Application.mapApplicationToApplicationDtoShallow(element)).collect(Collectors.toList()));
+        userDto.setApplications(user.getApplications().stream().map(element -> element.mapToApplicationDtoShallow()).collect(Collectors.toList()));
         userDto.setOffers(user.getOffers().stream().map(element -> Offer.mapOfferToOfferDtoShallow(element)).collect(Collectors.toList()));
         userDto.setLikedOffers(user.getLikedOffers().stream().map(element -> Offer.mapOfferToOfferDtoShallow(element)).collect(Collectors.toList()));
 
