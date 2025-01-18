@@ -4,6 +4,7 @@ import com.kamiljach.devjobshub.dto.TechnologyDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
 import com.kamiljach.devjobshub.response.MessageResponse;
+import com.kamiljach.devjobshub.response.PageResponse;
 import com.kamiljach.devjobshub.service.TechnologyService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,12 @@ public class TechnologyController {
     public ResponseEntity<TechnologyDto> updateTechnologyById(@Valid @PathVariable("id") Long id, @RequestBody CreateTechnologyRequest createTechnologyRequest, @RequestHeader("Authorization") String jwt) throws TechnologyNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
         TechnologyDto technologyDto = technologyService.updateTechnology(createTechnologyRequest, id, jwt);
         return new ResponseEntity<>(technologyDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/technology/search")
+    public ResponseEntity<PageResponse<TechnologyDto>> searchTechnologies(@RequestParam("text") String text){
+        System.out.println("tgdfgfd");
+        return new ResponseEntity<>(technologyService.searchTechnologies(text), HttpStatus.OK);
     }
 
 

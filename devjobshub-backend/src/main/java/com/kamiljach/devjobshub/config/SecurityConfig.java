@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/offer/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/offer/search").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/technology/search").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
