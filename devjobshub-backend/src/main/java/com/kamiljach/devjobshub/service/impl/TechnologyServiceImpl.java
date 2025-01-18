@@ -8,12 +8,18 @@ import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.repository.TechnologyRepository;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
+import com.kamiljach.devjobshub.response.PageResponse;
 import com.kamiljach.devjobshub.service.UserService;
 import com.kamiljach.devjobshub.service.UtilityService;
 import com.kamiljach.devjobshub.service.TechnologyService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -85,7 +91,15 @@ public class TechnologyServiceImpl implements TechnologyService {
         return technology.mapToTechnologyDtoShallow();
     }
 
+    public PageResponse<TechnologyDto> searchTechnologies(String text){
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("name").ascending());
+        Page<Technology> page = technologyRepository.searchTechnologies(text, pageable);
 
+        ArrayList<TechnologyDto> technologyDtos = new ArrayList<>();
+        page.getContent().forEach(element -> technologyDtos.add(element.mapToTechnologyDtoShallow()));
+
+        return new PageResponse<>(technologyDtos, page);
+    }
 
 
 }

@@ -5,6 +5,7 @@ import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.Technology;
 import com.kamiljach.devjobshub.request.technology.CreateTechnologyRequest;
+import com.kamiljach.devjobshub.response.PageResponse;
 
 public interface TechnologyService {
     public TechnologyDto createTechnology(CreateTechnologyRequest technologyRequest, String jwt) throws  TechnologyWithThisNameAlreadyExistsException;
@@ -14,4 +15,5 @@ public interface TechnologyService {
 
     public TechnologyDto updateTechnology(CreateTechnologyRequest technologyRequest, Long id, String jwt) throws TechnologyNotFoundByIdException, NoPermissionException;
 
+    public PageResponse<TechnologyDto> searchTechnologies(String text);
 }
