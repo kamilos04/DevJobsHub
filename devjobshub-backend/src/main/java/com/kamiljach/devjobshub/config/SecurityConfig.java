@@ -1,6 +1,7 @@
 package com.kamiljach.devjobshub.config;
 
 import com.kamiljach.devjobshub.service.CustomUserDetailsService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @EnableWebSecurity
 @Configuration
@@ -42,8 +48,30 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/technology/search").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
         return http.build();
+    }
+
+
+    private CorsConfigurationSource corsConfigurationSource() {
+        return new CorsConfigurationSource() {
+            @Override
+            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                CorsConfiguration cfg = new CorsConfiguration();
+
+                cfg.setAllowedOrigins(Arrays.asList(
+                        "http://localhost:5173",
+                        "http://157.158.191.53:5173"
+                ));
+                cfg.setAllowedMethods(Collections.singletonList("*"));
+                cfg.setAllowCredentials(true);
+                cfg.setAllowedHeaders(Collections.singletonList("*"));
+                cfg.setExposedHeaders(Arrays.asList("Authorization"));
+                cfg.setMaxAge(36000L);
+                return cfg;
+            }
+        };
     }
 
     @Bean
