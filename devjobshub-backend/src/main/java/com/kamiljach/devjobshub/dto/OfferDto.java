@@ -26,6 +26,8 @@ public class OfferDto {
 
     private OFFER_OPERATING_MODE operatingMode;
 
+    private OFFER_SPECIALIZATION specialization;
+
     private Long minSalaryUoP;
 
     private Long maxSalaryUoP;

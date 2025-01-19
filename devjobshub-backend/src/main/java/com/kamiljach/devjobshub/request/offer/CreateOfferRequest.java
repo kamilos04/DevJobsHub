@@ -31,6 +31,8 @@ public class CreateOfferRequest {
     @NotNull
     private OFFER_OPERATING_MODE operatingMode;
 
+    @NotNull
+    private OFFER_SPECIALIZATION specialization;
 
     private Long minSalaryUoP;
 

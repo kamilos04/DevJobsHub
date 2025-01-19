@@ -140,7 +140,7 @@ public class OfferServiceImpl implements OfferService {
             pageable = PageRequest.of(searchOffersRequest.getPageNumber(), searchOffersRequest.getNumberOfElements(), Sort.by(searchOffersRequest.getSortBy()).ascending());
         }
         LocalDateTime currentDateTime = LocalDateTime.now();
-        Page<Offer> page = offerRepository.searchOffers(searchOffersRequest.getText(), searchOffersRequest.getJobLevels(), searchOffersRequest.getOperatingModes(), searchOffersRequest.getLocalizations(), searchOffersRequest.getTechnologies(), currentDateTime, pageable);
+        Page<Offer> page = offerRepository.searchOffers(searchOffersRequest.getText(), searchOffersRequest.getJobLevels(), searchOffersRequest.getOperatingModes(), searchOffersRequest.getSpecializations(), searchOffersRequest.getLocalizations(), searchOffersRequest.getTechnologies(), currentDateTime, pageable);
 
         ArrayList<Offer> offers = new ArrayList<>(page.getContent());
 

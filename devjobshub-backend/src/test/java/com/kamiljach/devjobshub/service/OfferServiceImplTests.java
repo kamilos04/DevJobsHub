@@ -265,7 +265,7 @@ public class OfferServiceImplTests {
         searchOffersRequest.setOperatingModes(Arrays.asList("STATIONARY"));
         searchOffersRequest.setSortingDirection("dsc");
         Page<Offer> page = new PageImpl<>(Arrays.asList(offer1));
-        when(offerRepository.searchOffers(any(), any(), any(), any(), any(), any(), any())).thenReturn(page);
+        when(offerRepository.searchOffers(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(page);
 
         PageResponse<OfferDto> result = offerService.searchOffer(searchOffersRequest);
 

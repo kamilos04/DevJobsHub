@@ -48,6 +48,7 @@ public class OfferController {
     public ResponseEntity<PageResponse<OfferDto>> searchOffers(@RequestParam(defaultValue = "") String text, @RequestParam(required = false) List<String> jobLevels,
                                                             @RequestParam(required = false) List<String> operatingModes,
                                                             @RequestParam(required = false) List<String> localizations,
+                                                               @RequestParam(required = false) List<String> specializations,
                                                             @RequestParam(required = false) List<Long> technologies,
                                                             @RequestParam String sortingDirection,
                                                             @RequestParam String sortBy, @RequestParam Integer pageNumber,
@@ -62,6 +63,7 @@ public class OfferController {
         searchOffersRequest.setNumberOfElements(numberOfElements);
         searchOffersRequest.setTechnologies(technologies);
         searchOffersRequest.setOperatingModes(operatingModes);
+        searchOffersRequest.setSpecializations(specializations);
         PageResponse<OfferDto> result = offerService.searchOffer(searchOffersRequest);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

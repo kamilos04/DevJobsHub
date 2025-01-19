@@ -17,6 +17,8 @@ public class SearchOffersRequest {
 
     private List<String> operatingModes = new ArrayList<>();
 
+    private List<String> specializations = new ArrayList<>();
+
     private List<String> localizations = new ArrayList<>();
 
     private List<Long> technologies = new ArrayList<>();

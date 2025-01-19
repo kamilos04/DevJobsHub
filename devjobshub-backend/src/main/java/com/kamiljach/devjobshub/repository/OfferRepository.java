@@ -31,10 +31,11 @@ public interface OfferRepository extends JpaRepository<Offer, Long> {
             "OR LOWER(wwo) LIKE LOWER(CONCAT('%', :text, '%'))) " +
             "AND (:jobLevels IS NULL OR o.jobLevel IN :jobLevels) " +
             "AND (:operatingModes IS NULL OR o.operatingMode IN :operatingModes) " +
+            "AND (:specializations IS NULL OR o.specialization IN :specializations) " +
             "AND (:localizations IS NULL OR o.localization IN :localizations) " +
             "AND (:technologies IS NULL OR rt.id IN :technologies OR nt.id IN :technologies) " +
             "AND (o.expirationDate > :currentDateTime))")
-    Page<Offer> searchOffers(@Param("text") String text, @Param("jobLevels") List<String> jobLevels, @Param("operatingModes") List<String> operatingModes, @Param("localizations") List<String> localizations, @Param("technologies") List<Long> technologies, @Param("currentDateTime") LocalDateTime currentDateTime, Pageable pageable);
+    Page<Offer> searchOffers(@Param("text") String text, @Param("jobLevels") List<String> jobLevels, @Param("operatingModes") List<String> operatingModes, @Param("specializations") List<String> specializations, @Param("localizations") List<String> localizations, @Param("technologies") List<Long> technologies, @Param("currentDateTime") LocalDateTime currentDateTime, Pageable pageable);
 
     @Query("SELECT DISTINCT o FROM Offer o " +
             "LEFT JOIN o.likedByUsers lbu " +
