@@ -34,6 +34,9 @@ public class Offer {
     @Enumerated(EnumType.STRING)
     private OFFER_OPERATING_MODE operatingMode;
 
+    @Enumerated(EnumType.STRING)
+    private OFFER_SPECIALIZATION specialization;
+
     private Long minSalaryUoP;
 
     private Long maxSalaryUoP;

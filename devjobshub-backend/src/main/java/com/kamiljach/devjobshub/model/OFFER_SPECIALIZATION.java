@@ -1,6 +1,6 @@
 package com.kamiljach.devjobshub.model;
 
-public enum SPECIALIZATIONS {
+public enum OFFER_SPECIALIZATION {
     BACKEND,
     FRONTEND,
     FULLSTACK,
@@ -14,5 +14,6 @@ public enum SPECIALIZATIONS {
     HELPDESK,
     UXUI,
     ADMINISTRATOR,
-    PROJECTMANAGER
+    PROJECTMANAGER,
+    OTHER
 }
