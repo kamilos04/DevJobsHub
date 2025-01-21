@@ -1,6 +1,6 @@
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchProfile, register } from "./action";
+import { fetchProfile, register, login } from "./action";
 
 interface InitialState {
     isLoading: boolean,
@@ -37,7 +37,7 @@ const profileSlice = createSlice({
             state.isLoading = false,
             state.fail = "fetchProfile",
             state.profile = null,
-            state.error = action.error
+            state.error = action.payload
         })
 
 
@@ -55,6 +55,23 @@ const profileSlice = createSlice({
         .addCase(register.rejected, (state, action) => {
             state.isLoading = false,
             state.fail = "register",
+            state.error = action.payload
+        })
+
+
+        .addCase(login.pending, (state, action) => {
+            state.isLoading = true
+            state.fail = null
+            state.success = null
+            state.error = null
+        })
+        .addCase(login.fulfilled, (state, action) => {
+            state.isLoading = false,
+            state.success = "login"
+        })
+        .addCase(login.rejected, (state, action) => {
+            state.isLoading = false,
+            state.fail = "login",
             state.error = action.payload
         })
     }

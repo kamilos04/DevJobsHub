@@ -30,9 +30,9 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { RegisterRequest } from '@/types/registerRequest'
 import { useDispatch, useSelector } from 'react-redux'
-import { register } from '@/state/profile/action'
+import { login, register } from '@/state/profile/action'
 import { useToast } from '@/hooks/use-toast'
-import { ToastAction } from '@radix-ui/react-toast'
+import { LoginRequest } from '@/types/loginRequest'
 
 
 
@@ -47,7 +47,14 @@ const Login = () => {
 
 
     const onLoginSubmit = (data: any) => {
-        console.log('Login Data:', data);
+        let reqData: LoginRequest = {
+            email: "",
+            password: ""
+        }
+        reqData.email = data.loginEmail
+        reqData.password = data.loginPassword
+
+        dispatch(login(reqData))
     };
 
     const onRegisterSubmit = (data: any) => {
@@ -71,7 +78,9 @@ const Login = () => {
     };
 
 
-
+    useEffect(() => {
+        console.log(profile.success)
+    }, [profile.success])
 
     const handleValueChangeAccountType = (data: any) => {
         if (data === "firm") {
@@ -104,7 +113,22 @@ const Login = () => {
                 });
             }
         }
-    }, profile.fail)
+        else if(profile.fail === "login"){
+            if (profile.error === "Invalid username or password") {
+                toast({
+                    variant: "destructive",
+                    title: "Invalid email or password!",
+                    description: "Check email and password."
+                });
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "An error occurred!",
+                    description: "Make sure you enter your details correctly."
+                });
+            }
+        }
+    }, [profile.fail])
 
 
     const loginSchema = yup.object().shape({
