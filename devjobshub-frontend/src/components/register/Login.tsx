@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -28,30 +28,84 @@ import {
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { RegisterRequest } from '@/types/registerRequest'
+import { useDispatch, useSelector } from 'react-redux'
+import { register } from '@/state/profile/action'
+import { useToast } from '@/hooks/use-toast'
+import { ToastAction } from '@radix-ui/react-toast'
 
-const onLoginSubmit = (data: any) => {
-    console.log('Login Data:', data);
-};
-
-const onRegisterSubmit = (data: any) => {
-    console.log('Register Data:', data);
-};
 
 
 
 
 const Login = () => {
     const [isFirm, setIsFirm] = useState<boolean | null>(null);
-    
-    const handleValueChangeAccountType = (data: any) => {
-        console.log(data)
-        if(data === "firm"){
-            setIsFirm(true);
+    const [surname, setSurname] = useState<string>("")
+    const profile = useSelector((store: any) => store.profile)
+    const { toast } = useToast()
+    const dispatch = useDispatch<any>()
+
+
+    const onLoginSubmit = (data: any) => {
+        console.log('Login Data:', data);
+    };
+
+    const onRegisterSubmit = (data: any) => {
+        let reqData: RegisterRequest = {
+            email: "",
+            password: "",
+            name: "",
+            isFirm: false
         }
-        else{
+        reqData.email = data.registerEmail
+        reqData.password = data.registerPassword
+        reqData.name = data.name
+        if (data.accountType === "firm") {
+            reqData.isFirm = true
+        }
+        else {
+            reqData.isFirm = false
+            reqData.surname = data.surname
+        }
+        dispatch(register(reqData))
+    };
+
+
+
+
+    const handleValueChangeAccountType = (data: any) => {
+        if (data === "firm") {
+            setIsFirm(true);
+            if (surname === "") {
+                setValueRegister("surname", " ")
+                setSurname(" ")
+            }
+
+        }
+        else {
             setIsFirm(false);
         }
     }
+
+
+    useEffect(() => {
+        if (profile.fail === "register") {
+            if (profile.error === "Account already exists") {
+                toast({
+                    variant: "destructive",
+                    title: "Account already exists!",
+                    description: "If you already have an account, sign in."
+                });
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "An error occurred!",
+                    description: "Make sure you enter your details correctly."
+                });
+            }
+        }
+    }, profile.fail)
+
 
     const loginSchema = yup.object().shape({
         loginEmail: yup.string().email("Invalid email").required("Email is required"),
@@ -77,6 +131,7 @@ const Login = () => {
     const {
         register: registerForm,
         handleSubmit: handleRegisterSubmit,
+        setValue: setValueRegister,
         formState: { errors: registerErrors }
     } = useForm({
         resolver: yupResolver(registerSchema),
@@ -132,7 +187,7 @@ const Login = () => {
 
                                     <div className="space-y-1">
                                         <Label htmlFor="accountType">Account type</Label>
-                                        <Select {...registerForm('accountType', { required: true })} onValueChange={handleValueChangeAccountType}>
+                                        <Select onValueChange={(value) => { handleValueChangeAccountType(value); setValueRegister("accountType", value) }}>
                                             <SelectTrigger className="w-full" id="accountType">
                                                 <SelectValue placeholder="Select account type" />
                                             </SelectTrigger>
@@ -152,7 +207,10 @@ const Login = () => {
                                     </div>
                                     {!isFirm && <div className="space-y-1">
                                         <Label htmlFor="surname">Surname</Label>
-                                        <Input id="surname" {...registerForm('surname')} />
+                                        <Input id="surname" value={surname} onChange={(e) => {
+                                            setSurname(e.target.value);
+                                            setValueRegister("surname", e.target.value)
+                                        }} />
                                         <p className="text-red-500 text-sm font-normal">{registerErrors.surname?.message}</p>
                                     </div>}
                                     <div className="space-y-1">
