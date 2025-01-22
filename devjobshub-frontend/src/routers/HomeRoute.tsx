@@ -1,4 +1,4 @@
-import Login from '@/components/register/Login'
+import Login from '@/components/loginRegister/Login'
 import React from 'react'
 import { Route, Routes } from 'react-router'
 

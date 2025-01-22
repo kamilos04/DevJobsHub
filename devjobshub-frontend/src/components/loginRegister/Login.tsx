@@ -33,6 +33,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { login, register } from '@/state/profile/action'
 import { useToast } from '@/hooks/use-toast'
 import { LoginRequest } from '@/types/loginRequest'
+import Navbar from '../navbar/Navbar'
 
 
 
@@ -78,9 +79,6 @@ const Login = () => {
     };
 
 
-    useEffect(() => {
-        console.log(profile.success)
-    }, [profile.success])
 
     const handleValueChangeAccountType = (data: any) => {
         if (data === "firm") {
@@ -120,7 +118,14 @@ const Login = () => {
                     title: "Invalid email or password!",
                     description: "Check email and password."
                 });
-            } else {
+            } else if (profile.error === "User not found by email") {
+                toast({
+                    variant: "destructive",
+                    title: "User not found by email!",
+                    description: "Register if you don't have an account."
+                });
+            } 
+            else {
                 toast({
                     variant: "destructive",
                     title: "An error occurred!",
@@ -164,7 +169,10 @@ const Login = () => {
 
 
     return (
-        <div className='h-screen flex flex-col items-center justify-center bg-my-background'>
+        <div className='flex flex-col h-screen'>
+        <Navbar/>
+        
+        <div className='h-full flex flex-col items-center justify-center bg-my-background'>
             <Tabs defaultValue="login" className="w-[25rem]">
                 <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="login">Sign in</TabsTrigger>
@@ -257,6 +265,7 @@ const Login = () => {
 
             </Tabs>
         </div >
+        </div>
     )
 }
 
