@@ -42,7 +42,7 @@ public class ApplicationController {
         return new ResponseEntity<MessageResponse>(messageResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/application/fromOffer/{offerId}")
+    @GetMapping("/application/from-offer/{offerId}")
     public ResponseEntity<PageResponse<ApplicationDto>> getApplicationsFromOffer(@PathVariable("offerId") Long offerId,
                                                                                  @RequestParam("numberOfElements") Integer numberOfElements,
                                                                                  @RequestParam("pageNumber") Integer pageNumber,

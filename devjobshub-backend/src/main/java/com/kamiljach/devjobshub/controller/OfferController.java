@@ -76,7 +76,7 @@ public class OfferController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/likeOffer/{offerId}")
+    @PostMapping("/offer/like/{offerId}")
     public ResponseEntity<MessageResponse> likeOffer(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException,
             OfferIsAlreadyLikedByUserException,
             OfferNotFoundByIdException, NoPermissionException {
@@ -85,7 +85,7 @@ public class OfferController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/removeLikeOffer/{offerId}")
+    @PostMapping("/offer/remove-like/{offerId}")
     public ResponseEntity<MessageResponse> removeLikeOffer(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException,
             OfferNotFoundByIdException, OfferIsNotLikedByUserException, NoPermissionException {
         offerService.removeLikeOffer(offerId, jwt);
@@ -93,7 +93,7 @@ public class OfferController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/offer/addApplicationToFavourites")
+    @PostMapping("/offer/add-application-to-favourites")
     public ResponseEntity<MessageResponse> addApplicationToFavourites(@RequestParam("offerId") Long offerId,
                                                                       @RequestParam("applicationId") Long applicationId,
                                                                       @RequestHeader("Authorization") String jwt)
@@ -104,7 +104,7 @@ public class OfferController {
     }
 
 
-    @PostMapping("/offer/removeApplicationFromFavourites")
+    @PostMapping("/offer/remove-application-from-favourites")
     public ResponseEntity<MessageResponse> removeApplicationFromFavourites(@RequestParam("offerId") Long offerId,
                                                                            @RequestParam("applicationId") Long applicationId,
                                                                            @RequestHeader("Authorization") String jwt)
@@ -114,7 +114,7 @@ public class OfferController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/offer/addRecruiter")
+    @PostMapping("/offer/add-recruiter")
     public ResponseEntity<MessageResponse> addRecruiter(@RequestParam("offerId") Long offerId,
                                                         @RequestParam("userId") Long userId,
                                                         @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException, UserNotFoundByJwtException {
@@ -123,7 +123,7 @@ public class OfferController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/offer/removeRecruiter")
+    @PostMapping("/offer/remove-recruiter")
     public ResponseEntity<MessageResponse> removeRecruiter(@RequestParam("offerId") Long offerId,
                                                            @RequestParam("userId") Long userId,
                                                            @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException, UserNotFoundByJwtException, NoPermissionException {
@@ -138,7 +138,7 @@ public class OfferController {
         return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 
-    @GetMapping("offer/fromRecruiter/{recruiterId}")
+    @GetMapping("offer/from-recruiter/{recruiterId}")
     public ResponseEntity<PageResponse<OfferDto>> getOffersFromRecruiter(@PathVariable("recruiterId") Long recruiterId,
                                                                          @RequestParam(value = "isActive", required = false) Boolean isActive,
                                                                          @RequestParam("numberOfElements") Integer numberOfElements,

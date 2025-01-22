@@ -20,7 +20,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/myprofile")
+    @GetMapping("/my-profile")
     public ResponseEntity<UserDto> getMyProfile(@RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException {
         return new ResponseEntity<>(userService.findUserByJwt(jwt).mapToUserDtoShallow(), HttpStatus.OK);
     }
