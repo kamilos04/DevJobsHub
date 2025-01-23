@@ -19,9 +19,10 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
                     defaultValue={false}
                     render={({ field }) => (
                         <>
-                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...isContractCheckbox.props} />
+                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...isContractCheckbox.props} id={isContractCheckbox.registerAs}/>
                             <label
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                htmlFor={isContractCheckbox.registerAs}
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-bold"
                             >
                                 {isContractCheckbox.label}
                             </label>
@@ -40,8 +41,9 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
                     defaultValue={false}
                     render={({ field }) => (
                         <>
-                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...showSalaryCheckbox.props} />
+                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...showSalaryCheckbox.props} id={showSalaryCheckbox.registerAs}/>
                             <label
+                                htmlFor={showSalaryCheckbox.registerAs}
                                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                             >
                                 Show salary
