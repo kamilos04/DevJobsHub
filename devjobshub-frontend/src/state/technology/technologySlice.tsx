@@ -1,7 +1,7 @@
 import { Technology } from "@/types/technology";
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { searchTechnologies } from "./action";
+import { createTechnology, searchTechnologies } from "./action";
 
 interface PageResponseTechnologies {
     content: Array<Technology> | undefined | null,
@@ -49,6 +49,22 @@ const technologySlice = createSlice({
             state.error = action.payload
         })
 
+
+        .addCase(createTechnology.pending, (state, action) => {
+            state.isLoading = true
+            state.fail = null
+            state.success = null
+            state.error = null
+        })
+        .addCase(createTechnology.fulfilled, (state, action) => {
+            state.isLoading = false,
+            state.success = "createTechnology"
+        })
+        .addCase(createTechnology.rejected, (state, action) => {
+            state.isLoading = false,
+            state.fail = "createTechnology",
+            state.error = action.payload
+        })
 
     }
 })
