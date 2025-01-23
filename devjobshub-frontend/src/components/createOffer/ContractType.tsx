@@ -4,52 +4,83 @@ import { Separator } from '../ui/separator'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
+import { Controller } from 'react-hook-form'
 
-const ContractType = ({isContractCheckboxProps= {}, showSalaryCheckBoxProps = {}, selectMonthlyOrHourlyProps = {}, minSalaryProps = {}, maxSalaryProps = {}}: any) => {
-    
+const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {}, selectMonthlyOrHourly = {}, inputMinSalary = {}, inputMaxSalary = {} }: any) => {
+    // const handleCheckBox = (e: any) => {
+    //     console.log(e)
+    // }
     return (
         <div className='flex flex-col space-y-3 p-3 border-[1px] rounded-lg w-min'>
             <div className="flex items-center space-x-2">
-                <Checkbox {...isContractCheckboxProps} />
-                <label
-                    htmlFor={isContractCheckboxProps.id}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                    {isContractCheckboxProps.label}
-                </label>
+                <Controller
+                    name={isContractCheckbox.registerAs}
+                    control={control}
+                    defaultValue={false}
+                    render={({ field }) => (
+                        <>
+                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...isContractCheckbox.props} />
+                            <label
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                                {isContractCheckbox.label}
+                            </label>
+                        </>
+                    )}
+                />
 
             </div>
+
+
             <Separator className="my-4" />
             <div className="flex items-center space-x-2">
-                <Checkbox {...showSalaryCheckBoxProps} />
-                <label
-                    htmlFor={showSalaryCheckBoxProps.id}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                    Show salary
-                </label>
+                <Controller
+                    name={showSalaryCheckbox.registerAs}
+                    control={control}
+                    defaultValue={false}
+                    render={({ field }) => (
+                        <>
+                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...showSalaryCheckbox.props} />
+                            <label
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                                Show salary
+                            </label>
+                        </>
+                    )}
+                />
 
             </div>
-            <Select {...selectMonthlyOrHourlyProps}>
-                <SelectTrigger className="w-[14rem]">
-                    <SelectValue placeholder="Monthly or hourly salary" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                        <SelectItem value="monthly">Monthly</SelectItem>
-                        <SelectItem value="hourly">Hourly</SelectItem>
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
+            <Controller
+                name={selectMonthlyOrHourly.registerAs}
+                control={control}
+                render={({ field }) => (
+                    <>
+                        <Select {...selectMonthlyOrHourly.props} onValueChange={field.onChange} value={field.value} >
+                            <SelectTrigger className="w-[14rem]">
+                                <SelectValue placeholder="Monthly or hourly salary" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectItem value="monthly">Monthly</SelectItem>
+                                    <SelectItem value="hourly">Hourly</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    </>
+                )}
+            ></Controller>
+
+
             <div className='flex flex-row space-x-3 items-center' >
                 <div className="grid w-full max-w-sm items-center gap-2">
                     <Label >Minimum salary</Label>
-                    <Input type="number" className='w-[8rem]' {...minSalaryProps}/>
+                    <Input type="number" className='w-[8rem]' {...inputMinSalary.props} />
                 </div>
                 <div className="grid w-full max-w-sm items-center gap-2">
                     <Label >Maximum salary</Label>
                     <div className='flex flex-row items-center space-x-2'>
-                        <Input type="number" className='w-[8rem]' {...minSalaryProps}/>
+                        <Input type="number" className='w-[8rem]' {...inputMaxSalary.props} />
                         <span className='text-md'>PLN</span>
                     </div>
 
