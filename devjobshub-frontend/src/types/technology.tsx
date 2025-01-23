@@ -1,6 +1,6 @@
 export interface Technology {
-    id: number | undefined,
-    name: string | undefined,
+    id: number,
+    name: string,
     assignedAsRequired?: any | undefined,
     assignedAsNiceToHave?: any | undefined
 }

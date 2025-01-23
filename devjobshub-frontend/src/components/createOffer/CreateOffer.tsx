@@ -33,6 +33,7 @@ import SelectJobLevel from './SelectJobLevel'
 import SelectSpecialization from './SelectSpecialization'
 import SelectOperatingMode from './SelectOperatingMode'
 import ExpirationDatePicker from './ExpirationDatePicker'
+import SelectTechnologiesDialog from './SelectTechnologiesDialog'
 
 
 
@@ -46,6 +47,10 @@ const CreateOffer = () => {
         formState: { errors: createOfferErrors }
     } = useForm({
     })
+
+    const [requiredTechnologies, setRequiredTechnologies] = React.useState<Array<number>>([])
+    const [niceToHaveTechnologies, setNiceToHaveTechnologies] = React.useState<Array<number>>([])
+    
 
     const onCreateOfferSubmit = (data: any) => {
         console.log(data)
@@ -119,10 +124,9 @@ const CreateOffer = () => {
                                     inputMaxSalary={{ props: { ...registerCreateOffer("maxSalaryUZ") } }}
                                     control={controlCreateOffer}
                                 />
-                                {/* <ContractType isContractCheckboxProps={{ id: "isB2B", label: "B2B" }} showSalaryCheckBoxProps={{ id: "showSalaryB2B" }} />
-                                <ContractType isContractCheckboxProps={{ id: "isUZ", label: "Umowa zlecenia" }} showSalaryCheckBoxProps={{ id: "showSalaryUZ" }} /> */}
 
-
+                                <SelectTechnologiesDialog technologies={requiredTechnologies} setTechnologies={setRequiredTechnologies} text="Add required technologies"/>
+                                
 
 
                             </div>

@@ -22,7 +22,7 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
                             <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...isContractCheckbox.props} id={isContractCheckbox.registerAs}/>
                             <label
                                 htmlFor={isContractCheckbox.registerAs}
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-bold"
+                                className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-bold"
                             >
                                 {isContractCheckbox.label}
                             </label>
