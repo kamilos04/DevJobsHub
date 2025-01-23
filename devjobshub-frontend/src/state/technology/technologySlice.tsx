@@ -29,7 +29,14 @@ const initialState = {
 const technologySlice = createSlice({
     name: 'technology',
     initialState,
-    reducers:{},
+    reducers:{
+        setSuccessNull(state) {
+            state.success=null
+        },
+        setFailNull(state) {
+            state.fail=null
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(searchTechnologies.pending, (state, action) => {
             state.isLoading = true
@@ -71,3 +78,4 @@ const technologySlice = createSlice({
 
 
 export default technologySlice.reducer
+export const {setSuccessNull, setFailNull} = technologySlice.actions
