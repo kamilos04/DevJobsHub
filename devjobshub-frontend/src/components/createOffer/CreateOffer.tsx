@@ -36,6 +36,11 @@ import ExpirationDatePicker from './ExpirationDatePicker'
 import SelectTechnologiesDialog from './SelectTechnologiesDialog'
 import { Technology } from '@/types/technology'
 import EditBulletPoints from './EditBulletPoints'
+import { Question } from '@/types/question'
+import {RadioQuestion} from '@/types/question'
+import { MultipleChoiceQuestion } from '@/types/multipleChoiceQuestion'
+import CreateQuestion from './CreateQuestion'
+import EditRecruitmentQuestions from './EditRecruitmentQuestions'
 
 
 
@@ -56,6 +61,10 @@ const CreateOffer = () => {
     const [requirements, setRequirements] = React.useState<Array<string>>([])
     const [niceToHave, setNiceToHave] = React.useState<Array<string>>([])
     const [whatWeOffer, setWhatWeOffer] = React.useState<Array<string>>([])
+    const [questions, setQuestions] = React.useState<Array<Question>>([])
+    const [radioQuestions, setRadioQuestions] = React.useState<Array<RadioQuestion>>([])
+    const [multipleChoiceQuestions, setMultipleChoiceQuestions] = React.useState<Array<MultipleChoiceQuestion>>([])
+
 
 
     const onCreateOfferSubmit = (data: any) => {
@@ -143,6 +152,7 @@ const CreateOffer = () => {
                         <EditBulletPoints list={requirements} setList={setRequirements} text={"Requirements"}/>
                         <EditBulletPoints list={niceToHave} setList={setNiceToHave} text={"Nice to have"}/>
                         <EditBulletPoints list={whatWeOffer} setList={setWhatWeOffer} text={"Requirements"}/>
+                        <EditRecruitmentQuestions/>
                     </div>
                     <Button type='submit'>Register</Button>
                 </form>

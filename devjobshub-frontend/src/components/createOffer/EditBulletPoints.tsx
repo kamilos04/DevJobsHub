@@ -27,7 +27,7 @@ const EditBulletPoints = (props: any) => {
 
             </div>
             <div>
-                <ul className='list-disc pl-5 break-words space-y-2'>
+                <ul className='list-disc pl-5 break-words whitespace-normal space-y-2'>
                     {props.list.map((element:string, index: number) => (
                         <li key={index}>
                             <div className='flex flex-row space-x-2 items-center justify-between'>
