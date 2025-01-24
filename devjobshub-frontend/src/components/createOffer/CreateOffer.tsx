@@ -34,6 +34,8 @@ import SelectSpecialization from './SelectSpecialization'
 import SelectOperatingMode from './SelectOperatingMode'
 import ExpirationDatePicker from './ExpirationDatePicker'
 import SelectTechnologiesDialog from './SelectTechnologiesDialog'
+import { Technology } from '@/types/technology'
+import EditBulletPoints from './EditBulletPoints'
 
 
 
@@ -48,9 +50,13 @@ const CreateOffer = () => {
     } = useForm({
     })
 
-    const [requiredTechnologies, setRequiredTechnologies] = React.useState<Array<number>>([])
-    const [niceToHaveTechnologies, setNiceToHaveTechnologies] = React.useState<Array<number>>([])
-    
+    const [requiredTechnologies, setRequiredTechnologies] = React.useState<Array<Technology>>([])
+    const [niceToHaveTechnologies, setNiceToHaveTechnologies] = React.useState<Array<Technology>>([])
+    const [responsibilities, setResponsibilities] = React.useState<Array<string>>([])
+    const [requirements, setRequirements] = React.useState<Array<string>>([])
+    const [niceToHave, setNiceToHave] = React.useState<Array<string>>([])
+    const [whatWeOffer, setWhatWeOffer] = React.useState<Array<string>>([])
+
 
     const onCreateOfferSubmit = (data: any) => {
         console.log(data)
@@ -69,21 +75,21 @@ const CreateOffer = () => {
                     <div className='border-[1px] w-min mt-5 rounded-lg p-8 space-y-6'>
                         <div className="grid w-full max-w-sm items-center gap-2">
                             <Label htmlFor="title">Title</Label>
-                            <Input type="text" id="title" placeholder="Example title" {...registerCreateOffer("name")}/>
+                            <Input type="text" id="title" placeholder="Example title" {...registerCreateOffer("name")} />
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-2">
                             <Label htmlFor="localization">Company address: city</Label>
-                            <Input type="text" id="localization" placeholder="Example city" {...registerCreateOffer("localization")}/>
+                            <Input type="text" id="localization" placeholder="Example city" {...registerCreateOffer("localization")} />
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-2">
                             <Label htmlFor="address">Company address: street name and number</Label>
-                            <Input type="text" id="address" placeholder="Example address" {...registerCreateOffer("address")}/>
+                            <Input type="text" id="address" placeholder="Example address" {...registerCreateOffer("address")} />
                         </div>
-                        <SelectJobLevel control={controlCreateOffer}/>
-                        <SelectOperatingMode control={controlCreateOffer}/>
-                        <SelectSpecialization control={controlCreateOffer}/>
+                        <SelectJobLevel control={controlCreateOffer} />
+                        <SelectOperatingMode control={controlCreateOffer} />
+                        <SelectSpecialization control={controlCreateOffer} />
 
-                        <ExpirationDatePicker control={controlCreateOffer}/>
+                        <ExpirationDatePicker control={controlCreateOffer} />
                         <div className='flex flex-col space-y-2'>
                             <Label htmlFor="expirationTime">Offer expiration time</Label>
                             <input type='time' className='text-md bg-background p-1 pl-3 border-[1px] rounded-lg w-[6rem]' id="expirationTime"></input>
@@ -120,20 +126,23 @@ const CreateOffer = () => {
                                 <ContractType isContractCheckbox={{ registerAs: "isUZ", label: "Order contract" }}
                                     showSalaryCheckbox={{ registerAs: "showSalaryUZ" }}
                                     selectMonthlyOrHourly={{ registerAs: "monthlyOrHourlyUZ" }}
-                                    inputMinSalary={{ props: { ...registerCreateOffer("minSalaryUZ")} }}
+                                    inputMinSalary={{ props: { ...registerCreateOffer("minSalaryUZ") } }}
                                     inputMaxSalary={{ props: { ...registerCreateOffer("maxSalaryUZ") } }}
                                     control={controlCreateOffer}
                                 />
 
-                                <SelectTechnologiesDialog technologies={requiredTechnologies} setTechnologies={setRequiredTechnologies} text="Add required technologies"/>
-                                
+
 
 
                             </div>
                         </div>
+                        <SelectTechnologiesDialog technologies={requiredTechnologies} setTechnologies={setRequiredTechnologies} text="Change required technologies" />
+                        <SelectTechnologiesDialog technologies={niceToHaveTechnologies} setTechnologies={setNiceToHaveTechnologies} text="Change optional technologies" />
 
-
-
+                        <EditBulletPoints list={responsibilities} setList={setResponsibilities} text={"Responsibilities"}/>
+                        <EditBulletPoints list={requirements} setList={setRequirements} text={"Requirements"}/>
+                        <EditBulletPoints list={niceToHave} setList={setNiceToHave} text={"Nice to have"}/>
+                        <EditBulletPoints list={whatWeOffer} setList={setWhatWeOffer} text={"Requirements"}/>
                     </div>
                     <Button type='submit'>Register</Button>
                 </form>

@@ -48,7 +48,6 @@ public class TechnologyController {
 
     @GetMapping("/technology/search")
     public ResponseEntity<PageResponse<TechnologyDto>> searchTechnologies(@RequestParam("text") String text){
-        System.out.println("tgdfgfd");
         return new ResponseEntity<>(technologyService.searchTechnologies(text), HttpStatus.OK);
     }
 

@@ -32,7 +32,7 @@ const SelectTechnologiesDialog = ({ technologies, setTechnologies, text }: { tec
         <div>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button variant="outline">Select required technologies</Button>
+                    <Button variant="outline">{text}</Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[27rem] space-y-0">
                     <DialogHeader>
