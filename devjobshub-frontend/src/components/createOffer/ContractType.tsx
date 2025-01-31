@@ -11,7 +11,7 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
     //     console.log(e)
     // }
     return (
-        <div className='flex flex-col space-y-3 p-3 border-[1px] rounded-lg w-min'>
+        <div className='flex flex-col space-y-3 p-4 border-[1px] rounded-lg w-min bg-my-card'>
             <div className="flex items-center space-x-2">
                 <Controller
                     name={isContractCheckbox.registerAs}

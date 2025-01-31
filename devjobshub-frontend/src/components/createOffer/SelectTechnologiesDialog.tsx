@@ -32,7 +32,7 @@ const SelectTechnologiesDialog = ({ technologies, setTechnologies, text }: { tec
         <div>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button variant="outline">{text}</Button>
+                    <Button variant="secondary">{text}</Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[27rem] space-y-0">
                     <DialogHeader>
@@ -75,7 +75,7 @@ const SelectTechnologiesDialog = ({ technologies, setTechnologies, text }: { tec
                         </div>
                     </div>
 
-
+                                
                     <DialogFooter>
                         <DialogClose asChild>
                             <Button variant="secondary">Save changes</Button>

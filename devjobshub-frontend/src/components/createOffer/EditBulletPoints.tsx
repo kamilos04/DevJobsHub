@@ -18,7 +18,7 @@ const EditBulletPoints = (props: any) => {
     }
 
     return (
-        <div className='flex flex-col space-y-3 p-3 border-[1px] rounded-lg w-96 text-md'>
+        <div className='flex flex-col space-y-3 p-4 border-[1px] rounded-lg w-96 text-md bg-my-card'>
             <p>{props.text}</p>
             <Separator />
             <div className='flex flex-row space-x-3'>
@@ -27,7 +27,7 @@ const EditBulletPoints = (props: any) => {
 
             </div>
             <div>
-                <ul className='list-disc pl-5 break-words whitespace-normal space-y-2'>
+                <ul className='list-disc pl-5 break-words space-y-2'>
                     {props.list.map((element:string, index: number) => (
                         <li key={index}>
                             <div className='flex flex-row space-x-2 items-center justify-between'>
