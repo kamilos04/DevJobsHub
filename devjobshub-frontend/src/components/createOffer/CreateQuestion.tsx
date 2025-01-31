@@ -12,8 +12,12 @@ import {
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { Button } from '../ui/button'
+import { Question } from '@/types/question'
+import { RadioQuestion } from '@/types/radioQuestion'
+import { MultipleChoiceQuestion } from '@/types/multipleChoiceQuestion'
+import { QuestionWithType } from '@/types/questionWithType'
 
-const CreateQuestion = () => {
+const CreateQuestion = (props: any) => {
     const [questionType, setQuestionType] = useState("")
     const [questionValue, setQuestionValue] = useState("")
     const [answers, setAnswers] = React.useState<Array<string>>([])
@@ -30,8 +34,51 @@ const CreateQuestion = () => {
         setAnswers(answers.filter((_: string, i: number) => i !== index));
     }
 
+    const resetForm = () => {
+        setQuestionType("")
+        setQuestionValue("")
+        setAnswers([])
+        setNewAnswer("")
+    }
+
+    const handleAddQuestionClick = () => {
+        if (questionType!=="" && questionValue !== ""){
+            if(questionType=="question"){
+                const q: QuestionWithType = {
+                    question: questionValue,
+                    type: 'question',
+                    possibleAnswers: null
+                }
+                props.setQuestionsList([...props.questionsList, q])
+                resetForm()
+            }
+
+            if(questionType=="radioQuestion" && answers.length !== 0){
+                const q: QuestionWithType = {
+                    question: questionValue,
+                    type: 'radioQuestion',
+                    possibleAnswers: answers
+                }
+                props.setQuestionsList([...props.questionsList, q])
+                resetForm()
+            }
+
+            if(questionType=="multipleChoiceQuestion" && answers.length !== 0){
+                const q: QuestionWithType = {
+                    question: questionValue,
+                    type: 'multipleChoiceQuestion',
+                    possibleAnswers: answers
+                }
+                props.setQuestionsList([...props.questionsList, q])
+                resetForm()
+            }
+
+
+        }
+    }
+
     return (
-        <div className='flex flex-col space-y-3 p-3 border-[1px] rounded-lg'>
+        <div className='flex flex-col space-y-3 p-3 border-[1px] rounded-lg w-[35rem] h-min'>
             <p className='text-md'>Create question</p>
             <Separator />
             <div className='flex flex-col space-y-2'>
@@ -80,7 +127,7 @@ const CreateQuestion = () => {
                     </div>
                 </div>}
                 <div className='pt-3 w-full'>
-                    <Button className='w-full'>Add question</Button>
+                    <Button className='w-full' onClick={() => handleAddQuestionClick()}>Add question</Button>
                 </div>
                 
 

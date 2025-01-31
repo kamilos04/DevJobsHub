@@ -41,6 +41,7 @@ import {RadioQuestion} from '@/types/question'
 import { MultipleChoiceQuestion } from '@/types/multipleChoiceQuestion'
 import CreateQuestion from './CreateQuestion'
 import EditRecruitmentQuestions from './EditRecruitmentQuestions'
+import { QuestionWithType } from '@/types/questionWithType'
 
 
 
@@ -64,7 +65,7 @@ const CreateOffer = () => {
     const [questions, setQuestions] = React.useState<Array<Question>>([])
     const [radioQuestions, setRadioQuestions] = React.useState<Array<RadioQuestion>>([])
     const [multipleChoiceQuestions, setMultipleChoiceQuestions] = React.useState<Array<MultipleChoiceQuestion>>([])
-
+    const [questionsList, setQuestionsList] = React.useState<Array<QuestionWithType>>([])
 
 
     const onCreateOfferSubmit = (data: any) => {
@@ -152,7 +153,7 @@ const CreateOffer = () => {
                         <EditBulletPoints list={requirements} setList={setRequirements} text={"Requirements"}/>
                         <EditBulletPoints list={niceToHave} setList={setNiceToHave} text={"Nice to have"}/>
                         <EditBulletPoints list={whatWeOffer} setList={setWhatWeOffer} text={"Requirements"}/>
-                        <EditRecruitmentQuestions/>
+                        <EditRecruitmentQuestions questionsList={questionsList} setQuestionsList={setQuestionsList}/>
                     </div>
                     <Button type='submit'>Register</Button>
                 </form>
