@@ -18,7 +18,7 @@ const EditBulletPoints = (props: any) => {
     }
 
     return (
-        <div className='flex flex-col space-y-3 p-4 border-[1px] rounded-lg w-96 text-md bg-my-card'>
+        <div className='flex flex-col space-y-3 p-4 border-[1px] rounded-lg w-full text-md bg-my-card'>
             <p>{props.text}</p>
             <Separator />
             <div className='flex flex-row space-x-3'>
