@@ -98,7 +98,7 @@ const CreateQuestion = (props: any) => {
             </div>
             <div className='flex flex-col space-y-2 pt-2'>
                 <Label htmlFor="newQuestion">Question</Label>
-                <Input type="text" placeholder="Example question" id="newQuestion" value={questionValue} onChange={(e) => setQuestionValue(e.target.value)} />
+                <Input type="text" placeholder="Enter your question" id="newQuestion" value={questionValue} onChange={(e) => setQuestionValue(e.target.value)} />
             </div>
             {(questionType === "radioQuestion" || questionType === "multipleChoiceQuestion") &&
 
@@ -106,8 +106,8 @@ const CreateQuestion = (props: any) => {
                     <div className='flex flex-col space-y-2 pt-5'>
                         <Label htmlFor="addAnswerInput">Add answer</Label>
                         <div className='flex flex-row space-x-3'>
-                            <Input type="text" placeholder="Example answer" id="addAnswerInput" value={newAnswer} onChange={(e) => setNewAnswer(e.target.value)} />
-                            <Button onClick={() => handleAddAnswerClick()}>Add answer</Button>
+                            <Input type="text" placeholder="Enter a possible answer" id="addAnswerInput" value={newAnswer} onChange={(e) => setNewAnswer(e.target.value)} />
+                            <Button onClick={() => handleAddAnswerClick()}  type='button'>Add answer</Button>
                         </div>
 
 
@@ -119,7 +119,7 @@ const CreateQuestion = (props: any) => {
                                 <li key={index}>
                                     <div className='flex flex-row space-x-2 items-center justify-between'>
                                         <span className='text-sm break-words'>{element}</span>
-                                        <Button className='pt-2 h-[1.5rem] text-xs' variant={"secondary"} onClick={() => removeAnswer(index)}>Remove</Button>
+                                        <Button className='pt-2 h-[1.5rem] text-xs' variant={"secondary"} onClick={() => removeAnswer(index)}  type='button'>Remove</Button>
                                     </div>
                                 </li>
                             ))}
@@ -127,7 +127,7 @@ const CreateQuestion = (props: any) => {
                     </div>
                 </div>}
                 <div className='pt-3 w-full'>
-                    <Button className='w-full' onClick={() => handleAddQuestionClick()}>Add question</Button>
+                    <Button className='w-full' onClick={() => handleAddQuestionClick() } type='button'>Add question</Button>
                 </div>
                 
 

@@ -42,6 +42,9 @@ import { MultipleChoiceQuestion } from '@/types/multipleChoiceQuestion'
 import CreateQuestion from './CreateQuestion'
 import EditRecruitmentQuestions from './EditRecruitmentQuestions'
 import { QuestionWithType } from '@/types/questionWithType'
+import { emptyCreateOfferRequest } from '@/types/createOfferRequest'
+import { formatExpirationDate } from '@/utils/dateUtils'
+import { convertQuestionsListToListOfMultipleChoiceQuestions, convertQuestionsListToListOfOpenQuestions, convertQuestionsListToListOfRadioQuestions } from '@/utils/questionsUtils'
 
 
 
@@ -68,13 +71,81 @@ const CreateOffer = () => {
     const [questionsList, setQuestionsList] = React.useState<Array<QuestionWithType>>([])
 
 
+
     const onCreateOfferSubmit = (data: any) => {
+        const request = emptyCreateOfferRequest
+        request.name=data.name
+        request.jobLevel=data.jobLevel
+        request.operatingMode=data.operatingMode
+        request.specialization=data.specialization
+        request.localization=data.localization
+        request.address=data.address
+        request.expirationDate = formatExpirationDate(data.expirationDate, data.expirationTime)
+        request.aboutProject=data.aboutProject
+        request.responsibilitiesText=data.responibilitiesText
+        request.responsibilities=responsibilities
+        request.requirements=requirements
+        request.niceToHave=niceToHave
+        request.whatWeOffer=whatWeOffer
+        request.requiredTechnologies=requiredTechnologies.map((element: Technology) => (element.id))
+        request.niceToHaveTechnologies=niceToHaveTechnologies.map((element: Technology) => (element.id))
+        request.questions=convertQuestionsListToListOfOpenQuestions(questionsList)
+        request.radioQuestions=convertQuestionsListToListOfRadioQuestions(questionsList)
+        request.multipleChoiceQuestions=convertQuestionsListToListOfMultipleChoiceQuestions(questionsList)
+
+        if(data.isUoP === true){
+            if(data.showSalaryUoP === true){
+                if(data.monthlyOrHourlyUoP==="monthly"){
+                    request.isSalaryMonthlyUoP=true
+                }
+                else{
+                    request.isSalaryMonthlyUoP=false
+                }
+                request.minSalaryUoP=data.minSalaryUoP
+                request.maxSalaryUoP=data.maxSalaryUoP
+            }
+            else{
+                request.isSalaryMonthlyUoP = false
+            }
+        }
+
+        if(data.isB2B === true){
+            if(data.showSalaryB2B === true){
+                if(data.monthlyOrHourlyB2B==="monthly"){
+                    request.isSalaryMonthlyB2B=true
+                }
+                else{
+                    request.isSalaryMonthlyB2B=false
+                }
+                request.minSalaryB2B=data.minSalaryB2B
+                request.maxSalaryB2B=data.maxSalaryB2B
+            }
+            else{
+                request.isSalaryMonthlyB2B = false
+            }
+        }
+
+
+        if(data.isUZ === true){
+            if(data.showSalaryUZ === true){
+                if(data.monthlyOrHourlyUZ==="monthly"){
+                    request.isSalaryMonthlyUZ=true
+                }
+                else{
+                    request.isSalaryMonthlyUZ=false
+                }
+                request.minSalaryUZ=data.minSalaryUZ
+                request.maxSalaryUZ=data.maxSalaryUZ
+            }
+            else{
+                request.isSalaryMonthlyUZ = false
+            }
+        }
+
+        console.log(request)
         console.log(data)
+
     }
-
-    // const handleExpirationDateChange = (data) => {
-
-    // }
 
 
     return (
@@ -85,14 +156,14 @@ const CreateOffer = () => {
                 <form onSubmit={handleCreateOffer(onCreateOfferSubmit)}>
                     <div className='border-[1px] w-min mt-5 rounded-lg p-8'>
                         <div className='flex flex-row justify-center mb-3'>
-                            <h1 className='text-xl font-bold'>Create new job offer</h1>
+                            <h1 className='text-2xl font-bold'>Create a new job offer</h1>
                         </div>
                         <Separator />
                         <div className='flex flex-row flex-wrap space-x-8 mt-6'>
                             <div className='flex flex-col space-y-6'>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="title">Title</Label>
-                                    <Input type="text" id="title" placeholder="Example title" {...registerCreateOffer("name")} />
+                                    <Input type="text" id="title" placeholder="Enter the job offer title" {...registerCreateOffer("name")} />
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="localization">Company address: city</Label>
@@ -116,7 +187,7 @@ const CreateOffer = () => {
                                 <ExpirationDatePicker control={controlCreateOffer} />
                                 <div className='flex flex-col space-y-2'>
                                     <Label htmlFor="expirationTime">Offer expiration time</Label>
-                                    <input type='time' className='text-md bg-background p-1 pl-3 border-[1px] rounded-lg w-[6rem]' id="expirationTime"></input>
+                                    <input type='time' className='text-md bg-background p-1 pl-3 border-[1px] rounded-lg w-[6rem] text-sm' id="expirationTime" {...registerCreateOffer('expirationTime')}></input>
                                 </div>
                             </div>
 
@@ -125,7 +196,28 @@ const CreateOffer = () => {
 
 
 
+                        <div className='flex flex-col mt-12'>
+                            <p className='font-bold'>Bullet points</p>
+                            <div className='flex flex-col flex-wrap w-full mb-16 mt-3'>
+                                <div className='flex flex-row w-full mb-4'>
+                                    <div className='mr-4 w-full'>
+                                        <EditBulletPoints list={responsibilities} setList={setResponsibilities} text={"Responsibilities"} placeholder={"What are the responsibilities?"} />
+                                    </div>
+                                    <div className='w-full'>
+                                        <EditBulletPoints list={requirements} setList={setRequirements} text={"Requirements"} placeholder={"What are the requirements?"} />
+                                    </div>
+                                </div>
+                                <div className='flex flex-row w-full'>
+                                    <div className='mr-4 w-full'>
+                                        <EditBulletPoints list={niceToHave} setList={setNiceToHave} text={"Nice to have"} placeholder={"What is optional?"} />
+                                    </div>
+                                    <div className='w-full'>
+                                        <EditBulletPoints list={whatWeOffer} setList={setWhatWeOffer} text={"What we offer"} placeholder={"What do you offer?"} />
+                                    </div>
+                                </div>
 
+                            </div>
+                        </div>
 
 
 
@@ -133,11 +225,11 @@ const CreateOffer = () => {
                         {/* <div>
                             <TechnologiesCombobox />
                         </div> */}
-                        <div className='flex flex-row w-full space-x-8 mt-12'>
+                        <div className='flex flex-row w-full space-x-8 mt-0'>
                             <div className='flex flex-col space-y-6 w-full'>
                                 <div className="grid w-full gap-2">
                                     <Label htmlFor="responsibilitiesText">Responsibilities</Label>
-                                    <Textarea id="responsibilitiesText" />
+                                    <Textarea id="responsibilitiesText" {...registerCreateOffer('responsibilitiesText')}/>
                                 </div>
                                 <div className="grid w-full gap-2">
                                     <Label htmlFor="aboutProject">About project</Label>
@@ -186,41 +278,20 @@ const CreateOffer = () => {
 
                             </div>
                         </div>
-                        <div className='flex flex-col'>
-                            <p className='font-bold'>Bullet points</p>
-                            <div className='flex flex-col flex-wrap w-full mb-16 mt-3'>
-                                <div className='flex flex-row w-full mb-4'>
-                                    <div className='mr-4 w-full'>
-                                        <EditBulletPoints list={responsibilities} setList={setResponsibilities} text={"Responsibilities"} />
-                                    </div>
-                                    <div className='w-full'>
-                                        <EditBulletPoints list={requirements} setList={setRequirements} text={"Requirements"} />
-                                    </div>
-                                </div>
-                                <div className='flex flex-row w-full'>
-                                    <div className='mr-4 w-full'>
-                                        <EditBulletPoints list={niceToHave} setList={setNiceToHave} text={"Nice to have"} />
-                                    </div>
-                                    <div className='w-full'>
-                                        <EditBulletPoints list={whatWeOffer} setList={setWhatWeOffer} text={"What we offer"} />
-                                    </div>
-                                </div>
 
-                            </div>
-                        </div>
 
 
 
 
 
                         <EditRecruitmentQuestions questionsList={questionsList} setQuestionsList={setQuestionsList} />
-                        
+
                         <div className='flex flex-row justify-end mt-10'>
                             <Button type='submit'>Create offer</Button>
                         </div>
-                        
+
                     </div>
-                    
+
                 </form>
             </div>
         </div>

@@ -22,8 +22,8 @@ const EditBulletPoints = (props: any) => {
             <p>{props.text}</p>
             <Separator />
             <div className='flex flex-row space-x-3'>
-                <Input type="text" placeholder="Example text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
-                <Button onClick={() => handleAddButonClick()}>Add</Button>
+                <Input type="text" placeholder={props.placeholder} value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+                <Button onClick={() => handleAddButonClick()} type='button'>Add</Button>
 
             </div>
             <div>
@@ -32,7 +32,7 @@ const EditBulletPoints = (props: any) => {
                         <li key={index}>
                             <div className='flex flex-row space-x-2 items-center justify-between'>
                                 <span className='text-sm'>{element}</span>
-                                <Button className='pt-2 h-[1.5rem] text-xs' variant={"secondary"} onClick={() => removeItem(index)}>Remove</Button>
+                                <Button className='pt-2 h-[1.5rem] text-xs' variant={"secondary"} onClick={() => removeItem(index)} type='button'>Remove</Button>
                             </div>
                         </li>
                     ))}

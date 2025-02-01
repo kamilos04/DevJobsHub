@@ -41,7 +41,7 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
                     defaultValue={false}
                     render={({ field }) => (
                         <>
-                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...showSalaryCheckbox.props} id={showSalaryCheckbox.registerAs}/>
+                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...showSalaryCheckbox.props} id={showSalaryCheckbox.registerAs} />
                             <label
                                 htmlFor={showSalaryCheckbox.registerAs}
                                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
