@@ -10,7 +10,7 @@ export const fetchProfile = createAsyncThunk(
     async ({ rejectWithValue }: any) => {
         try {
             const jwt = localStorage.getItem("jwt")
-            const { data } = await axios.get(`${API_URL}/api/myprofile`, {
+            const { data } = await axios.get(`${API_URL}/api/my-profile`, {
                 headers: {
                     Authorization: `Bearer ${jwt}`
                 }

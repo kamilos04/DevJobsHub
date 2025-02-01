@@ -50,7 +50,7 @@ public class AuthController {
 
     }
 
-    @PostMapping("/api/changePassword")
+    @PostMapping("/api/change-password")
     public ResponseEntity<LoginResponse> changePasswordByJwt(@Valid @RequestBody ChangePasswordRequest changePasswordRequest, @RequestHeader("Authorization") String jwt) throws UserNotFoundByJwtException, JwtIsBlockedException {
         LoginResponse loginResponse = authService.changePasswordByJwt(changePasswordRequest, jwt);
         return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
