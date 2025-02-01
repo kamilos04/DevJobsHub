@@ -4,7 +4,7 @@ import { MdFavoriteBorder } from "react-icons/md";
 
 const Navbar = () => {
     return (
-        <div className='flex flex-row h-[5rem] bg-my-background border-b-2 border-s-stone-900 items-center pl-6 pr-6 justify-between'>
+        <div className='flex flex-row h-[4rem] bg-my-background border-b-2 border-s-stone-900 items-center pl-6 pr-6 justify-between'>
             <div >
                 <span className='fontLogo text-[1.5rem]'>DevJobsHub</span>
 
