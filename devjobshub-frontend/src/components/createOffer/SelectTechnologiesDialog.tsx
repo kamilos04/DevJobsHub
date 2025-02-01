@@ -32,7 +32,7 @@ const SelectTechnologiesDialog = ({ technologies, setTechnologies, text }: { tec
         <div>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button variant="secondary">{text}</Button>
+                    <Button variant="secondary" className='w-full'>{text}</Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[27rem] space-y-0">
                     <DialogHeader>

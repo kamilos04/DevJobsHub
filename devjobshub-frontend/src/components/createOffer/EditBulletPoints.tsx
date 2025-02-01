@@ -6,11 +6,11 @@ import { Button } from '../ui/button'
 const EditBulletPoints = (props: any) => {
     const [inputValue, setInputValue] = useState("")
     const handleAddButonClick = () => {
-        if(inputValue.length > 0){
+        if (inputValue.length > 0) {
             props.setList([...props.list, inputValue])
-        setInputValue("")
+            setInputValue("")
         }
-        
+
     }
 
     const removeItem = (index: number) => {
@@ -22,13 +22,17 @@ const EditBulletPoints = (props: any) => {
             <p>{props.text}</p>
             <Separator />
             <div className='flex flex-row space-x-3'>
-                <Input type="text" placeholder={props.placeholder} value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+                <Input type="text" placeholder={props.placeholder} value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                        event.preventDefault();
+                    }
+                }} />
                 <Button onClick={() => handleAddButonClick()} type='button'>Add</Button>
 
             </div>
             <div>
                 <ul className='list-disc pl-5 break-words space-y-2'>
-                    {props.list.map((element:string, index: number) => (
+                    {props.list.map((element: string, index: number) => (
                         <li key={index}>
                             <div className='flex flex-row space-x-2 items-center justify-between'>
                                 <span className='text-sm'>{element}</span>

@@ -98,7 +98,7 @@ const CreateQuestion = (props: any) => {
             </div>
             <div className='flex flex-col space-y-2 pt-2'>
                 <Label htmlFor="newQuestion">Question</Label>
-                <Input type="text" placeholder="Enter your question" id="newQuestion" value={questionValue} onChange={(e) => setQuestionValue(e.target.value)} />
+                <Input type="text" placeholder="Enter your question" id="newQuestion" value={questionValue} onChange={(e) => setQuestionValue(e.target.value)} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
             </div>
             {(questionType === "radioQuestion" || questionType === "multipleChoiceQuestion") &&
 
@@ -106,7 +106,7 @@ const CreateQuestion = (props: any) => {
                     <div className='flex flex-col space-y-2 pt-5'>
                         <Label htmlFor="addAnswerInput">Add answer</Label>
                         <div className='flex flex-row space-x-3'>
-                            <Input type="text" placeholder="Enter a possible answer" id="addAnswerInput" value={newAnswer} onChange={(e) => setNewAnswer(e.target.value)} />
+                            <Input type="text" placeholder="Enter a possible answer" id="addAnswerInput" value={newAnswer} onChange={(e) => setNewAnswer(e.target.value)} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
                             <Button onClick={() => handleAddAnswerClick()}  type='button'>Add answer</Button>
                         </div>
 

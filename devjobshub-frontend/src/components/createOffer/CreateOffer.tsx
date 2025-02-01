@@ -47,10 +47,14 @@ import { formatExpirationDate } from '@/utils/dateUtils'
 import { convertQuestionsListToListOfMultipleChoiceQuestions, convertQuestionsListToListOfOpenQuestions, convertQuestionsListToListOfRadioQuestions } from '@/utils/questionsUtils'
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useDispatch, useSelector } from 'react-redux'
+import { createOffer } from '@/state/offer/action'
 
 
 const CreateOffer = () => {
     const [expirationDate, setExpirationDate] = React.useState<Date>()
+    const dispatch = useDispatch<any>()
+    const offerStore = useSelector((store: any) => (store.offer))
 
     const createOfferSchema = yup.object().shape({
         aboutProject: yup.string(),
@@ -229,9 +233,10 @@ const CreateOffer = () => {
                 request.isSalaryMonthlyUZ = false
             }
         }
+        
 
+        dispatch(createOffer(request))
         console.log(request)
-        console.log(data)
 
     }
 
@@ -247,7 +252,7 @@ const CreateOffer = () => {
                             <h1 className='text-2xl font-bold'>Create a new job offer</h1>
                         </div>
                         <Separator />
-                        <div className='flex flex-row flex-wrap space-x-8 mt-6'>
+                        <div className='flex flex-row flex-wrap space-x-8 mt-6 justify-between'>
                             <div className='flex flex-col space-y-6'>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="title">Title</Label>
@@ -267,28 +272,35 @@ const CreateOffer = () => {
                             </div>
 
 
-                            <div className='flex flex-col rounded-lg bg-my-card p-4 w-min border-[1px] space-y-6'>
+                            <div className='flex flex-col rounded-lg bg-my-card p-4 w-min border-[1px] space-y-6 h-min'>
                                 <SelectJobLevel control={controlCreateOffer} error={createOfferErrors.jobLevel?.message} />
                                 <SelectOperatingMode control={controlCreateOffer} error={createOfferErrors.operatingMode?.message} />
                                 <SelectSpecialization control={controlCreateOffer} error={createOfferErrors.specialization?.message} />
                             </div>
 
+                            <div className='flex flex-col'>
+                                <div className='flex flex-col rounded-lg bg-my-card p-4 w-min h-min border-[1px] space-y-6'>
+                                    <ExpirationDatePicker control={controlCreateOffer} error={createOfferErrors.expirationDate?.message} />
+                                    <div className='flex flex-col space-y-2'>
+                                        <Label htmlFor="expirationTime">Offer expiration time</Label>
+                                        <input type='time' className='text-md bg-background p-1 pl-3 border-[1px] rounded-lg w-[6rem] text-sm' id="expirationTime" {...registerCreateOffer('expirationTime')}></input>
+                                        {createOfferErrors.expirationTime?.message && <p className="text-red-500 text-sm font-normal">{createOfferErrors.expirationTime?.message}</p>}
+                                    </div>
+                                </div>
 
-                            <div className='flex flex-col rounded-lg bg-my-card p-4 w-min h-min border-[1px] space-y-6'>
-                                <ExpirationDatePicker control={controlCreateOffer} error={createOfferErrors.expirationDate?.message} />
-                                <div className='flex flex-col space-y-2'>
-                                    <Label htmlFor="expirationTime">Offer expiration time</Label>
-                                    <input type='time' className='text-md bg-background p-1 pl-3 border-[1px] rounded-lg w-[6rem] text-sm' id="expirationTime" {...registerCreateOffer('expirationTime')}></input>
-                                    {createOfferErrors.expirationTime?.message && <p className="text-red-500 text-sm font-normal">{createOfferErrors.expirationTime?.message}</p>}
+                                <div className='flex flex-col space-y-4 mb-16 mt-8 justify-center'>
+                                    <SelectTechnologiesDialog technologies={requiredTechnologies} setTechnologies={setRequiredTechnologies} text="Change required technologies" />
+                                    <SelectTechnologiesDialog technologies={niceToHaveTechnologies} setTechnologies={setNiceToHaveTechnologies} text="Change optional technologies" />
                                 </div>
                             </div>
+
 
                         </div>
 
 
 
 
-                        <div className='flex flex-col mt-12'>
+                        <div className='flex flex-col'>
                             <p className='font-bold'>Bullet points</p>
                             <div className='flex flex-col flex-wrap w-full mb-16 mt-3'>
                                 <div className='flex flex-row w-full mb-4'>
@@ -329,10 +341,10 @@ const CreateOffer = () => {
                                 </div>
                             </div>
 
-                            <div className='flex flex-col space-y-8 mb-8 mt-4 justify-center'>
+                            {/* <div className='flex flex-col space-y-8 mb-8 mt-4 justify-center'>
                                 <SelectTechnologiesDialog technologies={requiredTechnologies} setTechnologies={setRequiredTechnologies} text="Change required technologies" />
                                 <SelectTechnologiesDialog technologies={niceToHaveTechnologies} setTechnologies={setNiceToHaveTechnologies} text="Change optional technologies" />
-                            </div>
+                            </div> */}
                         </div>
 
 
@@ -427,7 +439,7 @@ const CreateOffer = () => {
                         <EditRecruitmentQuestions questionsList={questionsList} setQuestionsList={setQuestionsList} />
 
                         <div className='flex flex-row justify-end mt-10'>
-                            <Button type='submit'>Create offer</Button>
+                            <Button type='submit' className='w-32'>Create offer</Button>
                         </div>
 
                     </div>
