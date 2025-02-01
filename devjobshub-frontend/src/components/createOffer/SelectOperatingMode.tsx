@@ -3,7 +3,7 @@ import { Controller } from 'react-hook-form'
 import { Label } from '../ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
 
-const SelectOperatingMode = ({ control }: any) => {
+const SelectOperatingMode = ({ control, error }: any) => {
     return (
         <div>
             <Controller
@@ -26,6 +26,7 @@ const SelectOperatingMode = ({ control }: any) => {
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
+                            {error && <p className="text-red-500 text-sm font-normal">{error}</p>}
                         </div>
                     </>
                 )}

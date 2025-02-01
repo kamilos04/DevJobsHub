@@ -3,7 +3,7 @@ import { Controller } from 'react-hook-form'
 import { Label } from '../ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
 
-const SelectSpecialization = ({ control }: any) => {
+const SelectSpecialization = ({ control, error }: any) => {
     return (
         <div>
             <Controller
@@ -38,6 +38,7 @@ const SelectSpecialization = ({ control }: any) => {
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
+                            {error && <p className="text-red-500 text-sm font-normal">{error}</p>}
                         </div>
                     </>
                 )}

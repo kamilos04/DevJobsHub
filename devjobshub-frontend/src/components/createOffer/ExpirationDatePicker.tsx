@@ -9,7 +9,7 @@ import { Calendar } from '../ui/calendar'
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 
-const ExpirationDatePicker = ({ control }: any) => {
+const ExpirationDatePicker = ({ control, error }: any) => {
     return (
         <div>
             <Controller
@@ -41,7 +41,7 @@ const ExpirationDatePicker = ({ control }: any) => {
                                     />
                                 </PopoverContent>
                             </Popover>
-
+                            {error && <p className="text-red-500 text-sm font-normal">{error}</p>}
                         </div>
                     </>
                 )}

@@ -6,7 +6,7 @@ import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Controller } from 'react-hook-form'
 
-const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {}, selectMonthlyOrHourly = {}, inputMinSalary = {}, inputMaxSalary = {} }: any) => {
+const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {}, selectMonthlyOrHourly = {}, inputMinSalary = {}, inputMaxSalary = {}, errorMonthlyOrHourly, errorMin, errorMax, disabled }: any) => {
     // const handleCheckBox = (e: any) => {
     //     console.log(e)
     // }
@@ -19,7 +19,7 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
                     defaultValue={false}
                     render={({ field }) => (
                         <>
-                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...isContractCheckbox.props} id={isContractCheckbox.registerAs}/>
+                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...isContractCheckbox.props} id={isContractCheckbox.registerAs} />
                             <label
                                 htmlFor={isContractCheckbox.registerAs}
                                 className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-bold"
@@ -41,7 +41,7 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
                     defaultValue={false}
                     render={({ field }) => (
                         <>
-                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...showSalaryCheckbox.props} id={showSalaryCheckbox.registerAs} />
+                            <Checkbox {...field} onCheckedChange={field.onChange} checked={field.value} {...showSalaryCheckbox.props} id={showSalaryCheckbox.registerAs} disabled={disabled}/>
                             <label
                                 htmlFor={showSalaryCheckbox.registerAs}
                                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -57,8 +57,8 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
                 name={selectMonthlyOrHourly.registerAs}
                 control={control}
                 render={({ field }) => (
-                    <>
-                        <Select {...selectMonthlyOrHourly.props} onValueChange={field.onChange} value={field.value} >
+                    <div className='flex flex-col space-y-1'>
+                        <Select {...selectMonthlyOrHourly.props} onValueChange={field.onChange} value={field.value} disabled={disabled}>
                             <SelectTrigger className="w-[14rem]">
                                 <SelectValue placeholder="Monthly or hourly salary" />
                             </SelectTrigger>
@@ -69,7 +69,8 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
-                    </>
+                        {errorMonthlyOrHourly && <p className="text-red-500 text-sm font-normal">{errorMonthlyOrHourly}</p>}
+                    </div>
                 )}
             ></Controller>
 
@@ -77,15 +78,17 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
             <div className='flex flex-row space-x-3 items-center' >
                 <div className="grid w-full max-w-sm items-center gap-2">
                     <Label >Minimum salary</Label>
-                    <Input type="number" className='w-[8rem]' {...inputMinSalary.props} />
+                    <Input type="number" className='w-[8rem]' {...inputMinSalary.props} disabled={disabled}/>
+                    {errorMin && <p className="text-red-500 text-sm font-normal">{errorMin}</p>}
                 </div>
                 <div className="grid w-full max-w-sm items-center gap-2">
                     <Label >Maximum salary</Label>
                     <div className='flex flex-row items-center space-x-2'>
-                        <Input type="number" className='w-[8rem]' {...inputMaxSalary.props} />
+                        <Input type="number" className='w-[8rem]' {...inputMaxSalary.props} disabled={disabled}/>
                         <span className='text-md'>PLN</span>
-                    </div>
 
+                    </div>
+                    {errorMax && <p className="text-red-500 text-sm font-normal">{errorMax}</p>}
                 </div>
             </div>
         </div>

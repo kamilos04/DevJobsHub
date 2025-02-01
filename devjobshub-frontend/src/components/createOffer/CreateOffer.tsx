@@ -45,19 +45,107 @@ import { QuestionWithType } from '@/types/questionWithType'
 import { emptyCreateOfferRequest } from '@/types/createOfferRequest'
 import { formatExpirationDate } from '@/utils/dateUtils'
 import { convertQuestionsListToListOfMultipleChoiceQuestions, convertQuestionsListToListOfOpenQuestions, convertQuestionsListToListOfRadioQuestions } from '@/utils/questionsUtils'
-
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup'
 
 
 const CreateOffer = () => {
     const [expirationDate, setExpirationDate] = React.useState<Date>()
+
+    const createOfferSchema = yup.object().shape({
+        aboutProject: yup.string(),
+        address: yup.string()
+            .required('Address is required'),
+
+        expirationDate: yup.date()
+            .required('Expiration date is required')
+            .min(new Date(), 'The expiration date must be after today'),
+
+        expirationTime: yup.string()
+            .required('Expiration time is required'),
+
+        isB2B: yup.boolean(),
+
+        isUZ: yup.boolean(),
+
+        isUoP: yup.boolean(),
+
+        jobLevel: yup.string()
+            .required('Job level is required'),
+
+        localization: yup.string()
+            .required('Localization is required'),
+
+        maxSalaryB2B: yup.number().when('showSalaryB2B', ([showSalaryB2B], schema) => {
+            return showSalaryB2B ? schema.required("Field is required") : schema.nullable()
+        }),
+
+        maxSalaryUZ: yup.number().when('showSalaryUZ', ([showSalaryUZ], schema) => {
+            return showSalaryUZ ? schema.required("Field is required") : schema.nullable()
+        }),
+
+        maxSalaryUoP: yup.number().when('showSalaryUoP', ([showSalaryUoP], schema) => {
+            return showSalaryUoP ? schema.required("Field is required") : schema.nullable()
+        }),
+
+        minSalaryB2B: yup.number().when('showSalaryB2B', ([showSalaryB2B], schema) => {
+            return showSalaryB2B ? schema.required("Field is required") : schema.nullable()
+        }),
+
+        minSalaryUZ: yup.number().when('showSalaryUZ', ([showSalaryUZ], schema) => {
+            return showSalaryUZ ? schema.required("Field is required") : schema.nullable()
+        }),
+
+        minSalaryUoP: yup.number().when('showSalaryUoP', ([showSalaryUoP], schema) => {
+            return showSalaryUoP ? schema.required("Field is required") : schema.nullable()
+        }),
+
+        // monthlyOrHourlyB2B: yup.string(),
+
+        monthlyOrHourlyB2B: yup.string().when('showSalaryB2B', ([showSalaryB2B], schema) => {
+            return showSalaryB2B ? schema.required("Field is required") : schema
+        }),
+
+        monthlyOrHourlyUoP: yup.string().when('showSalaryUoP', ([showSalaryUoP], schema) => {
+            return showSalaryUoP ? schema.required("Field is required") : schema
+        }),
+
+        monthlyOrHourlyUZ: yup.string().when('showSalaryUZ', ([showSalaryUZ], schema) => {
+            return showSalaryUZ ? schema.required("Field is required") : schema
+        }),
+
+        name: yup.string()
+            .required('Offer title is required'),
+
+        operatingMode: yup.string()
+            .required('Operating mode is required'),
+
+        responsibilitiesText: yup.string(),
+
+        showSalaryB2B: yup.boolean(),
+
+        showSalaryUZ: yup.boolean(),
+
+        showSalaryUoP: yup.boolean(),
+
+        specialization: yup.string()
+            .required('Specialization is required'),
+
+    });
+
+
     const {
         register: registerCreateOffer,
         handleSubmit: handleCreateOffer,
         setValue: setValueCreateOffer,
         control: controlCreateOffer,
-        formState: { errors: createOfferErrors }
+        formState: { errors: createOfferErrors },
+        watch: watchForm
     } = useForm({
+        resolver: yupResolver(createOfferSchema)
     })
+
+    const formValues = watchForm();
 
     const [requiredTechnologies, setRequiredTechnologies] = React.useState<Array<Technology>>([])
     const [niceToHaveTechnologies, setNiceToHaveTechnologies] = React.useState<Array<Technology>>([])
@@ -74,70 +162,70 @@ const CreateOffer = () => {
 
     const onCreateOfferSubmit = (data: any) => {
         const request = emptyCreateOfferRequest
-        request.name=data.name
-        request.jobLevel=data.jobLevel
-        request.operatingMode=data.operatingMode
-        request.specialization=data.specialization
-        request.localization=data.localization
-        request.address=data.address
+        request.name = data.name
+        request.jobLevel = data.jobLevel
+        request.operatingMode = data.operatingMode
+        request.specialization = data.specialization
+        request.localization = data.localization
+        request.address = data.address
         request.expirationDate = formatExpirationDate(data.expirationDate, data.expirationTime)
-        request.aboutProject=data.aboutProject
-        request.responsibilitiesText=data.responibilitiesText
-        request.responsibilities=responsibilities
-        request.requirements=requirements
-        request.niceToHave=niceToHave
-        request.whatWeOffer=whatWeOffer
-        request.requiredTechnologies=requiredTechnologies.map((element: Technology) => (element.id))
-        request.niceToHaveTechnologies=niceToHaveTechnologies.map((element: Technology) => (element.id))
-        request.questions=convertQuestionsListToListOfOpenQuestions(questionsList)
-        request.radioQuestions=convertQuestionsListToListOfRadioQuestions(questionsList)
-        request.multipleChoiceQuestions=convertQuestionsListToListOfMultipleChoiceQuestions(questionsList)
+        request.aboutProject = data.aboutProject
+        request.responsibilitiesText = data.responibilitiesText
+        request.responsibilities = responsibilities
+        request.requirements = requirements
+        request.niceToHave = niceToHave
+        request.whatWeOffer = whatWeOffer
+        request.requiredTechnologies = requiredTechnologies.map((element: Technology) => (element.id))
+        request.niceToHaveTechnologies = niceToHaveTechnologies.map((element: Technology) => (element.id))
+        request.questions = convertQuestionsListToListOfOpenQuestions(questionsList)
+        request.radioQuestions = convertQuestionsListToListOfRadioQuestions(questionsList)
+        request.multipleChoiceQuestions = convertQuestionsListToListOfMultipleChoiceQuestions(questionsList)
 
-        if(data.isUoP === true){
-            if(data.showSalaryUoP === true){
-                if(data.monthlyOrHourlyUoP==="monthly"){
-                    request.isSalaryMonthlyUoP=true
+        if (data.isUoP === true) {
+            if (data.showSalaryUoP === true) {
+                if (data.monthlyOrHourlyUoP === "monthly") {
+                    request.isSalaryMonthlyUoP = true
                 }
-                else{
-                    request.isSalaryMonthlyUoP=false
+                else {
+                    request.isSalaryMonthlyUoP = false
                 }
-                request.minSalaryUoP=data.minSalaryUoP
-                request.maxSalaryUoP=data.maxSalaryUoP
+                request.minSalaryUoP = data.minSalaryUoP
+                request.maxSalaryUoP = data.maxSalaryUoP
             }
-            else{
+            else {
                 request.isSalaryMonthlyUoP = false
             }
         }
 
-        if(data.isB2B === true){
-            if(data.showSalaryB2B === true){
-                if(data.monthlyOrHourlyB2B==="monthly"){
-                    request.isSalaryMonthlyB2B=true
+        if (data.isB2B === true) {
+            if (data.showSalaryB2B === true) {
+                if (data.monthlyOrHourlyB2B === "monthly") {
+                    request.isSalaryMonthlyB2B = true
                 }
-                else{
-                    request.isSalaryMonthlyB2B=false
+                else {
+                    request.isSalaryMonthlyB2B = false
                 }
-                request.minSalaryB2B=data.minSalaryB2B
-                request.maxSalaryB2B=data.maxSalaryB2B
+                request.minSalaryB2B = data.minSalaryB2B
+                request.maxSalaryB2B = data.maxSalaryB2B
             }
-            else{
+            else {
                 request.isSalaryMonthlyB2B = false
             }
         }
 
 
-        if(data.isUZ === true){
-            if(data.showSalaryUZ === true){
-                if(data.monthlyOrHourlyUZ==="monthly"){
-                    request.isSalaryMonthlyUZ=true
+        if (data.isUZ === true) {
+            if (data.showSalaryUZ === true) {
+                if (data.monthlyOrHourlyUZ === "monthly") {
+                    request.isSalaryMonthlyUZ = true
                 }
-                else{
-                    request.isSalaryMonthlyUZ=false
+                else {
+                    request.isSalaryMonthlyUZ = false
                 }
-                request.minSalaryUZ=data.minSalaryUZ
-                request.maxSalaryUZ=data.maxSalaryUZ
+                request.minSalaryUZ = data.minSalaryUZ
+                request.maxSalaryUZ = data.maxSalaryUZ
             }
-            else{
+            else {
                 request.isSalaryMonthlyUZ = false
             }
         }
@@ -164,30 +252,34 @@ const CreateOffer = () => {
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="title">Title</Label>
                                     <Input type="text" id="title" placeholder="Enter the job offer title" {...registerCreateOffer("name")} />
+                                    <p className="text-red-500 text-sm font-normal">{createOfferErrors.name?.message}</p>
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="localization">Company address: city</Label>
                                     <Input type="text" id="localization" placeholder="Warszawa" {...registerCreateOffer("localization")} />
+                                    <p className="text-red-500 text-sm font-normal">{createOfferErrors.localization?.message}</p>
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="address">Company address: street name and building number</Label>
                                     <Input type="text" id="address" placeholder="Kolejowa 14/20" {...registerCreateOffer("address")} />
+                                    <p className="text-red-500 text-sm font-normal">{createOfferErrors.address?.message}</p>
                                 </div>
                             </div>
 
 
                             <div className='flex flex-col rounded-lg bg-my-card p-4 w-min border-[1px] space-y-6'>
-                                <SelectJobLevel control={controlCreateOffer} />
-                                <SelectOperatingMode control={controlCreateOffer} />
-                                <SelectSpecialization control={controlCreateOffer} />
+                                <SelectJobLevel control={controlCreateOffer} error={createOfferErrors.jobLevel?.message} />
+                                <SelectOperatingMode control={controlCreateOffer} error={createOfferErrors.operatingMode?.message} />
+                                <SelectSpecialization control={controlCreateOffer} error={createOfferErrors.specialization?.message} />
                             </div>
 
 
                             <div className='flex flex-col rounded-lg bg-my-card p-4 w-min h-min border-[1px] space-y-6'>
-                                <ExpirationDatePicker control={controlCreateOffer} />
+                                <ExpirationDatePicker control={controlCreateOffer} error={createOfferErrors.expirationDate?.message} />
                                 <div className='flex flex-col space-y-2'>
                                     <Label htmlFor="expirationTime">Offer expiration time</Label>
                                     <input type='time' className='text-md bg-background p-1 pl-3 border-[1px] rounded-lg w-[6rem] text-sm' id="expirationTime" {...registerCreateOffer('expirationTime')}></input>
+                                    {createOfferErrors.expirationTime?.message && <p className="text-red-500 text-sm font-normal">{createOfferErrors.expirationTime?.message}</p>}
                                 </div>
                             </div>
 
@@ -229,7 +321,7 @@ const CreateOffer = () => {
                             <div className='flex flex-col space-y-6 w-full'>
                                 <div className="grid w-full gap-2">
                                     <Label htmlFor="responsibilitiesText">Responsibilities</Label>
-                                    <Textarea id="responsibilitiesText" {...registerCreateOffer('responsibilitiesText')}/>
+                                    <Textarea id="responsibilitiesText" {...registerCreateOffer('responsibilitiesText')} />
                                 </div>
                                 <div className="grid w-full gap-2">
                                     <Label htmlFor="aboutProject">About project</Label>
@@ -254,23 +346,71 @@ const CreateOffer = () => {
                                 <ContractType isContractCheckbox={{ registerAs: "isUoP", label: "Employment contract" }}
                                     showSalaryCheckbox={{ registerAs: "showSalaryUoP" }}
                                     selectMonthlyOrHourly={{ registerAs: "monthlyOrHourlyUoP" }}
-                                    inputMinSalary={{ props: { ...registerCreateOffer("minSalaryUoP") } }}
-                                    inputMaxSalary={{ props: { ...registerCreateOffer("maxSalaryUoP") } }}
+                                    inputMinSalary={{
+                                        props: {
+                                            ...registerCreateOffer("minSalaryUoP", {
+                                                setValueAs: (value) => { if (value) { return Number(value) } else { return null } }
+                                            })
+                                        }
+                                    }}
+                                    inputMaxSalary={{
+                                        props: {
+                                            ...registerCreateOffer("maxSalaryUoP", {
+                                                setValueAs: (value) => { if (value) { return Number(value) } else { return null } }
+                                            })
+                                        }
+                                    }}
                                     control={controlCreateOffer}
+                                    errorMonthlyOrHourly={createOfferErrors.monthlyOrHourlyUoP?.message}
+                                    errorMin={createOfferErrors.minSalaryUoP?.message}
+                                    errorMax={createOfferErrors.maxSalaryUoP?.message}
+                                    disabled={!formValues.isUoP}
                                 />
                                 <ContractType isContractCheckbox={{ registerAs: "isB2B", label: "B2B" }}
                                     showSalaryCheckbox={{ registerAs: "showSalaryB2B" }}
                                     selectMonthlyOrHourly={{ registerAs: "monthlyOrHourlyB2B" }}
-                                    inputMinSalary={{ props: { ...registerCreateOffer("minSalaryB2B") } }}
-                                    inputMaxSalary={{ props: { ...registerCreateOffer("maxSalaryB2B") } }}
+                                    inputMinSalary={{
+                                        props: {
+                                            ...registerCreateOffer("minSalaryB2B", {
+                                                setValueAs: (value) => { if (value) { return Number(value) } else { return null } }
+                                            })
+                                        }
+                                    }}
+                                    inputMaxSalary={{
+                                        props: {
+                                            ...registerCreateOffer("maxSalaryB2B", {
+                                                setValueAs: (value) => { if (value) { return Number(value) } else { return null } }
+                                            })
+                                        }
+                                    }}
                                     control={controlCreateOffer}
+                                    errorMonthlyOrHourly={createOfferErrors.monthlyOrHourlyB2B?.message}
+                                    errorMin={createOfferErrors.minSalaryB2B?.message}
+                                    errorMax={createOfferErrors.maxSalaryB2B?.message}
+                                    disabled={!formValues.isB2B}
                                 />
                                 <ContractType isContractCheckbox={{ registerAs: "isUZ", label: "Order contract" }}
                                     showSalaryCheckbox={{ registerAs: "showSalaryUZ" }}
                                     selectMonthlyOrHourly={{ registerAs: "monthlyOrHourlyUZ" }}
-                                    inputMinSalary={{ props: { ...registerCreateOffer("minSalaryUZ") } }}
-                                    inputMaxSalary={{ props: { ...registerCreateOffer("maxSalaryUZ") } }}
+                                    inputMinSalary={{
+                                        props: {
+                                            ...registerCreateOffer("minSalaryUZ", {
+                                                setValueAs: (value) => { if (value) { return Number(value) } else { return null } }
+                                            })
+                                        }
+                                    }}
+                                    inputMaxSalary={{
+                                        props: {
+                                            ...registerCreateOffer("maxSalaryUZ", {
+                                                setValueAs: (value) => { if (value) { return Number(value) } else { return null } }
+                                            })
+                                        }
+                                    }}
                                     control={controlCreateOffer}
+                                    errorMonthlyOrHourly={createOfferErrors.monthlyOrHourlyUZ?.message}
+                                    errorMin={createOfferErrors.minSalaryUZ?.message}
+                                    errorMax={createOfferErrors.maxSalaryUZ?.message}
+                                    disabled={!formValues.isUZ}
                                 />
 
 
