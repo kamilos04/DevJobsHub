@@ -2,6 +2,6 @@ export interface RegisterRequest {
     email: string,
     password: string,
     name: string,
-    surname?: string | null
+    surname: string
     isFirm: boolean
 }

@@ -20,7 +20,14 @@ const initialState = {
 const profileSlice = createSlice({
     name: 'profile',
     initialState,
-    reducers:{},
+    reducers:{
+        setSuccessNull(state) {
+            state.success=null
+        },
+        setFailNull(state) {
+            state.fail=null
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(fetchProfile.pending, (state, action) => {
             state.isLoading = true
@@ -79,3 +86,4 @@ const profileSlice = createSlice({
 
 
 export default profileSlice.reducer
+export const {setSuccessNull, setFailNull} = profileSlice.actions
