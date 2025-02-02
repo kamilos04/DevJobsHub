@@ -25,6 +25,10 @@ public class CreateOfferRequest {
     @NotBlank(message = "name can not be blank")
     private String name;
 
+    @Size(min = 1, max = 100, message = "firmName must be between 1 and 100 characters")
+    @NotBlank(message = "firmName can not be blank")
+    private String firmName;
+
     @NotNull
     private OFFER_JOB_LEVEL jobLevel;
 
