@@ -22,6 +22,8 @@ public class OfferDto {
 
     private String name;
 
+    private String firmName;
+
     private OFFER_JOB_LEVEL jobLevel;
 
     private OFFER_OPERATING_MODE operatingMode;

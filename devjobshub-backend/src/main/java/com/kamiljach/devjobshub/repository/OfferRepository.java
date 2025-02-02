@@ -24,6 +24,7 @@ public interface OfferRepository extends JpaRepository<Offer, Long> {
             "LEFT JOIN o.whatWeOffer wwo " +
             "WHERE ((LOWER(o.name) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(o.aboutProject) LIKE LOWER(CONCAT('%', :text, '%')) " +
+            "OR LOWER(o.firmName) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(o.responsibilitiesText) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(res) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(req) LIKE LOWER(CONCAT('%', :text, '%')) " +

@@ -58,22 +58,12 @@ public class UserServiceImpl implements UserService {
 
         user.setEmail(updateUserRequest.getEmail());
         user.setName(updateUserRequest.getName());
-
-
-        if (!user.getIsFirm() && updateUserRequest.getSurname()!= null){
-            verifySurnameOrThrowException(updateUserRequest.getSurname());
-            user.setSurname(updateUserRequest.getSurname());
-        }
+        user.setSurname(updateUserRequest.getSurname());
 
         userRepository.save(user);
 
     }
 
-    public void verifySurnameOrThrowException(String surname) throws InvalidRequestException {
-        if(surname.isBlank() || surname.length()>100){
-            throw new InvalidRequestException("surname is invalid");
-        }
-    }
 
 
 }

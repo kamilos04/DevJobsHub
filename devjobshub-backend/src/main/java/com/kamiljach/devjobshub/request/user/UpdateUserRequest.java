@@ -22,5 +22,7 @@ public class UpdateUserRequest {
     @NotBlank(message = "name can not be blank")
     private String name;
 
+    @Size(min = 1, max = 100, message = "surname must be between 1 and 100 characters")
+    @NotBlank(message = "surname can not be blank")
     private String surname;
 }
