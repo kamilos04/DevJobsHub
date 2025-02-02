@@ -28,6 +28,8 @@ public class Offer {
 
     private String name;
 
+    private String firmName;
+
     @Enumerated(EnumType.STRING)
     private OFFER_JOB_LEVEL jobLevel;
 
