@@ -121,6 +121,8 @@ const CreateOffer = () => {
         name: yup.string()
             .required('Offer title is required'),
 
+        firmName: yup.string().required('Company name is required'),
+
         operatingMode: yup.string()
             .required('Operating mode is required'),
 
@@ -167,6 +169,7 @@ const CreateOffer = () => {
     const onCreateOfferSubmit = (data: any) => {
         const request = emptyCreateOfferRequest
         request.name = data.name
+        request.firmName = data.firmName
         request.jobLevel = data.jobLevel
         request.operatingMode = data.operatingMode
         request.specialization = data.specialization
@@ -184,6 +187,7 @@ const CreateOffer = () => {
         request.questions = convertQuestionsListToListOfOpenQuestions(questionsList)
         request.radioQuestions = convertQuestionsListToListOfRadioQuestions(questionsList)
         request.multipleChoiceQuestions = convertQuestionsListToListOfMultipleChoiceQuestions(questionsList)
+        
 
         if (data.isUoP === true) {
             if (data.showSalaryUoP === true) {
@@ -256,17 +260,22 @@ const CreateOffer = () => {
                             <div className='flex flex-col space-y-6'>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="title">Title</Label>
-                                    <Input type="text" id="title" placeholder="Enter the job offer title" {...registerCreateOffer("name")} />
+                                    <Input type="text" id="title" placeholder="Enter the job offer title" {...registerCreateOffer("name")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.name?.message}</p>
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-2">
+                                    <Label htmlFor="firmName">Company name</Label>
+                                    <Input type="text" id="firmName" placeholder="Enter the company name" {...registerCreateOffer("firmName")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                                    <p className="text-red-500 text-sm font-normal">{createOfferErrors.firmName?.message}</p>
+                                </div>
+                                <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="localization">Company address: city</Label>
-                                    <Input type="text" id="localization" placeholder="Warszawa" {...registerCreateOffer("localization")} />
+                                    <Input type="text" id="localization" placeholder="Warszawa" {...registerCreateOffer("localization")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.localization?.message}</p>
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="address">Company address: street name and building number</Label>
-                                    <Input type="text" id="address" placeholder="Kolejowa 14/20" {...registerCreateOffer("address")} />
+                                    <Input type="text" id="address" placeholder="Kolejowa 14/20" {...registerCreateOffer("address")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.address?.message}</p>
                                 </div>
                             </div>
@@ -287,7 +296,7 @@ const CreateOffer = () => {
                                         {createOfferErrors.expirationTime?.message && <p className="text-red-500 text-sm font-normal">{createOfferErrors.expirationTime?.message}</p>}
                                     </div>
                                 </div>
-
+                                
                                 <div className='flex flex-col space-y-4 mb-16 mt-8 justify-center'>
                                     <SelectTechnologiesDialog technologies={requiredTechnologies} setTechnologies={setRequiredTechnologies} text="Change required technologies" />
                                     <SelectTechnologiesDialog technologies={niceToHaveTechnologies} setTechnologies={setNiceToHaveTechnologies} text="Change optional technologies" />
@@ -300,7 +309,7 @@ const CreateOffer = () => {
 
 
 
-                        <div className='flex flex-col'>
+                        <div className='flex flex-col mt-6'>
                             <p className='font-bold'>Bullet points</p>
                             <div className='flex flex-col flex-wrap w-full mb-16 mt-3'>
                                 <div className='flex flex-row w-full mb-4'>

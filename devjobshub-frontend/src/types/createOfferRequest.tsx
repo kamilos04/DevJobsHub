@@ -4,6 +4,7 @@ import { RadioQuestion } from "./radioQuestion";
 
 export interface CreateOfferRequest {
     name: string;
+    firmName: string
     jobLevel: string;
     operatingMode: string;
     specialization: string;

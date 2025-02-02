@@ -86,20 +86,19 @@ const CreateTechnologyDialog = (props: any) => {
                         Make sure you spell it correctly because this name will show up in search engine.
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleCreateTechnologySubmit(onSubmit)}>
                     <div >
                         <Input
                             id="technologyName"
                             placeholder='Example name'
                             className="col-span-3"
                             {...formRegister('name')}
+                            onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}
                         />
                         <p className="text-red-500 text-sm font-normal mt-1">{createTechnologyErrors.name?.message}</p>
                     </div>
                     <DialogFooter>
-                        <Button type="submit" className='mt-4'>Create technology</Button>
+                        <Button type="button" className='mt-4' onClick={handleCreateTechnologySubmit(onSubmit)}>Create technology</Button>
                     </DialogFooter>
-                </form>
             </DialogContent>
         </Dialog>
 
