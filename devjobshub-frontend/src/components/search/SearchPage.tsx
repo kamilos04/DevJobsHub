@@ -21,12 +21,27 @@ import PopoverTechnologies from './PopoverTechnologies'
 import { SelectItemText } from '@radix-ui/react-select'
 import { Badge } from "@/components/ui/badge"
 import { Label } from '../ui/label'
+import { Separator } from "@/components/ui/separator"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+import OfferCard from './OfferCard'
+import { Offer } from '@/types/offer'
 
 const SearchPage = () => {
   // const [request, setRequest] = React.useState<any>()
   const [technologies, setTechnologies] = React.useState<Array<Technology>>([])
   const dispatch = useDispatch<any>()
   const storeOffer = useSelector((store: any) => store.offer)
+  const [localizationText, setLocalizationText] = React.useState<string>("")
+  const [localizations, setLocalizations] = React.useState<Array<string>>([])
+  const [pageNumber, setPageNumber] = React.useState<number>(0)
 
   const handleSubmitSearch = (data: any) => {
     const specializationsString = specializations.filter(element => data[element]).join(",")
@@ -47,11 +62,17 @@ const SearchPage = () => {
     if (text) {
       params += `text=${text}&`
     }
+    if(technologies.length !== 0) {
+      params += `technologies=${technologies.map(t => t.id).join(",")}&`
+    }
+    if(localizations.length !== 0) {
+      params += `localizations=${localizations.map(l => l).join(",")}&`
+    }
     params += "numberOfElements=10&"
     params += "pageNumber=0&"
     params += "sortBy=dateTimeOfCreation&"
     params += "sortingDirection=ASC&"
-    console.log(data)
+    console.log(params)
     dispatch(searchOffers(params))
   }
 
@@ -120,16 +141,46 @@ const SearchPage = () => {
               {/* {storeOffer.searchOffers?.content?.map((element: any) => <span>{element.id}</span>)} */}
             </div>
             <div className='flex flex-row w-full mt-8'>
-              <div className='bg-my-card flex flex-col p-4 rounded-xl border-[1px] w-80'>
-                <PopoverTechnologies technologies={technologies} setTechnologies={setTechnologies}/>
-                <Label htmlFor="firmName" className='mt-3'>Technologies: </Label>
-                <div className='flex flex-row items-start flex-wrap mt-2 w-full gap-x-2 gap-y-2'>
-                  {technologies.map((element: Technology) => <Badge className='cursor-pointer text-sm bg-gray-400' onClick={() => setTechnologies(technologies.filter((item: Technology) => item.id !== element.id))}>{element.name}</Badge>)}
-                  {technologies.length===0 && <span className='text-sm text-gray-400'>No technology selected</span>}
+              <div className='bg-my-card flex flex-col rounded-xl border-[1px] w-80 p-5'>
+                <Label className=''>Technologies: </Label>
+                <div className='flex flex-row items-start flex-wrap mt-2 w-full gap-x-2 gap-y-2 mb-2'>
+                  {technologies.map((element: Technology) => <Badge key={element.id} className='cursor-pointer text-sm bg-gray-400' onClick={() => setTechnologies(technologies.filter((item: Technology) => item.id !== element.id))}>{element.name}</Badge>)}
+                  {technologies.length === 0 && <span className='text-sm text-gray-400'>No technology selected</span>}
                 </div>
-                
+                <PopoverTechnologies technologies={technologies} setTechnologies={setTechnologies} />
+
+
+                <Separator className='mt-4 mb-4' />
+                <Label className=''>Locations: </Label>
+                <div className='flex flex-row items-start flex-wrap mt-2 w-full gap-x-2 gap-y-2 mb-2'>
+                  {localizations.map((element: string, index: number) => <Badge key={element} className='cursor-pointer text-sm bg-gray-400' onClick={() => setLocalizations(localizations.filter((item: string, i: number) => i !== index))}>{element}</Badge>)}
+                  {localizations.length === 0 && <span className='text-sm text-gray-400'>No locations selected</span>}
+                </div>
+
+                <div className='flex flex-row gap-x-2'>
+                  <Input type="text" placeholder="Enter location" value={localizationText} onChange={(e) => {
+                    setLocalizationText(e.target.value)
+                  }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        event.preventDefault();
+                      }
+                    }} />
+
+                  <Button type='button' className='w-20' onClick={() => {
+                    if (localizationText !== "") {
+                      setLocalizations([...localizations, localizationText])
+                      setLocalizationText("")
+                    }
+                  }}>Add</Button>
+
+                </div>
+
+
+
+
               </div>
-              <div>
+              <div className='ml-4 flex-col'>
                 <div className='flex flex-row space-x-4'>
                   <Controller
                     name="sortBy"
@@ -178,6 +229,7 @@ const SearchPage = () => {
 
 
                 </div>
+                {storeOffer.searchOffers?.content?.map((element: Offer) => <OfferCard offer={element}/>)}
 
 
 
@@ -185,6 +237,30 @@ const SearchPage = () => {
 
             </div>
 
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious href="#" />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">1</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#" isActive>
+                    2
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">3</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext href="#" />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </form>
       </div>
