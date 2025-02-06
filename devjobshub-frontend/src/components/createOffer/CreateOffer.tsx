@@ -386,6 +386,7 @@ const CreateOffer = () => {
                                     errorMin={createOfferErrors.minSalaryUoP?.message}
                                     errorMax={createOfferErrors.maxSalaryUoP?.message}
                                     disabled={!formValues.isUoP}
+                                    disabledSalary={!formValues.showSalaryUoP}
                                 />
                                 <ContractType isContractCheckbox={{ registerAs: "isB2B", label: "B2B" }}
                                     showSalaryCheckbox={{ registerAs: "showSalaryB2B" }}
@@ -409,6 +410,7 @@ const CreateOffer = () => {
                                     errorMin={createOfferErrors.minSalaryB2B?.message}
                                     errorMax={createOfferErrors.maxSalaryB2B?.message}
                                     disabled={!formValues.isB2B}
+                                    disabledSalary={!formValues.showSalaryB2B}
                                 />
                                 <ContractType isContractCheckbox={{ registerAs: "isUZ", label: "Order contract" }}
                                     showSalaryCheckbox={{ registerAs: "showSalaryUZ" }}
@@ -432,6 +434,7 @@ const CreateOffer = () => {
                                     errorMin={createOfferErrors.minSalaryUZ?.message}
                                     errorMax={createOfferErrors.maxSalaryUZ?.message}
                                     disabled={!formValues.isUZ}
+                                    disabledSalary={!formValues.showSalaryUZ}
                                 />
 
 

@@ -6,7 +6,7 @@ import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Controller } from 'react-hook-form'
 
-const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {}, selectMonthlyOrHourly = {}, inputMinSalary = {}, inputMaxSalary = {}, errorMonthlyOrHourly, errorMin, errorMax, disabled }: any) => {
+const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {}, selectMonthlyOrHourly = {}, inputMinSalary = {}, inputMaxSalary = {}, errorMonthlyOrHourly, errorMin, errorMax, disabled, disabledSalary }: any) => {
     // const handleCheckBox = (e: any) => {
     //     console.log(e)
     // }
@@ -58,7 +58,7 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
                 control={control}
                 render={({ field }) => (
                     <div className='flex flex-col space-y-1'>
-                        <Select {...selectMonthlyOrHourly.props} onValueChange={field.onChange} value={field.value} disabled={disabled}>
+                        <Select {...selectMonthlyOrHourly.props} onValueChange={field.onChange} value={field.value} disabled={disabledSalary}>
                             <SelectTrigger className="w-[14rem]">
                                 <SelectValue placeholder="Monthly or hourly salary" />
                             </SelectTrigger>
@@ -78,13 +78,13 @@ const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {
             <div className='flex flex-row space-x-3 items-center' >
                 <div className="grid w-full max-w-sm items-center gap-2">
                     <Label >Minimum salary</Label>
-                    <Input type="number" className='w-[8rem]' {...inputMinSalary.props} disabled={disabled} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                    <Input type="number" className='w-[8rem]' {...inputMinSalary.props} disabled={disabledSalary} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
                     {errorMin && <p className="text-red-500 text-sm font-normal">{errorMin}</p>}
                 </div>
                 <div className="grid w-full max-w-sm items-center gap-2">
                     <Label >Maximum salary</Label>
                     <div className='flex flex-row items-center space-x-2'>
-                        <Input type="number" className='w-[8rem]' {...inputMaxSalary.props} disabled={disabled} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                        <Input type="number" className='w-[8rem]' {...inputMaxSalary.props} disabled={disabledSalary} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
                         <span className='text-md'>PLN</span>
 
                     </div>
