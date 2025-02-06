@@ -1,22 +1,32 @@
 import { Technology } from "@/types/technology";
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { createOffer as createOffer } from "./action";
+import { createOffer as createOffer, searchOffers } from "./action";
+import { Offer } from "@/types/offer";
+import { ac } from "node_modules/react-router/dist/development/route-data-Cw8htKcF.d.mts";
 
-
+interface PageResponseOffers {
+    content: Array<Offer> | undefined | null,
+    number: number,
+    elements: number,
+    totalPages: number,
+    totalElements: number
+}
 
 interface InitialState {
     isLoading: boolean,
     success: string | null,
     fail: string | null, 
-    error: any | null
+    error: any | null,
+    searchOffers: PageResponseOffers | undefined | null
 }
 
 const initialState = { 
     isLoading: false,
     success: null,
     fail: null,
-    error: null} satisfies InitialState as InitialState
+    error: null,
+    searchOffers: null} satisfies InitialState as InitialState
 
 const offerSlice = createSlice({
     name: 'offer',
@@ -44,6 +54,24 @@ const offerSlice = createSlice({
             state.isLoading = false,
             state.fail = "createOffer",
             state.error = action.payload
+        })
+
+        .addCase(searchOffers.pending, (state, action) => {
+            state.isLoading = true
+            state.fail = null
+            state.success = null
+            state.error = null
+        })
+        .addCase(searchOffers.fulfilled, (state, action) => {
+            state.isLoading = false,
+            state.success = "searchOffers"
+            state.searchOffers = action.payload
+        })
+        .addCase(searchOffers.rejected, (state, action) => {
+            state.isLoading = false,
+            state.fail = "searchOffers",
+            state.error = action.payload
+            state.searchOffers = null
         })
 
     }
