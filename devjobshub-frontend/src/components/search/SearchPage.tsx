@@ -33,8 +33,10 @@ import {
 } from "@/components/ui/pagination"
 import OfferCard from './OfferCard'
 import { Offer } from '@/types/offer'
+import { useNavigate } from 'react-router'
 
 const SearchPage = () => {
+
   // const [request, setRequest] = React.useState<any>()
   const [technologies, setTechnologies] = React.useState<Array<Technology>>([])
   const dispatch = useDispatch<any>()
@@ -42,6 +44,7 @@ const SearchPage = () => {
   const [localizationText, setLocalizationText] = React.useState<string>("")
   const [localizations, setLocalizations] = React.useState<Array<string>>([])
   const [pageNumber, setPageNumber] = React.useState<number>(0)
+  const navigate = useNavigate()
 
   const handleSubmitSearch = (data: any) => {
     const specializationsString = specializations.filter(element => data[element]).join(",")
@@ -68,8 +71,8 @@ const SearchPage = () => {
     if (localizations.length !== 0) {
       params += `localizations=${localizations.map(l => l).join(",")}&`
     }
-    params += "numberOfElements=30&"
-    params += "pageNumber=0&"
+    params += "numberOfElements=10&"
+    params += `pageNumber=${pageNumber}&`
     params += "sortBy=dateTimeOfCreation&"
     params += "sortingDirection=ASC&"
     console.log(params)
@@ -95,6 +98,10 @@ const SearchPage = () => {
   const jobLevels = ["TRAINEE", "JUNIOR", "MID", "SENIOR", "MANAGER", "CLEVEL"]
 
 
+  useEffect(() => {
+    handleSearch(handleSubmitSearch)()
+  }, [pageNumber])
+
   return (
     <div className='flex flex-col'>
       <Navbar />
@@ -107,7 +114,7 @@ const SearchPage = () => {
               </div>
 
               <div className='flex flex-row'>
-                <Input type="text" placeholder="Search" className='h-12 rounded-none' {...registerSearch('text')} />
+                <Input type="text" placeholder="Search" className='h-12 rounded-none' {...registerSearch('text')}/>
 
                 <PopoverCheckboxes text="Specializations" control={controlSearch} checkboxes={[
                   { registerAs: "BACKEND", label: "Backend" },
@@ -232,6 +239,7 @@ const SearchPage = () => {
                 <div className='flex flex-col gap-y-4 mt-4 w-full'>
                   {storeOffer.searchOffers?.content?.map((element: Offer) => <OfferCard offer={element} key={element.id} />)}
                 </div>
+                {storeOffer.searchOffers?.totalElements===0 && <span className='text-gray-300 text-2xl'>{"No job offers found :("}</span>}
 
 
 
@@ -239,28 +247,41 @@ const SearchPage = () => {
               </div>
 
             </div>
-
-            <Pagination>
+            <Pagination className='mt-3'>
               <PaginationContent>
+
                 <PaginationItem>
-                  <PaginationPrevious href="#" />
+                  <PaginationPrevious className='cursor-pointer select-none' onClick={() => {
+                    if (pageNumber - 1 >= 0) {
+                      setPageNumber(pageNumber - 1)
+                    }
+
+                  }} />
                 </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#" isActive>
-                    2
-                  </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
+                {[...Array(storeOffer.searchOffers?.totalPages || 0)].map((_, i) => {
+                  if (i >= pageNumber - 3 && i <= pageNumber + 3) {
+                    return (
+                      <PaginationItem key={i} >
+                        <PaginationLink className='cursor-pointer select-none'
+                          onClick={() => {
+                            setPageNumber(i)
+                          }}
+
+                          isActive={pageNumber === i ? true : false}
+                        >{i + 1}</PaginationLink>
+                      </PaginationItem>)
+                  }
+                }
+                )}
+                {/* <PaginationItem>
                   <PaginationEllipsis />
-                </PaginationItem>
+                </PaginationItem> */}
                 <PaginationItem>
-                  <PaginationNext href="#" />
+                  <PaginationNext className='cursor-pointer select-none' onClick={() => {
+                    if (pageNumber + 1 < storeOffer.searchOffers?.totalPages) {
+                      setPageNumber(pageNumber + 1)
+                    }
+                  }} />
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
