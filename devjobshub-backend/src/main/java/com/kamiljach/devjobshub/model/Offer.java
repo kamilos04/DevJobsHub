@@ -82,7 +82,7 @@ public class Offer {
 
     @Column(columnDefinition = "TEXT")
     private String aboutProject;
-    
+
     @Column(columnDefinition = "TEXT")
     private String responsibilitiesText;
 

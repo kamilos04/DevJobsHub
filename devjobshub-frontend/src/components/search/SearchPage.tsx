@@ -62,13 +62,13 @@ const SearchPage = () => {
     if (text) {
       params += `text=${text}&`
     }
-    if(technologies.length !== 0) {
+    if (technologies.length !== 0) {
       params += `technologies=${technologies.map(t => t.id).join(",")}&`
     }
-    if(localizations.length !== 0) {
+    if (localizations.length !== 0) {
       params += `localizations=${localizations.map(l => l).join(",")}&`
     }
-    params += "numberOfElements=10&"
+    params += "numberOfElements=30&"
     params += "pageNumber=0&"
     params += "sortBy=dateTimeOfCreation&"
     params += "sortingDirection=ASC&"
@@ -100,8 +100,8 @@ const SearchPage = () => {
       <Navbar />
       <div className='flex flex-col items-center'>
         <form onSubmit={handleSearch(handleSubmitSearch)}>
-          <div className='bg-black mt-8 p-4 w-[90rem] flex flex-col items-center'>
-            <div className='bg-my-card flex flex-col p-4 rounded-xl border-[1px] w-[60rem]'>
+          <div className='mt-8 p-4 w-[90rem] flex flex-col items-center rounded-2xl'>
+            <div className='bg-my-card flex flex-col p-4 rounded-xl border-[1px] w-full'>
               <div className='flex flex-row justify-start mb-2'>
                 <h1 className='text-2xl mb-1'>What kind of job are you looking for?</h1>
               </div>
@@ -141,7 +141,7 @@ const SearchPage = () => {
               {/* {storeOffer.searchOffers?.content?.map((element: any) => <span>{element.id}</span>)} */}
             </div>
             <div className='flex flex-row w-full mt-8'>
-              <div className='bg-my-card flex flex-col rounded-xl border-[1px] w-80 p-5'>
+              <div className='bg-my-card flex flex-col rounded-xl border-[1px] w-80 p-5 h-min'>
                 <Label className=''>Technologies: </Label>
                 <div className='flex flex-row items-start flex-wrap mt-2 w-full gap-x-2 gap-y-2 mb-2'>
                   {technologies.map((element: Technology) => <Badge key={element.id} className='cursor-pointer text-sm bg-gray-400' onClick={() => setTechnologies(technologies.filter((item: Technology) => item.id !== element.id))}>{element.name}</Badge>)}
@@ -180,7 +180,7 @@ const SearchPage = () => {
 
 
               </div>
-              <div className='ml-4 flex-col'>
+              <div className='ml-4 flex-col w-full'>
                 <div className='flex flex-row space-x-4'>
                   <Controller
                     name="sortBy"
@@ -229,7 +229,10 @@ const SearchPage = () => {
 
 
                 </div>
-                {storeOffer.searchOffers?.content?.map((element: Offer) => <OfferCard offer={element}/>)}
+                <div className='flex flex-col gap-y-4 mt-4 w-full'>
+                  {storeOffer.searchOffers?.content?.map((element: Offer) => <OfferCard offer={element} key={element.id} />)}
+                </div>
+
 
 
 

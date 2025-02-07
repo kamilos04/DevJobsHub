@@ -168,6 +168,7 @@ const CreateOffer = () => {
 
     const onCreateOfferSubmit = (data: any) => {
         const request = emptyCreateOfferRequest
+        console.log(request.isSalaryMonthlyUZ)
         request.name = data.name
         request.firmName = data.firmName
         request.jobLevel = data.jobLevel
@@ -221,7 +222,6 @@ const CreateOffer = () => {
             }
         }
 
-
         if (data.isUZ === true) {
             if (data.showSalaryUZ === true) {
                 if (data.monthlyOrHourlyUZ === "monthly") {
@@ -237,7 +237,7 @@ const CreateOffer = () => {
                 request.isSalaryMonthlyUZ = false
             }
         }
-        
+
 
         dispatch(createOffer(request))
         console.log(request)

@@ -36,6 +36,7 @@ export interface CreateOfferRequest {
 export const emptyCreateOfferRequest: CreateOfferRequest = {
     name: "",
     jobLevel: "",
+    firmName: "",
     operatingMode: "",
     specialization: "",
     minSalaryUoP: null,
