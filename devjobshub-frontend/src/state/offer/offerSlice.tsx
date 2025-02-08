@@ -1,7 +1,7 @@
 import { Technology } from "@/types/technology";
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { createOffer as createOffer, searchOffers } from "./action";
+import { createOffer as createOffer, getOfferById, searchOffers } from "./action";
 import { Offer } from "@/types/offer";
 import { ac } from "node_modules/react-router/dist/development/route-data-Cw8htKcF.d.mts";
 
@@ -16,27 +16,30 @@ interface PageResponseOffers {
 interface InitialState {
     isLoading: boolean,
     success: string | null,
-    fail: string | null, 
+    fail: string | null,
     error: any | null,
-    searchOffers: PageResponseOffers | undefined | null
+    searchOffers: PageResponseOffers | undefined | null,
+    offer: Offer | null
 }
 
-const initialState = { 
+const initialState = {
     isLoading: false,
     success: null,
     fail: null,
     error: null,
-    searchOffers: null} satisfies InitialState as InitialState
+    searchOffers: null,
+    offer: null
+} satisfies InitialState as InitialState
 
 const offerSlice = createSlice({
     name: 'offer',
     initialState,
-    reducers:{
+    reducers: {
         setSuccessNull(state) {
-            state.success=null
+            state.success = null
         },
         setFailNull(state) {
-            state.fail=null
+            state.fail = null
         }
     },
     extraReducers: (builder) => {
@@ -46,37 +49,58 @@ const offerSlice = createSlice({
             state.success = null
             state.error = null
         })
-        .addCase(createOffer.fulfilled, (state, action) => {
-            state.isLoading = false,
-            state.success = "createOffer"
-        })
-        .addCase(createOffer.rejected, (state, action) => {
-            state.isLoading = false,
-            state.fail = "createOffer",
-            state.error = action.payload
-        })
+            .addCase(createOffer.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "createOffer"
+            })
+            .addCase(createOffer.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "createOffer",
+                    state.error = action.payload
+            })
 
-        .addCase(searchOffers.pending, (state, action) => {
-            state.isLoading = true
-            state.fail = null
-            state.success = null
-            state.error = null
-        })
-        .addCase(searchOffers.fulfilled, (state, action) => {
-            state.isLoading = false,
-            state.success = "searchOffers"
-            state.searchOffers = action.payload
-        })
-        .addCase(searchOffers.rejected, (state, action) => {
-            state.isLoading = false,
-            state.fail = "searchOffers",
-            state.error = action.payload
-            state.searchOffers = null
-        })
+
+            .addCase(searchOffers.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+            })
+            .addCase(searchOffers.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "searchOffers"
+                state.searchOffers = action.payload
+            })
+            .addCase(searchOffers.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "searchOffers",
+                    state.error = action.payload
+                state.searchOffers = null
+            })
+
+
+            .addCase(getOfferById.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+            })
+            .addCase(getOfferById.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "getOfferById"
+                state.offer = action.payload
+            })
+            .addCase(getOfferById.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "getOfferById",
+                    state.error = action.payload
+                state.offer = null
+            })
+
 
     }
 })
 
 
 export default offerSlice.reducer
-export const {setSuccessNull, setFailNull} = offerSlice.actions
+export const { setSuccessNull, setFailNull } = offerSlice.actions
