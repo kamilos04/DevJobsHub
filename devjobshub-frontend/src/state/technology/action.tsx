@@ -24,6 +24,25 @@ export const searchTechnologies = createAsyncThunk(
     }
 )
 
+export const getTechnologiesByIds = createAsyncThunk(
+    "technology/getTechnologiesByIds",
+    async (ids: string, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.get(`${API_URL}/api/technology/by-ids?ids=${ids}`, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+
 
 export const createTechnology = createAsyncThunk(
     "technology/createTechnology",

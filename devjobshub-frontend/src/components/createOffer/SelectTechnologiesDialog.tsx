@@ -49,11 +49,11 @@ const SelectTechnologiesDialog = ({ technologies, setTechnologies, text }: { tec
                                     value={searchText}
                                 />
                             </div>
-                            <div className='flex flex-row items-start flex-wrap'>
+                            <div className='flex flex-row items-start flex-wrap gap-x-2 gap-y-2'>
                                 {technologyStore.technologies?.content?.map((element: Technology) => {
                                     const exists = technologies.some(tech => tech.id === element.id);
                                     if (!exists) {
-                                        return (<Button className='flex-1 mb-2 mr-2' variant="outline" key={element.id} onClick={() => setTechnologies([...technologies, element])}>{element.name}</Button>)
+                                        return (<Button className='flex-1' variant="outline" key={element.id} onClick={() => setTechnologies([...technologies, element])}>{element.name}</Button>)
                                     }
                                 })}
                             </div>

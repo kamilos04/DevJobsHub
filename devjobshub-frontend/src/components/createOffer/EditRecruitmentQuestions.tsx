@@ -59,7 +59,7 @@ const EditRecruitmentQuestions = (props: any) => {
                     </ul></>}
                 </div>
 
-                <Button variant={'destructive'} onClick={() => handleRemoveClick(index)}>Delete</Button>
+                <Button variant={'destructive'} onClick={() => handleRemoveClick(index)} type='button'>Delete</Button>
               </AccordionContent>
             </AccordionItem>
           ))}

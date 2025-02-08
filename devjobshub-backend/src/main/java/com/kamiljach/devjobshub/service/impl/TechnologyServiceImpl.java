@@ -101,5 +101,15 @@ public class TechnologyServiceImpl implements TechnologyService {
         return new PageResponse<>(technologyDtos, page);
     }
 
+    public ArrayList<TechnologyDto> getTechnologiesByIds(ArrayList<Long> ids) throws TechnologyNotFoundByIdException {
+        ArrayList<TechnologyDto> result = new ArrayList<>();
+        for(Long id : ids){
+            Technology tech = technologyRepository.findById(id).orElseThrow(TechnologyNotFoundByIdException::new);
+            result.add(tech.mapToTechnologyDtoShallow());
+        }
+
+        return result;
+    }
+
 
 }

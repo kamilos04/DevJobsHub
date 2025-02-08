@@ -34,14 +34,14 @@ import { login, register } from '@/state/profile/action'
 import { useToast } from '@/hooks/use-toast'
 import { LoginRequest } from '@/types/loginRequest'
 import Navbar from '../navbar/Navbar'
+import { setFailNull, setSuccessNull } from '@/state/profile/profileSlice'
 
 
 
 
 
 const Login = () => {
-    const [isFirm, setIsFirm] = useState<boolean | null>(null);
-    const [surname, setSurname] = useState<string>("")
+
     const profile = useSelector((store: any) => store.profile)
     const { toast } = useToast()
     const dispatch = useDispatch<any>()
@@ -63,41 +63,30 @@ const Login = () => {
             email: "",
             password: "",
             name: "",
+            surname: "",
             isFirm: false
         }
         reqData.email = data.registerEmail
         reqData.password = data.registerPassword
         reqData.name = data.name
+        reqData.surname = data.surname
         if (data.accountType === "firm") {
             reqData.isFirm = true
         }
         else {
             reqData.isFirm = false
-            reqData.surname = data.surname
         }
+        console.log(reqData)
         dispatch(register(reqData))
     };
 
 
 
-    const handleValueChangeAccountType = (data: any) => {
-        if (data === "firm") {
-            setIsFirm(true);
-            if (surname === "") {
-                setValueRegister("surname", " ")
-                setSurname(" ")
-            }
-
-        }
-        else {
-            setIsFirm(false);
-        }
-    }
 
 
     useEffect(() => {
         if (profile.fail === "register") {
-            if (profile.error === "Account already exists") {
+            if (profile.error === "Account already exists!") {
                 toast({
                     variant: "destructive",
                     title: "Account already exists!",
@@ -110,6 +99,7 @@ const Login = () => {
                     description: "Make sure you enter your details correctly."
                 });
             }
+            dispatch(setFailNull())
         }
         else if(profile.fail === "login"){
             if (profile.error === "Invalid username or password") {
@@ -132,6 +122,7 @@ const Login = () => {
                     description: "Make sure you enter your details correctly."
                 });
             }
+            dispatch(setFailNull())
         }
     }, [profile.fail])
 
@@ -188,12 +179,12 @@ const Login = () => {
                                 <CardContent className="space-y-4">
                                     <div className="space-y-1">
                                         <Label htmlFor="loginEmail">E-mail</Label>
-                                        <Input id="loginEmail" placeholder='example@gmail.com' {...loginRegister('loginEmail')} />
+                                        <Input id="loginEmail" placeholder='example@gmail.com' {...loginRegister('loginEmail')} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
                                         <p className="text-red-500 text-sm font-normal">{loginErrors.loginEmail?.message}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <Label htmlFor="loginPassword">Password</Label>
-                                        <Input id="loginPassword" type='password' {...loginRegister('loginPassword')} />
+                                        <Input id="loginPassword" type='password' {...loginRegister('loginPassword')}/>
                                         <p className="text-red-500 text-sm font-normal">{loginErrors.loginPassword?.message}</p>
                                     </div>
                                 </CardContent>
@@ -211,7 +202,7 @@ const Login = () => {
                             <CardHeader className='flex flex-col items-center space-y-3'>
                                 <CardTitle>Register</CardTitle>
                                 <CardDescription>
-                                    Please pay attention to the account type. You cannot change from a company account to a regular account and vice versa.
+                                    Please pay attention to the account type. You cannot change from a company account to a regular account and vice versa. A company account can create job offers and a user account can apply.
                                 </CardDescription>
                             </CardHeader>
                             <div className='w-full'>
@@ -219,7 +210,7 @@ const Login = () => {
 
                                     <div className="space-y-1">
                                         <Label htmlFor="accountType">Account type</Label>
-                                        <Select onValueChange={(value) => { handleValueChangeAccountType(value); setValueRegister("accountType", value) }}>
+                                        <Select onValueChange={(value) => { setValueRegister("accountType", value) }}>
                                             <SelectTrigger className="w-full" id="accountType">
                                                 <SelectValue placeholder="Select account type" />
                                             </SelectTrigger>
@@ -234,25 +225,21 @@ const Login = () => {
                                     </div>
                                     <div className="space-y-1">
                                         <Label htmlFor="name">Name</Label>
-                                        <Input id="name" {...registerForm('name')} />
+                                        <Input id="name" {...registerForm('name')} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
                                         <p className="text-red-500 text-sm font-normal">{registerErrors.name?.message}</p>
-                                    </div>
-                                    {!isFirm && <div className="space-y-1">
+                                    </div><div className="space-y-1">
                                         <Label htmlFor="surname">Surname</Label>
-                                        <Input id="surname" value={surname} onChange={(e) => {
-                                            setSurname(e.target.value);
-                                            setValueRegister("surname", e.target.value)
-                                        }} />
+                                        <Input id="surname"  {...registerForm('surname')} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
                                         <p className="text-red-500 text-sm font-normal">{registerErrors.surname?.message}</p>
-                                    </div>}
+                                    </div>
                                     <div className="space-y-1">
                                         <Label htmlFor="registerEmail">E-mail</Label>
-                                        <Input id="registerEmail" placeholder='example@gmail.com' {...registerForm('registerEmail')} />
+                                        <Input id="registerEmail" placeholder='example@gmail.com' {...registerForm('registerEmail')} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
                                         <p className="text-red-500 text-sm font-normal">{registerErrors.registerEmail?.message}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <Label htmlFor="registerPassword">New password</Label>
-                                        <Input id="registerPassword" type="password" {...registerForm('registerPassword')} />
+                                        <Input id="registerPassword" type="password" {...registerForm('registerPassword')} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
                                         <p className="text-red-500 text-sm font-normal">{registerErrors.registerPassword?.message}</p>
                                     </div>
                                 </CardContent></div>
