@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+
 @RestController
 @RequestMapping("/api")
 public class TechnologyController {
@@ -49,6 +51,11 @@ public class TechnologyController {
     @GetMapping("/technology/search")
     public ResponseEntity<PageResponse<TechnologyDto>> searchTechnologies(@RequestParam("text") String text){
         return new ResponseEntity<>(technologyService.searchTechnologies(text), HttpStatus.OK);
+    }
+
+    @GetMapping("/technology/by-ids")
+    public ResponseEntity<ArrayList<TechnologyDto>> getTechnologiesByIds(@RequestParam("ids") ArrayList<Long> ids) throws TechnologyNotFoundByIdException {
+        return new ResponseEntity<>(technologyService.getTechnologiesByIds(ids), HttpStatus.OK);
     }
 
 
