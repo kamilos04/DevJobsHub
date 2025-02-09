@@ -1,5 +1,5 @@
 import { Offer } from '@/types/offer'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { MdOutlineWorkOutline } from "react-icons/md";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaRegBuilding } from "react-icons/fa";
@@ -10,9 +10,13 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { RiStairsLine } from "react-icons/ri";
 import { off } from 'process';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { likeOfferById, removeLikeOfferById } from '@/state/offer/action';
 
 const OfferCard = ({ offer }: { offer: Offer }) => {
   const navigate = useNavigate()
+  const dispatch = useDispatch<any>()
+  const [isLiked, setIsLiked] = React.useState<boolean>(false)
   const levels = [
     { value: "TRAINEE", label: "Trainee / Intern" },
     { value: "JUNIOR", label: "Junior" },
@@ -25,6 +29,25 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
       const found = levels.find((element) => element.value === text);
       return found ? found.label : "";
     };
+
+    const handleLikeClick = (event: any) => {
+            event.stopPropagation()
+            if (isLiked === false) {
+                dispatch(likeOfferById(offer?.id))
+                setIsLiked(true)
+            }
+            else if (isLiked === true) {
+                dispatch(removeLikeOfferById(offer?.id))
+                setIsLiked(false)
+            }
+        }
+
+
+    useEffect(() => {
+      if(offer && offer.isLiked !== null) {
+          setIsLiked(offer.isLiked)
+      }
+    }, [offer])
 
 
   return (
@@ -72,7 +95,8 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
               <Badge variant={'secondary'} className='text-sm'><span>{offer.minSalaryUZ} - {offer.maxSalaryUZ} zł (order contract)</span> </Badge>
             </div>}
           </div>
-          <MdFavoriteBorder className='text-2xl' />
+          <MdFavoriteBorder className={`text-2xl cursor-pointer ${isLiked && "text-pink-700"}`} onClick={handleLikeClick}/>
+          
         </div>
 
       </div>
