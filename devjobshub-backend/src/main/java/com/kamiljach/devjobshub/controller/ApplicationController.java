@@ -2,6 +2,7 @@ package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.dto.ApplicationDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
+import com.kamiljach.devjobshub.model.APPLICATION_STATUS;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import com.kamiljach.devjobshub.response.MessageResponse;
 import com.kamiljach.devjobshub.response.PageResponse;
@@ -46,29 +47,21 @@ public class ApplicationController {
     public ResponseEntity<PageResponse<ApplicationDto>> getApplicationsFromOffer(@PathVariable("offerId") Long offerId,
                                                                                  @RequestParam("numberOfElements") Integer numberOfElements,
                                                                                  @RequestParam("pageNumber") Integer pageNumber,
-                                                                                 @RequestParam("isFavourite") Boolean isFavourite,
+                                                                                 @RequestParam(value = "status", required = false) APPLICATION_STATUS status,
                                                                                  @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, NoPermissionException {
-        PageResponse<ApplicationDto> pageResponse = applicationService.getApplicationsFromOffer(offerId, numberOfElements, pageNumber, isFavourite, jwt);
+        PageResponse<ApplicationDto> pageResponse = applicationService.getApplicationsFromOffer(offerId, numberOfElements, pageNumber, status, jwt);
         return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 
 
-    @PostMapping("/application/add-to-favourites/{applicationId}")
-    public ResponseEntity<MessageResponse> addApplicationToFavourites(@PathVariable("applicationId") Long applicationId,
+
+    @PostMapping("/application/set-status")
+    public ResponseEntity<MessageResponse> setApplicationStatus(@RequestParam("applicationId") Long applicationId,
+                                                                      @RequestParam("status") APPLICATION_STATUS status,
                                                                       @RequestHeader("Authorization") String jwt)
             throws ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, NoPermissionException {
-        applicationService.addApplicationToFavourites(applicationId, jwt);
-        MessageResponse messageResponse = new MessageResponse("Application has been added to favourites");
-        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
-    }
-
-
-    @PostMapping("/application/remove-from-favourites/{applicationId}")
-    public ResponseEntity<MessageResponse> removeApplicationFromFavourites(@PathVariable("applicationId") Long applicationId,
-                                                                           @RequestHeader("Authorization") String jwt)
-            throws ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, NoPermissionException {
-        applicationService.removeApplicationFromFavourites(applicationId, jwt);
-        MessageResponse messageResponse = new MessageResponse("Application has been removed from favourites");
+        applicationService.setApplicationStatus(applicationId, status, jwt);
+        MessageResponse messageResponse = new MessageResponse("The application status has been set");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 

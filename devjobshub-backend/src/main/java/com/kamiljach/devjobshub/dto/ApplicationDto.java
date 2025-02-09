@@ -28,7 +28,7 @@ public class ApplicationDto {
 
     private String dateTimeOfCreation;
 
-    private Boolean isFavourite;
+    private APPLICATION_STATUS status;
 
     private List<QuestionAndAnswer> questionsAndAnswers = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package com.kamiljach.devjobshub.repository;
 
+import com.kamiljach.devjobshub.model.APPLICATION_STATUS;
 import com.kamiljach.devjobshub.model.Application;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     @Query("SELECT DISTINCT a FROM Application a " +
             "LEFT JOIN a.offer o " +
             "WHERE ((o.id = :offerId ) " +
-            "AND (a.isFavourite = TRUE))")
-    Page<Application> getFavouriteApplicationsFromOffer(@Param("offerId") Long offerId, Pageable pageable);
+            "AND (a.status = :status))")
+    Page<Application> getApplicationsFromOfferWithParticularStatus(@Param("offerId") Long offerId, @Param("status") APPLICATION_STATUS status, Pageable pageable);
 }

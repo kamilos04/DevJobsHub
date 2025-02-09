@@ -2,6 +2,7 @@ package com.kamiljach.devjobshub.service;
 
 import com.kamiljach.devjobshub.dto.ApplicationDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
+import com.kamiljach.devjobshub.model.APPLICATION_STATUS;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import com.kamiljach.devjobshub.response.PageResponse;
@@ -13,10 +14,9 @@ public interface ApplicationService {
     public void deleteApplication(Application application);
     public void deleteApplicationById(Long id, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException;
 
-    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, Boolean isFavourite, String jwt) throws OfferNotFoundByIdException, NoPermissionException;
+    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, APPLICATION_STATUS status, String jwt) throws OfferNotFoundByIdException, NoPermissionException;
 
-    public void addApplicationToFavourites(Long applicationId, String jwt) throws ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, NoPermissionException;
 
-    public void removeApplicationFromFavourites(Long applicationId, String jwt) throws ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, NoPermissionException;
+    public void setApplicationStatus(Long applicationId, APPLICATION_STATUS status, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException;
 
-    }
+}

@@ -38,7 +38,7 @@ public class Application {
 
     private LocalDateTime dateTimeOfCreation;
 
-    private Boolean isFavourite;
+    private APPLICATION_STATUS status;
 
     @ElementCollection
     private List<QuestionAndAnswer> questionsAndAnswers = new ArrayList<>();

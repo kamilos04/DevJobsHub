@@ -2,6 +2,7 @@ package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.dto.ApplicationDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
+import com.kamiljach.devjobshub.model.APPLICATION_STATUS;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.User;
@@ -58,7 +59,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         Application newApplication = createApplicationRequest.mapToApplication();
 
-        newApplication.setIsFavourite(false);
+        newApplication.setStatus(APPLICATION_STATUS.NO_STATUS);
 
         validateAllQuestionsInApplication(newApplication, offer);
 
@@ -103,7 +104,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
 
-    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, Boolean isFavourite, String jwt) throws OfferNotFoundByIdException, NoPermissionException {
+    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, APPLICATION_STATUS status, String jwt) throws OfferNotFoundByIdException, NoPermissionException {
         Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
         User user = userService.findUserByJwt(jwt);
         validatePermissionGetApplicationsFromOffer(user, offer);
@@ -111,8 +112,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
 
         Page<Application> page;
-        if(isFavourite){
-            page = applicationRepository.getFavouriteApplicationsFromOffer(offerId, pageable);
+        if(status != null){
+            page = applicationRepository.getApplicationsFromOfferWithParticularStatus(offerId, status, pageable);
         }
         else{
             page = applicationRepository.getApplicationsFromOffer(offerId, pageable);
@@ -129,50 +130,28 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void addApplicationToFavourites(Long applicationId, String jwt) throws ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, NoPermissionException {
+    public void setApplicationStatus(Long applicationId, APPLICATION_STATUS status, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
         User user = userService.findUserByJwt(jwt);
         Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
-        Offer offer = application.getOffer();
 
-        validatePermissionAddApplicationToFavourites(user, offer);
+        validatePermissionChangeApplicationStatus(user, application);
 
 
-        if(application.getIsFavourite()){throw new ApplicationAlreadyIsInFavouritesException();}
+        application.setStatus(status);
 
-        application.setIsFavourite(true);
         applicationRepository.save(application);
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
-    public void removeApplicationFromFavourites(Long applicationId, String jwt) throws ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, NoPermissionException {
-        User user = userService.findUserByJwt(jwt);
-        Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
+
+    public void validatePermissionChangeApplicationStatus(User user, Application application) throws NoPermissionException {
         Offer offer = application.getOffer();
-
-        validatePermissionRemoveApplicationFromFavourites(user, offer);
-
-        if(!application.getIsFavourite()){throw new ApplicationIsNotInFavouritesException();}
-
-        application.setIsFavourite(false);
-        applicationRepository.save(application);
-
-    }
-
-
-    public void validatePermissionRemoveApplicationFromFavourites(User user, Offer offer) throws NoPermissionException {
         if (offer.getRecruiters().contains(user)){
             return;
         }
         throw new NoPermissionException();
     }
 
-    public void validatePermissionAddApplicationToFavourites(User user, Offer offer) throws NoPermissionException {
-        if (offer.getRecruiters().contains(user)){
-            return;
-        }
-        throw new NoPermissionException();
-    }
 
     public void ifUserAlreadyAppliedForOfferThrowException(User user, Offer offer) throws UserAlreadyAppliedForThisOfferException {
         for (Application application : user.getApplications()){
