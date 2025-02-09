@@ -3,6 +3,7 @@ package com.kamiljach.devjobshub.service;
 import com.kamiljach.devjobshub.config.Constants;
 import com.kamiljach.devjobshub.dto.ApplicationDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
+import com.kamiljach.devjobshub.model.APPLICATION_STATUS;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.User;
@@ -28,10 +29,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,18 +62,26 @@ public class ApplicationServiceImplTests {
     private User user1;
     private Application application1;
     private Application application2;
+
+    private Offer offer1;
     private String validJwt;
 
     @BeforeEach
     void setUp() {
         User user1 = new User();
         validJwt = "someJwt";
+        offer1 = new Offer();
+        offer1.setId(4L);
         application1 = new Application();
         application1.setCvUrl("test url");
         application1.setDateTimeOfCreation(LocalDateTime.parse("02-01-2024 23:59:59", Constants.dateTimeFormatter));
+        application1.setOffer(offer1);
         application2 = new Application();
         application2.setCvUrl("test url2");
         application2.setDateTimeOfCreation(LocalDateTime.parse("02-01-2024 21:59:59", Constants.dateTimeFormatter));
+
+
+
     }
 
     @Test
@@ -331,7 +337,7 @@ public class ApplicationServiceImplTests {
         Page<Application> page = new PageImpl<>(Arrays.asList(application1, application2));
         when(applicationRepository.getApplicationsFromOffer(eq(validOfferId), any(Pageable.class))).thenReturn(page);
 
-        PageResponse<ApplicationDto> result = applicationServiceSpy.getApplicationsFromOffer(validOfferId, 10, 0, false, validJwt);
+        PageResponse<ApplicationDto> result = applicationServiceSpy.getApplicationsFromOffer(validOfferId, 10, 0, null, validJwt);
         assertNotNull(result);
         assertEquals(result.getTotalElements(), 2);
     }
@@ -343,7 +349,7 @@ public class ApplicationServiceImplTests {
 
         when(offerRepository.findById(invalidOfferId)).thenReturn(Optional.empty());
 
-        assertThrows(OfferNotFoundByIdException.class, () -> applicationServiceSpy.getApplicationsFromOffer(invalidOfferId, 10, 0, false, validJwt));
+        assertThrows(OfferNotFoundByIdException.class, () -> applicationServiceSpy.getApplicationsFromOffer(invalidOfferId, 10, 0, null, validJwt));
 
         verify(applicationRepository, never()).getApplicationsFromOffer(any(), any());
     }
@@ -359,11 +365,67 @@ public class ApplicationServiceImplTests {
         doThrow(NoPermissionException.class).when(applicationServiceSpy).validatePermissionGetApplicationsFromOffer(user, offer);
 
 
-        assertThrows(NoPermissionException.class, () -> applicationServiceSpy.getApplicationsFromOffer(validOfferId, 10, 0, false, validJwt));
+        assertThrows(NoPermissionException.class, () -> applicationServiceSpy.getApplicationsFromOffer(validOfferId, 10, 0, null, validJwt));
 
         verify(applicationRepository, never()).getApplicationsFromOffer(any(), any());
     }
 
 
+    @Test
+    public void ApplicationService_setApplicationStatus_Success() throws NoPermissionException, ApplicationNotFoundByIdException {
+        Long validApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        application1.setStatus(APPLICATION_STATUS.NO_STATUS);
+
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(application1));
+
+        doNothing().when(applicationServiceSpy).validatePermissionChangeApplicationStatus(eq(userA), any(Application.class));
+
+        applicationServiceSpy.setApplicationStatus(validApplicationId, APPLICATION_STATUS.FAVOURITE, validJwt);
+
+        assertEquals(application1.getStatus(), APPLICATION_STATUS.FAVOURITE);
+        verify(applicationRepository).save(application1);
+
+    }
+
+    @Test
+    public void ApplicationService_setApplicationStatus_ThrowsApplicationNotFoundByIdException() throws NoPermissionException, ApplicationNotFoundByIdException {
+        Long invalidApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        application1.setStatus(APPLICATION_STATUS.NO_STATUS);
+
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(applicationRepository.findById(invalidApplicationId)).thenReturn(Optional.empty());
+
+
+        assertThrows(ApplicationNotFoundByIdException.class, () -> applicationServiceSpy.setApplicationStatus(invalidApplicationId, APPLICATION_STATUS.FAVOURITE, validJwt));
+
+        assertEquals(application1.getStatus(), APPLICATION_STATUS.NO_STATUS);
+        verify(applicationRepository, never()).save(application1);
+
+    }
+
+    @Test
+    public void ApplicationService_setApplicationStatus_ThrowsNoPermissionException() throws NoPermissionException, ApplicationNotFoundByIdException {
+        Long validApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        application1.setStatus(APPLICATION_STATUS.NO_STATUS);
+
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(application1));
+
+        doThrow(NoPermissionException.class).when(applicationServiceSpy).validatePermissionChangeApplicationStatus(userA, application1);
+
+
+        assertThrows(NoPermissionException.class, () -> applicationServiceSpy.setApplicationStatus(validApplicationId, APPLICATION_STATUS.FAVOURITE, validJwt));
+
+        assertEquals(application1.getStatus(), APPLICATION_STATUS.NO_STATUS);
+        verify(applicationRepository, never()).save(application1);
+
+    }
 
 }

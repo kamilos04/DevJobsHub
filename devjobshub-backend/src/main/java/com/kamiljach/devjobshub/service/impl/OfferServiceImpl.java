@@ -131,7 +131,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional
-    public PageResponse<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest){
+    public PageResponse<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest, String jwt){
         Pageable pageable;
         if(searchOffersRequest.getSortingDirection().equals("dsc")){
             pageable = PageRequest.of(searchOffersRequest.getPageNumber(), searchOffersRequest.getNumberOfElements(), Sort.by(searchOffersRequest.getSortBy()).descending());
@@ -145,15 +145,48 @@ public class OfferServiceImpl implements OfferService {
         ArrayList<Offer> offers = new ArrayList<>(page.getContent());
 
         ArrayList<OfferDto> offersDto = new ArrayList<>();
-        offers.forEach(element -> {offersDto.add(element.mapToOfferDtoShallow());});
+
+        //Being logged in is optional
+        if(jwt != null){
+            User user = userService.findUserByJwt(jwt);
+            offers.forEach(element -> {
+                OfferDto offerDtoToAdd = element.mapToOfferDtoShallow();
+                if(user.getLikedOffers().contains(element)){
+                    offerDtoToAdd.setIsLiked(true);
+                }
+                else{
+                    offerDtoToAdd.setIsLiked(false);
+                }
+                offersDto.add(offerDtoToAdd);
+            });
+        }
+        else{
+            offers.forEach(element -> {offersDto.add(element.mapToOfferDtoShallow());});
+        }
+
+
 
         PageResponse<OfferDto> pageResponse = new PageResponse<OfferDto>(offersDto, page);
         return pageResponse;
     }
 
-    public OfferDto getOffer(Long offerId) throws OfferNotFoundByIdException {
+    public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
-        return offer.mapToOfferDtoShallow();
+
+        OfferDto offerDto = offer.mapToOfferDtoShallow();
+
+        //Being logged in is optional
+        if(jwt != null){
+            User user = userService.findUserByJwt(jwt);
+
+            if(user.getLikedOffers().contains(offer)){
+                offerDto.setIsLiked(true);
+            }
+            else{
+                offerDto.setIsLiked(false);
+            }
+        }
+        return offerDto;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -231,36 +264,6 @@ public class OfferServiceImpl implements OfferService {
         offerRepository.save(offer);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public void addApplicationToFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, NoPermissionException {
-        Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
-        User user = userService.findUserByJwt(jwt);
-        Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
-        validatePermissionAddApplicationToFavourites(user, offer);
-
-
-        if(offer.getFavouriteApplications().contains(application)){throw new ApplicationAlreadyIsInFavouritesException();}
-
-        offer.addFavouriteApplication(application);
-        offerRepository.save(offer);
-        applicationRepository.save(application);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public void removeApplicationFromFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, NoPermissionException {
-        Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
-        User user = userService.findUserByJwt(jwt);
-        Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
-
-        validatePermissionRemoveApplicationFromFavourites(user, offer);
-
-        if(!offer.getFavouriteApplications().contains(application)){throw new ApplicationIsNotInFavouritesException();}
-
-        offer.removeFavouriteApplication(application);
-        offerRepository.save(offer);
-        applicationRepository.save(application);
-
-    }
 
     @Transactional(rollbackFor = Exception.class)
     public void addRecruiterToOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException {
@@ -301,7 +304,18 @@ public class OfferServiceImpl implements OfferService {
         ArrayList<Offer> offers = new ArrayList<>(offersPage.getContent());
 
         ArrayList<OfferDto> offersDto = new ArrayList<>();
-        offers.forEach(element -> {offersDto.add(element.mapToOfferDtoShallow());});
+        offers.forEach(element -> {
+            OfferDto offerDtoToAdd = element.mapToOfferDtoShallow();
+            if(user.getLikedOffers().contains(element)){
+                offerDtoToAdd.setIsLiked(true);
+            }
+            else{
+                offerDtoToAdd.setIsLiked(false);
+            }
+            offersDto.add(offerDtoToAdd);
+        });
+
+
 
         return new PageResponse<>(offersDto, offersPage);
     }
@@ -324,6 +338,7 @@ public class OfferServiceImpl implements OfferService {
 
         return new PageResponse<>(offersDto, offersPage);
     }
+
 
     public void validatePermissionUpdateOffer(User user, Offer offer) throws NoPermissionException {
         if (user.getIsAdmin()){
@@ -359,19 +374,6 @@ public class OfferServiceImpl implements OfferService {
         throw new NoPermissionException();
     }
 
-    public void validatePermissionAddApplicationToFavourites(User user, Offer offer) throws NoPermissionException {
-        if (offer.getRecruiters().contains(user)){
-            return;
-        }
-        throw new NoPermissionException();
-    }
-
-    public void validatePermissionRemoveApplicationFromFavourites(User user, Offer offer) throws NoPermissionException {
-        if (offer.getRecruiters().contains(user)){
-            return;
-        }
-        throw new NoPermissionException();
-    }
 
     public void validatePermissionAddRecruiterToOffer(User user, Offer offer) throws NoPermissionException {
         if (offer.getRecruiters().contains(user)){

@@ -36,6 +36,7 @@ import { Offer } from '@/types/offer'
 import { useNavigate, useSearchParams } from 'react-router'
 import { getTechnologiesByIds } from '@/state/technology/action'
 import { text } from 'stream/consumers'
+import { jobLevels, operatingModes, specializations } from '@/constants'
 
 
 const SearchPage = () => {
@@ -137,12 +138,6 @@ const SearchPage = () => {
     setSearchParams(paramsURL)
   }
 
-
-
-
-  const specializations = ["BACKEND", "FRONTEND", "FULLSTACK", "MOBILE", "EMBEDDED", "ARCHITECTURE", "TESTING", "SECURITY", "AIML", "DATASCIENCE", "HELPDESK", "UXUI", "ADMINISTRATOR", "PROJECTMANAGER", "OTHER"]
-  const operatingModes = ["REMOTE", "STATIONARY", "HYBRID"]
-  const jobLevels = ["TRAINEE", "JUNIOR", "MID", "SENIOR", "MANAGER", "CLEVEL"]
 
 
 

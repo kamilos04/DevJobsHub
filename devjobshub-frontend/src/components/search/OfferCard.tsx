@@ -9,8 +9,10 @@ import { Separator } from '../ui/separator';
 import { MdFavoriteBorder } from "react-icons/md";
 import { RiStairsLine } from "react-icons/ri";
 import { off } from 'process';
+import { useNavigate } from 'react-router';
 
 const OfferCard = ({ offer }: { offer: Offer }) => {
+  const navigate = useNavigate()
   const levels = [
     { value: "TRAINEE", label: "Trainee / Intern" },
     { value: "JUNIOR", label: "Junior" },
@@ -26,10 +28,10 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
 
 
   return (
-    <div className='flex flex-col bg-my-card rounded-md border-[1px] pl-4 pr-4 pt-3 pb-1 cursor-pointer w-full'>
+    <div className='flex flex-col bg-my-card rounded-md border-[1px] pl-4 pr-4 pt-3 pb-1 cursor-pointer w-full' onClick={() => navigate(`/offer/${offer.id}`)}>
       <div className='flex flex-row justify-between'>
         <div>
-          <p className='font-bold'>{offer.name}</p>
+          <h2 className='font-bold'>{offer.name}</h2>
           <div className='flex flex-row mt-1 mb-2 items-center gap-x-1 text-gray-400'>
             <MdOutlineWorkOutline className='text-xl' />
             <span>{offer.firmName}</span>

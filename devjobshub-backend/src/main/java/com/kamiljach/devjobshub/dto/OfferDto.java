@@ -86,5 +86,7 @@ public class OfferDto {
 
     private List<UserDto> recruiters = new ArrayList<>();
 
+    private Boolean isLiked;
+
 
 }

@@ -39,8 +39,8 @@ public class OfferController {
     }
 
     @GetMapping("/offer/{offerId}")
-    public ResponseEntity<OfferDto> getOfferById(@PathVariable("offerId") Long offerId) throws OfferNotFoundByIdException {
-        OfferDto offerDto = offerService.getOffer(offerId);
+    public ResponseEntity<OfferDto> getOfferById(@PathVariable("offerId") Long offerId, @RequestHeader(value = "Authorization", required = false) String jwt) throws OfferNotFoundByIdException {
+        OfferDto offerDto = offerService.getOffer(offerId, jwt);
         return new ResponseEntity<>(offerDto, HttpStatus.OK);
     }
 
@@ -52,7 +52,7 @@ public class OfferController {
                                                             @RequestParam(required = false) List<Long> technologies,
                                                             @RequestParam String sortingDirection,
                                                             @RequestParam String sortBy, @RequestParam Integer pageNumber,
-                                                            @RequestParam Integer numberOfElements){
+                                                            @RequestParam Integer numberOfElements, @RequestHeader(value = "Authorization", required = false) String jwt){
         SearchOffersRequest searchOffersRequest = new SearchOffersRequest();
         searchOffersRequest.setText(text);
         searchOffersRequest.setLocalizations(localizations);
@@ -64,7 +64,7 @@ public class OfferController {
         searchOffersRequest.setTechnologies(technologies);
         searchOffersRequest.setOperatingModes(operatingModes);
         searchOffersRequest.setSpecializations(specializations);
-        PageResponse<OfferDto> result = offerService.searchOffer(searchOffersRequest);
+        PageResponse<OfferDto> result = offerService.searchOffer(searchOffersRequest, jwt);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -93,26 +93,7 @@ public class OfferController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/offer/add-application-to-favourites")
-    public ResponseEntity<MessageResponse> addApplicationToFavourites(@RequestParam("offerId") Long offerId,
-                                                                      @RequestParam("applicationId") Long applicationId,
-                                                                      @RequestHeader("Authorization") String jwt)
-            throws ApplicationNotFoundByIdException, OfferNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, UserNotFoundByJwtException, NoPermissionException {
-        offerService.addApplicationToFavourites(offerId, applicationId, jwt);
-        MessageResponse messageResponse = new MessageResponse("Application has been added to favourites");
-        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
-    }
 
-
-    @PostMapping("/offer/remove-application-from-favourites")
-    public ResponseEntity<MessageResponse> removeApplicationFromFavourites(@RequestParam("offerId") Long offerId,
-                                                                           @RequestParam("applicationId") Long applicationId,
-                                                                           @RequestHeader("Authorization") String jwt)
-            throws ApplicationNotFoundByIdException, OfferNotFoundByIdException, ApplicationIsNotInFavouritesException, UserNotFoundByJwtException, NoPermissionException {
-        offerService.removeApplicationFromFavourites(offerId, applicationId, jwt);
-        MessageResponse messageResponse = new MessageResponse("Application has been removed from favourites");
-        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
-    }
 
     @PostMapping("/offer/add-recruiter")
     public ResponseEntity<MessageResponse> addRecruiter(@RequestParam("offerId") Long offerId,

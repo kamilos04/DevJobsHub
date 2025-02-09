@@ -12,18 +12,15 @@ public interface OfferService {
 
     public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException, NoPermissionException;
 
-    public OfferDto getOffer(Long offerId) throws OfferNotFoundByIdException;
+    public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException;
 
-    public PageResponse<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest);
+    public PageResponse<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest, String jwt);
 
     public void deleteOfferById(Long id, String jwt) throws OfferNotFoundByIdException, NoPermissionException;
 
     public void likeOffer(Long id, String jwt) throws OfferNotFoundByIdException, OfferIsAlreadyLikedByUserException, NoPermissionException;
 
     public void removeLikeOffer(Long id, String jwt) throws OfferNotFoundByIdException, OfferIsNotLikedByUserException, NoPermissionException;
-
-    public void addApplicationToFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, NoPermissionException;
-    public void removeApplicationFromFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, NoPermissionException;
 
     public void removeRecruiterFromOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException, NoPermissionException;
 

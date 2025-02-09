@@ -2,6 +2,7 @@ package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.dto.ApplicationDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
+import com.kamiljach.devjobshub.model.APPLICATION_STATUS;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.User;
@@ -58,6 +59,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         Application newApplication = createApplicationRequest.mapToApplication();
 
+        newApplication.setStatus(APPLICATION_STATUS.NO_STATUS);
+
         validateAllQuestionsInApplication(newApplication, offer);
 
         newApplication.setDateTimeOfCreation(LocalDateTime.now());
@@ -101,7 +104,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
 
-    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, Boolean isFavourite, String jwt) throws OfferNotFoundByIdException, NoPermissionException {
+    public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, APPLICATION_STATUS status, String jwt) throws OfferNotFoundByIdException, NoPermissionException {
         Offer offer= offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
         User user = userService.findUserByJwt(jwt);
         validatePermissionGetApplicationsFromOffer(user, offer);
@@ -109,8 +112,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         Pageable pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by("dateTimeOfCreation").ascending());
 
         Page<Application> page;
-        if(isFavourite){
-            page = applicationRepository.getFavouriteApplicationsFromOffer(offerId, pageable);
+        if(status != null){
+            page = applicationRepository.getApplicationsFromOfferWithParticularStatus(offerId, status, pageable);
         }
         else{
             page = applicationRepository.getApplicationsFromOffer(offerId, pageable);
@@ -123,6 +126,30 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         PageResponse<ApplicationDto> pageResponse = new PageResponse<ApplicationDto>(applicationDtos, page);
         return pageResponse;
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public void setApplicationStatus(Long applicationId, APPLICATION_STATUS status, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
+        User user = userService.findUserByJwt(jwt);
+        Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
+
+        validatePermissionChangeApplicationStatus(user, application);
+
+
+        application.setStatus(status);
+
+        applicationRepository.save(application);
+    }
+
+
+
+    public void validatePermissionChangeApplicationStatus(User user, Application application) throws NoPermissionException {
+        Offer offer = application.getOffer();
+        if (offer.getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
     }
 
 
