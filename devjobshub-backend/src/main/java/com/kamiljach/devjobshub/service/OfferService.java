@@ -12,9 +12,9 @@ public interface OfferService {
 
     public OfferDto updateOffer(CreateOfferRequest createOfferRequest, Long offerId, String jwt) throws OfferNotFoundByIdException, TechnologyNotFoundByIdException, NoPermissionException;
 
-    public OfferDto getOffer(Long offerId) throws OfferNotFoundByIdException;
+    public OfferDto getOffer(Long offerId, String jwt) throws OfferNotFoundByIdException;
 
-    public PageResponse<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest);
+    public PageResponse<OfferDto> searchOffer(SearchOffersRequest searchOffersRequest, String jwt);
 
     public void deleteOfferById(Long id, String jwt) throws OfferNotFoundByIdException, NoPermissionException;
 
