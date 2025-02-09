@@ -448,5 +448,84 @@ public class ApplicationServiceImplTests {
 
     }
 
+    @Test
+    public void ApplicationService_removeApplicationFromFavourites_Success() throws NoPermissionException, ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException {
+        Long validApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        application1.setIsFavourite(true);
+
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(application1));
+
+        doNothing().when(applicationServiceSpy).validatePermissionRemoveApplicationFromFavourites(eq(userA), any(Offer.class));
+
+        applicationServiceSpy.removeApplicationFromFavourites(validApplicationId, validJwt);
+
+        assertEquals(application1.getIsFavourite(), false);
+        verify(applicationRepository).save(application1);
+
+    }
+
+    @Test
+    public void ApplicationService_removeApplicationFromFavourites_ThrowsApplicationNotFoundByIdException() throws NoPermissionException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException {
+        Long invalidApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        application1.setIsFavourite(true);
+
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(applicationRepository.findById(invalidApplicationId)).thenReturn(Optional.empty());
+
+
+        assertThrows(ApplicationNotFoundByIdException.class, () -> applicationServiceSpy.removeApplicationFromFavourites(invalidApplicationId, validJwt));
+
+        assertEquals(application1.getIsFavourite(), true);
+        verify(applicationRepository, never()).save(application1);
+
+    }
+
+
+    @Test
+    public void ApplicationService_removeApplicationFromFavourites_ThrowsApplicationIsNotInFavouritesException() throws NoPermissionException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException {
+        Long validApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        application1.setIsFavourite(false);
+
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(application1));
+
+        doNothing().when(applicationServiceSpy).validatePermissionRemoveApplicationFromFavourites(eq(userA), any(Offer.class));
+
+
+        assertThrows(ApplicationIsNotInFavouritesException.class, () -> applicationServiceSpy.removeApplicationFromFavourites(validApplicationId, validJwt));
+
+        assertEquals(application1.getIsFavourite(), false);
+        verify(applicationRepository, never()).save(application1);
+
+    }
+
+    @Test
+    public void ApplicationService_removeApplicationFromFavourites_ThrowsNoPermissionException() throws NoPermissionException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException {
+        Long validApplicationId = 2L;
+        String validJwt = "some jwt";
+        User userA = mock(User.class);
+        application1.setIsFavourite(true);
+
+        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
+        when(applicationRepository.findById(validApplicationId)).thenReturn(Optional.of(application1));
+
+        doThrow(NoPermissionException.class).when(applicationServiceSpy).validatePermissionRemoveApplicationFromFavourites(eq(userA), any(Offer.class));
+
+
+        assertThrows(NoPermissionException.class, () -> applicationServiceSpy.removeApplicationFromFavourites(validApplicationId, validJwt));
+
+        assertEquals(application1.getIsFavourite(), true);
+        verify(applicationRepository, never()).save(application1);
+
+    }
+
+
 
 }
