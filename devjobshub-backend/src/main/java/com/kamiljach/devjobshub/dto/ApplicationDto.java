@@ -28,6 +28,8 @@ public class ApplicationDto {
 
     private String dateTimeOfCreation;
 
+    private Boolean isFavourite;
+
     private List<QuestionAndAnswer> questionsAndAnswers = new ArrayList<>();
 
     private List<RadioQuestionAndAnswer> radioQuestionsAndAnswers = new ArrayList<>();

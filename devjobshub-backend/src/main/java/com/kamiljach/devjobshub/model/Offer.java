@@ -110,8 +110,6 @@ public class Offer {
     @OneToMany(mappedBy = "offer")
     private List<Application> applications = new ArrayList<>();
 
-    @OneToMany(mappedBy = "assignedAsFavourite")
-    private List<Application> favouriteApplications = new ArrayList<>();
 
     private LocalDateTime expirationDate;
 
@@ -165,20 +163,6 @@ public class Offer {
         if (requiredTechnologies.contains(technology)) {
             requiredTechnologies.remove(technology);
             technology.getAssignedAsRequired().remove(this);
-        }
-    }
-
-    public void addFavouriteApplication(Application application) {
-        if (!favouriteApplications.contains(application)) {
-            favouriteApplications.add(application);
-            application.setAssignedAsFavourite(this);
-        }
-    }
-
-    public void removeFavouriteApplication(Application application) {
-        if (favouriteApplications.contains(application)) {
-            favouriteApplications.remove(application);
-            application.setAssignedAsFavourite(null);
         }
     }
 

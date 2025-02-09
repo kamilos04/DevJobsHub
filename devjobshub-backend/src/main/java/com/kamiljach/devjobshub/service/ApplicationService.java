@@ -15,4 +15,8 @@ public interface ApplicationService {
 
     public PageResponse<ApplicationDto> getApplicationsFromOffer(Long offerId, Integer numberOfElements, Integer pageNumber, Boolean isFavourite, String jwt) throws OfferNotFoundByIdException, NoPermissionException;
 
-}
+    public void addApplicationToFavourites(Long applicationId, String jwt) throws ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, NoPermissionException;
+
+    public void removeApplicationFromFavourites(Long applicationId, String jwt) throws ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, NoPermissionException;
+
+    }

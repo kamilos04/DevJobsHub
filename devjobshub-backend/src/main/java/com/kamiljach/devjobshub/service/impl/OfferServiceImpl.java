@@ -231,36 +231,6 @@ public class OfferServiceImpl implements OfferService {
         offerRepository.save(offer);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public void addApplicationToFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, NoPermissionException {
-        Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
-        User user = userService.findUserByJwt(jwt);
-        Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
-        validatePermissionAddApplicationToFavourites(user, offer);
-
-
-        if(offer.getFavouriteApplications().contains(application)){throw new ApplicationAlreadyIsInFavouritesException();}
-
-        offer.addFavouriteApplication(application);
-        offerRepository.save(offer);
-        applicationRepository.save(application);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public void removeApplicationFromFavourites(Long offerId, Long applicationId, String jwt) throws OfferNotFoundByIdException, ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, NoPermissionException {
-        Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
-        User user = userService.findUserByJwt(jwt);
-        Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
-
-        validatePermissionRemoveApplicationFromFavourites(user, offer);
-
-        if(!offer.getFavouriteApplications().contains(application)){throw new ApplicationIsNotInFavouritesException();}
-
-        offer.removeFavouriteApplication(application);
-        offerRepository.save(offer);
-        applicationRepository.save(application);
-
-    }
 
     @Transactional(rollbackFor = Exception.class)
     public void addRecruiterToOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException {
@@ -359,19 +329,6 @@ public class OfferServiceImpl implements OfferService {
         throw new NoPermissionException();
     }
 
-    public void validatePermissionAddApplicationToFavourites(User user, Offer offer) throws NoPermissionException {
-        if (offer.getRecruiters().contains(user)){
-            return;
-        }
-        throw new NoPermissionException();
-    }
-
-    public void validatePermissionRemoveApplicationFromFavourites(User user, Offer offer) throws NoPermissionException {
-        if (offer.getRecruiters().contains(user)){
-            return;
-        }
-        throw new NoPermissionException();
-    }
 
     public void validatePermissionAddRecruiterToOffer(User user, Offer offer) throws NoPermissionException {
         if (offer.getRecruiters().contains(user)){

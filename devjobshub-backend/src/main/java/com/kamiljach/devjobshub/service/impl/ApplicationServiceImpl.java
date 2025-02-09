@@ -58,6 +58,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         Application newApplication = createApplicationRequest.mapToApplication();
 
+        newApplication.setIsFavourite(false);
+
         validateAllQuestionsInApplication(newApplication, offer);
 
         newApplication.setDateTimeOfCreation(LocalDateTime.now());
@@ -125,6 +127,52 @@ public class ApplicationServiceImpl implements ApplicationService {
         return pageResponse;
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
+    public void addApplicationToFavourites(Long applicationId, String jwt) throws ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, NoPermissionException {
+        User user = userService.findUserByJwt(jwt);
+        Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
+        Offer offer = application.getOffer();
+
+        validatePermissionAddApplicationToFavourites(user, offer);
+
+
+        if(application.getIsFavourite()){throw new ApplicationAlreadyIsInFavouritesException();}
+
+        application.setIsFavourite(true);
+        applicationRepository.save(application);
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public void removeApplicationFromFavourites(Long applicationId, String jwt) throws ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, NoPermissionException {
+        User user = userService.findUserByJwt(jwt);
+        Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
+        Offer offer = application.getOffer();
+
+        validatePermissionRemoveApplicationFromFavourites(user, offer);
+
+        if(!application.getIsFavourite()){throw new ApplicationIsNotInFavouritesException();}
+
+        application.setIsFavourite(false);
+        applicationRepository.save(application);
+
+    }
+
+
+    public void validatePermissionRemoveApplicationFromFavourites(User user, Offer offer) throws NoPermissionException {
+        if (offer.getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
+    public void validatePermissionAddApplicationToFavourites(User user, Offer offer) throws NoPermissionException {
+        if (offer.getRecruiters().contains(user)){
+            return;
+        }
+        throw new NoPermissionException();
+    }
 
     public void ifUserAlreadyAppliedForOfferThrowException(User user, Offer offer) throws UserAlreadyAppliedForThisOfferException {
         for (Application application : user.getApplications()){

@@ -38,6 +38,8 @@ public class Application {
 
     private LocalDateTime dateTimeOfCreation;
 
+    private Boolean isFavourite;
+
     @ElementCollection
     private List<QuestionAndAnswer> questionsAndAnswers = new ArrayList<>();
 
@@ -47,8 +49,7 @@ public class Application {
     @ElementCollection
     private List<MultipleChoiceQuestionAndAnswer> multipleChoiceQuestionsAndAnswers = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Offer assignedAsFavourite;
+
 
     public void putOffer(Offer offer){
         if(!offer.getApplications().contains(this)){

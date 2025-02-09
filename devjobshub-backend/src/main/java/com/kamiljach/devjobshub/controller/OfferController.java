@@ -93,26 +93,7 @@ public class OfferController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/offer/add-application-to-favourites")
-    public ResponseEntity<MessageResponse> addApplicationToFavourites(@RequestParam("offerId") Long offerId,
-                                                                      @RequestParam("applicationId") Long applicationId,
-                                                                      @RequestHeader("Authorization") String jwt)
-            throws ApplicationNotFoundByIdException, OfferNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, UserNotFoundByJwtException, NoPermissionException {
-        offerService.addApplicationToFavourites(offerId, applicationId, jwt);
-        MessageResponse messageResponse = new MessageResponse("Application has been added to favourites");
-        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
-    }
 
-
-    @PostMapping("/offer/remove-application-from-favourites")
-    public ResponseEntity<MessageResponse> removeApplicationFromFavourites(@RequestParam("offerId") Long offerId,
-                                                                           @RequestParam("applicationId") Long applicationId,
-                                                                           @RequestHeader("Authorization") String jwt)
-            throws ApplicationNotFoundByIdException, OfferNotFoundByIdException, ApplicationIsNotInFavouritesException, UserNotFoundByJwtException, NoPermissionException {
-        offerService.removeApplicationFromFavourites(offerId, applicationId, jwt);
-        MessageResponse messageResponse = new MessageResponse("Application has been removed from favourites");
-        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
-    }
 
     @PostMapping("/offer/add-recruiter")
     public ResponseEntity<MessageResponse> addRecruiter(@RequestParam("offerId") Long offerId,

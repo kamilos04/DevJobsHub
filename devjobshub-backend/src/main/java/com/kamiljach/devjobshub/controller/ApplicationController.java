@@ -52,4 +52,24 @@ public class ApplicationController {
         return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 
+
+    @PostMapping("/application/add-to-favourites/{applicationId}")
+    public ResponseEntity<MessageResponse> addApplicationToFavourites(@PathVariable("applicationId") Long applicationId,
+                                                                      @RequestHeader("Authorization") String jwt)
+            throws ApplicationNotFoundByIdException, ApplicationAlreadyIsInFavouritesException, NoPermissionException {
+        applicationService.addApplicationToFavourites(applicationId, jwt);
+        MessageResponse messageResponse = new MessageResponse("Application has been added to favourites");
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/application/remove-from-favourites/{applicationId}")
+    public ResponseEntity<MessageResponse> removeApplicationFromFavourites(@PathVariable("applicationId") Long applicationId,
+                                                                           @RequestHeader("Authorization") String jwt)
+            throws ApplicationNotFoundByIdException, ApplicationIsNotInFavouritesException, NoPermissionException {
+        applicationService.removeApplicationFromFavourites(applicationId, jwt);
+        MessageResponse messageResponse = new MessageResponse("Application has been removed from favourites");
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
+
 }
