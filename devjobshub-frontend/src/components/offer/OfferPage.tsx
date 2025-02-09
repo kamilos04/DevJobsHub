@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useParams } from 'react-router';
 import Navbar from '../navbar/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOfferById } from '@/state/offer/action';
+import { getOfferById, likeOfferById, removeLikeOfferById } from '@/state/offer/action';
 import { MdOutlineWorkOutline } from "react-icons/md";
 import { TiDocumentText } from "react-icons/ti";
 import { RiStairsLine } from "react-icons/ri";
@@ -17,11 +17,13 @@ import { Badge } from '../ui/badge';
 import { MdOutlineDateRange } from "react-icons/md";
 import { calcDaysToExpirationDateFromString, calcSecondsToExpirationDateFromString } from '@/utils/dateUtils';
 import { GiPlainCircle } from "react-icons/gi";
+import { MdFavoriteBorder } from "react-icons/md";
 
 const OfferPage = () => {
     const { id } = useParams();
     const dispatch = useDispatch<any>()
     const storeOffer = useSelector((store: any) => store.offer)
+    const [isLiked, setIsLiked] = React.useState<boolean>(false)
 
     const contractsStringFromOffer = () => {
         let arrayStrings = []
@@ -53,22 +55,47 @@ const OfferPage = () => {
         return ((storeOffer.offer?.requiredTechnologies.length !== 0) || (storeOffer.offer?.niceToHaveTechnologies.length !== 0))
     }
 
+    const handleLikeClick = () => {
+        if (isLiked === false) {
+            dispatch(likeOfferById(storeOffer.offer?.id))
+            setIsLiked(true)
+        }
+        else if (isLiked === true) {
+            dispatch(removeLikeOfferById(storeOffer.offer?.id))
+            setIsLiked(false)
+        }
+    }
+
     useEffect(() => {
         dispatch(getOfferById(Number(id)))
     }, [])
+
+    useEffect(() => {
+        if (storeOffer.offer && storeOffer.offer?.isLiked !== null) {
+            setIsLiked(storeOffer.offer.isLiked)
+        }
+    }, [storeOffer.offer])
+
 
     return (
         <div className='flex flex-col'>
             <Navbar />
             <div className='flex flex-col items-center'>
-                <div className='mt-8 p-4 flex flex-row rounded-2xl gap-x-8'>
+                {storeOffer.offer && <div className='mt-8 p-4 flex flex-row rounded-2xl gap-x-8'>
                     <div className='flex flex-col gap-y-8'>
                         <div className='bg-my-card flex flex-col p-8 rounded-xl border-[1px] w-[50rem]'>
-                            <h1 className='text-2xl font-bold'>{storeOffer.offer?.name}</h1>
-                            <div className='flex flex-row mt-1 mb-2 items-center gap-x-1 text-gray-300'>
-                                <MdOutlineWorkOutline className='text-2xl' />
-                                <span className='text-lg'>{storeOffer.offer?.firmName}</span>
+                            <div className='flex flex-row justify-between'>
+                                <div>
+                                    <h1 className='text-2xl font-bold'>{storeOffer.offer?.name}</h1>
+                                    <div className='flex flex-row mt-1 mb-2 items-center gap-x-1 text-gray-300'>
+                                        <MdOutlineWorkOutline className='text-2xl' />
+                                        <span className='text-lg'>{storeOffer.offer?.firmName}</span>
+                                    </div>
+                                </div>
+
+                                <MdFavoriteBorder className={`text-3xl cursor-pointer ${isLiked && "text-pink-700"}`} onClick={() => handleLikeClick()} />
                             </div>
+
                             <Separator className='mt-2 mb-3' />
                             <div className='flex flex-row gap-x-4'>
                                 <div className='flex flex-col w-[50%]'>
@@ -247,7 +274,7 @@ const OfferPage = () => {
 
                     </div>
 
-                </div>
+                </div>}
 
             </div>
             {/* </form> */}

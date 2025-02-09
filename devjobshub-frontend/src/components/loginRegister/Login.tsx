@@ -76,7 +76,6 @@ const Login = () => {
         else {
             reqData.isFirm = false
         }
-        console.log(reqData)
         dispatch(register(reqData))
     };
 

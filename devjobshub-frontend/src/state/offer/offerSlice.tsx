@@ -1,7 +1,7 @@
 import { Technology } from "@/types/technology";
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { createOffer as createOffer, getOfferById, searchOffers } from "./action";
+import { createOffer as createOffer, getOfferById, likeOfferById, removeLikeOfferById, searchOffers } from "./action";
 import { Offer } from "@/types/offer";
 import { ac } from "node_modules/react-router/dist/development/route-data-Cw8htKcF.d.mts";
 
@@ -96,6 +96,41 @@ const offerSlice = createSlice({
                     state.error = action.payload
                 state.offer = null
             })
+
+
+            .addCase(likeOfferById.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+            })
+            .addCase(likeOfferById.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "likeOfferById"
+            })
+            .addCase(likeOfferById.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "likeOfferById",
+                    state.error = action.payload
+            })
+
+
+            .addCase(removeLikeOfferById.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+            })
+            .addCase(removeLikeOfferById.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "removeLikeOfferById"
+            })
+            .addCase(removeLikeOfferById.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "removeLikeOfferById",
+                    state.error = action.payload
+            })
+
 
 
     }

@@ -61,3 +61,40 @@ export const getOfferById = createAsyncThunk(
     }
 )
 
+export const likeOfferById = createAsyncThunk(
+    "offer/likeOfferById",
+    async (id: number, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.post(`${API_URL}/api/offer/like/${id}`, null, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+export const removeLikeOfferById = createAsyncThunk(
+    "offer/removeLikeOfferById",
+    async (id: number, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.post(`${API_URL}/api/offer/remove-like/${id}`, null, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+
