@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { likeOfferById, removeLikeOfferById } from '@/state/offer/action';
 
-const OfferCard = ({ offer }: { offer: Offer }) => {
+const SmallOfferCard = ({ offer }: { offer: Offer }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch<any>()
   const [isLiked, setIsLiked] = React.useState<boolean>(false)
@@ -84,17 +84,6 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
 
         </div>
         <div className='flex flex-row space-x-2'>
-          <div className='flex flex-col items-end gap-y-1'>
-            {offer.minSalaryUoP !== null && <div className='font-normal'>
-              <Badge variant={'secondary'} className='text-sm  border-[1px] border-blue-500'><span>{offer.minSalaryUoP} - {offer.maxSalaryUoP} zł (employment contract)</span> </Badge>
-            </div>}
-            {offer.minSalaryB2B !== null && <div className='font-normal'>
-              <Badge variant={'secondary'} className='text-sm border-[1px] border-blue-500'><span>{offer.minSalaryB2B} - {offer.maxSalaryB2B} zł (B2B)</span> </Badge>
-            </div>}
-            {offer.minSalaryUZ !== null && <div className='font-normal'>
-              <Badge variant={'secondary'} className='text-sm border-[1px] border-blue-500'><span>{offer.minSalaryUZ} - {offer.maxSalaryUZ} zł (order contract)</span> </Badge>
-            </div>}
-          </div>
           <MdFavoriteBorder className={`text-2xl cursor-pointer ${isLiked && "text-pink-700"}`} onClick={handleLikeClick}/>
           
         </div>
@@ -112,4 +101,4 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
   )
 }
 
-export default OfferCard
+export default SmallOfferCard

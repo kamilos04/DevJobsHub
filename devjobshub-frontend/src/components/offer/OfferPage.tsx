@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router';
+import { useParams, useSearchParams } from 'react-router';
 import Navbar from '../navbar/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOfferById, likeOfferById, removeLikeOfferById } from '@/state/offer/action';
+import { getOfferById, likeOfferById, removeLikeOfferById, searchOffers } from '@/state/offer/action';
 import { MdOutlineWorkOutline } from "react-icons/md";
 import { TiDocumentText } from "react-icons/ti";
 import { RiStairsLine } from "react-icons/ri";
@@ -18,6 +18,10 @@ import { MdOutlineDateRange } from "react-icons/md";
 import { calcDaysToExpirationDateFromString, calcSecondsToExpirationDateFromString } from '@/utils/dateUtils';
 import { GiPlainCircle } from "react-icons/gi";
 import { MdFavoriteBorder } from "react-icons/md";
+import { GrSend } from "react-icons/gr";
+import { Button } from "@/components/ui/button"
+import { Offer } from '@/types/offer';
+import SmallOfferCard from './SmallOfferCard';
 
 const OfferPage = () => {
     const { id } = useParams();
@@ -47,7 +51,10 @@ const OfferPage = () => {
             return ("Offer expired")
         }
         else {
-            return (`Offer valid for ${days} days`)
+            if (days > 1) {
+                return (`Offer valid for ${days} days`)
+            }
+            return (`Offer valid for ${days} day`)
         }
     }
 
@@ -68,7 +75,22 @@ const OfferPage = () => {
 
     useEffect(() => {
         dispatch(getOfferById(Number(id)))
-    }, [])
+
+
+    }, [id])
+
+
+    useEffect(() => {
+        if (storeOffer.success === "getOfferById") {
+            let params = ""
+            params += `specializations=${storeOffer.offer.specialization}&`
+            params += "numberOfElements=6&"
+            params += `pageNumber=0&`
+            params += `sortBy=expirationDate&`
+            params += `sortingDirection=asc&`
+            dispatch(searchOffers(params))
+        }
+    }, [storeOffer.success])
 
     useEffect(() => {
         if (storeOffer.offer && storeOffer.offer?.isLiked !== null) {
@@ -86,7 +108,7 @@ const OfferPage = () => {
                         <div className='bg-my-card flex flex-col p-8 rounded-xl border-[1px] w-[50rem]'>
                             <div className='flex flex-row justify-between'>
                                 <div>
-                                    <h1 className='text-2xl font-bold'>{storeOffer.offer?.name}</h1>
+                                    <h1 className='text-2xl font-bold text-blue-400'>{storeOffer.offer?.name}</h1>
                                     <div className='flex flex-row mt-1 mb-2 items-center gap-x-1 text-gray-300'>
                                         <MdOutlineWorkOutline className='text-2xl' />
                                         <span className='text-lg'>{storeOffer.offer?.firmName}</span>
@@ -100,7 +122,7 @@ const OfferPage = () => {
                             <div className='flex flex-row gap-x-4'>
                                 <div className='flex flex-col w-[50%]'>
                                     <div className='flex flex-row mt-1 mb-2 items-center gap-x-3 text-gray-300'>
-                                        <div className='p-4 bg-slate-800 rounded-2xl'>
+                                        <div className='p-4 bg-slate-800 rounded-2xl border-[1px] border-blue-500'>
                                             <RiStairsLine className='text-xl text-white' />
                                         </div>
                                         <span>{jobLevelsAndLabels.map((element: any) => {
@@ -110,7 +132,7 @@ const OfferPage = () => {
                                         })}</span>
                                     </div>
                                     <div className='flex flex-row mt-1 mb-2 items-center gap-x-3 text-gray-300'>
-                                        <div className='p-4 bg-slate-800 rounded-2xl'>
+                                        <div className='p-4 bg-slate-800 rounded-2xl border-[1px] border-blue-500'>
                                             <BsPersonWorkspace className='text-xl text-white' />
                                         </div>
                                         <span>{specializationsAndLabels.map((element: any) => {
@@ -121,7 +143,7 @@ const OfferPage = () => {
                                     </div>
 
                                     <div className='flex flex-row mt-1 mb-2 items-center gap-x-3 text-gray-300'>
-                                        <div className='p-4 bg-slate-800 rounded-2xl'>
+                                        <div className='p-4 bg-slate-800 rounded-2xl border-[1px] border-blue-500'>
                                             <FaRegBuilding className='text-xl text-white' />
                                         </div>
                                         <span>{operatingModesAndLabels.map((element: any) => {
@@ -136,14 +158,14 @@ const OfferPage = () => {
 
                                 <div className='flex flex-col w-[50%]'>
                                     <div className='flex flex-row mt-1 mb-2 items-center gap-x-2 text-gray-300'>
-                                        <div className='p-4 bg-slate-800 rounded-2xl'>
+                                        <div className='p-4 bg-slate-800 rounded-2xl  border-[1px] border-blue-500'>
                                             <TiDocumentText className='text-xl text-white' />
                                         </div>
                                         <span>{contractsStringFromOffer()}</span>
                                     </div>
 
                                     <div className='flex flex-row mt-1 mb-2 items-center gap-x-3 text-gray-300'>
-                                        <div className='p-4 bg-slate-800 rounded-2xl'>
+                                        <div className='p-4 bg-slate-800 rounded-2xl  border-[1px] border-blue-500'>
                                             <IoLocationOutline className='text-xl text-white' />
                                         </div>
                                         <div className='flex flex-col'>
@@ -154,7 +176,7 @@ const OfferPage = () => {
                                     </div>
 
                                     <div className='flex flex-row mt-1 mb-2 items-center gap-x-3 text-gray-300'>
-                                        <div className='p-4 bg-slate-800 rounded-2xl'>
+                                        <div className='p-4 bg-slate-800 rounded-2xl  border-[1px] border-blue-500'>
                                             <MdOutlineDateRange className='text-xl text-white' />
                                         </div>
                                         <div className='flex flex-col'>
@@ -269,10 +291,31 @@ const OfferPage = () => {
 
 
                     </div>
+                    <div className='flex flex-col gap-y-10 w-[25rem]'>
+                        <div className='bg-my-card flex flex-col p-4 rounded-xl border-[1px] h-min items-center'>
+                            <Button className='flex flex-row w-48 gap-x-2 h-12 rounded-3xl'>
+                                <GrSend className='scale-125' /> <span className='text-lg'>Apply</span>
+                            </Button>
 
-                    <div className='bg-my-card flex flex-col p-4 rounded-xl border-[1px] w-[25rem] h-min'>
+                        </div>
+                        <div className='flex flex-col gap-y-2'>
+                            <p className='text-xl font-bold'>Check other offers:</p>
+                            <div className='flex flex-col gap-y-5'>
+                                {storeOffer.searchOffers?.content.map((element: Offer) => {
+                                    if(element.id !== storeOffer.offer.id){
+                                        return(<SmallOfferCard key={element.id} offer={element}/>)
+                                    }
+                                    return(<></>)
+                                    })}
+                            </div>
+                        </div>
+
 
                     </div>
+
+
+
+
 
                 </div>}
 
