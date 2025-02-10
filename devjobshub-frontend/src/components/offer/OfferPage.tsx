@@ -22,6 +22,7 @@ import { GrSend } from "react-icons/gr";
 import { Button } from "@/components/ui/button"
 import { Offer } from '@/types/offer';
 import SmallOfferCard from './SmallOfferCard';
+import { contractsStringFromOffer, getExpirationDate } from '@/utils/utils';
 
 const OfferPage = () => {
     const { id } = useParams();
@@ -29,34 +30,6 @@ const OfferPage = () => {
     const storeOffer = useSelector((store: any) => store.offer)
     const [isLiked, setIsLiked] = React.useState<boolean>(false)
 
-    const contractsStringFromOffer = () => {
-        let arrayStrings = []
-        if (storeOffer.offer?.isSalaryMonthlyUoP !== null) arrayStrings.push("Employment contract")
-        if (storeOffer.offer?.isSalaryMonthlyB2B !== null) arrayStrings.push("B2B")
-        if (storeOffer.offer?.isSalaryMonthlyUZ !== null) arrayStrings.push("Order contract")
-        let text = arrayStrings.join(", ")
-        return text
-    }
-
-    const getExpirationDate = () => {
-        const days = calcDaysToExpirationDateFromString(storeOffer.offer?.expirationDate)
-        const seconds = calcSecondsToExpirationDateFromString(storeOffer.offer?.expirationDate)
-        if (days < 0) {
-            return ("Offer expired")
-        }
-        else if (days === 0) {
-            if (seconds > 0) {
-                return ("Offer expires today")
-            }
-            return ("Offer expired")
-        }
-        else {
-            if (days > 1) {
-                return (`Offer valid for ${days} days`)
-            }
-            return (`Offer valid for ${days} day`)
-        }
-    }
 
     const isTechnologySectionNeeded = () => {
         return ((storeOffer.offer?.requiredTechnologies.length !== 0) || (storeOffer.offer?.niceToHaveTechnologies.length !== 0))
@@ -161,7 +134,7 @@ const OfferPage = () => {
                                         <div className='p-4 bg-slate-800 rounded-2xl  border-[1px] border-blue-500'>
                                             <TiDocumentText className='text-xl text-white' />
                                         </div>
-                                        <span>{contractsStringFromOffer()}</span>
+                                        <span>{contractsStringFromOffer(storeOffer.offer)}</span>
                                     </div>
 
                                     <div className='flex flex-row mt-1 mb-2 items-center gap-x-3 text-gray-300'>
@@ -180,7 +153,7 @@ const OfferPage = () => {
                                             <MdOutlineDateRange className='text-xl text-white' />
                                         </div>
                                         <div className='flex flex-col'>
-                                            <span>{storeOffer.offer && getExpirationDate()
+                                            <span>{storeOffer.offer && getExpirationDate(storeOffer.offer)
                                             }</span>
                                             <span className='text-sm'>Expiration date: {storeOffer.offer?.expirationDate.slice(0, -3)}</span>
                                         </div>
@@ -292,10 +265,17 @@ const OfferPage = () => {
 
                     </div>
                     <div className='flex flex-col gap-y-10 w-[25rem]'>
-                        <div className='bg-my-card flex flex-col p-4 rounded-xl border-[1px] h-min items-center'>
+                        <div className='bg-my-card flex flex-col p-4 rounded-xl border-[1px] h-min items-center gap-y-3'>
+                            {calcSecondsToExpirationDateFromString(storeOffer.offer.expirationDate) > 0 ? 
                             <Button className='flex flex-row w-48 gap-x-2 h-12 rounded-3xl'>
                                 <GrSend className='scale-125' /> <span className='text-lg'>Apply</span>
-                            </Button>
+                            </Button> : 
+                            <Button className='flex flex-row w-48 gap-x-2 h-12 rounded-3xl' variant={'secondary'} disabled>
+                                <GrSend className='scale-125' /> <span className='text-lg'>Offer expired</span>
+                            </Button>}
+                            
+                            
+                            <p className='text-sm text-gray-500'>By clicking apply you consent to the processing of your personal data.</p>
 
                         </div>
                         <div className='flex flex-col gap-y-2'>
