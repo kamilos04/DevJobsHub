@@ -2,6 +2,10 @@
 
 DevJobsHub is a web application that allows companies to post job offers for programmers and for candidates to apply for those offers. The application also offers functionalities related to custom candidate surveys created by recruiters.
 
+## First screenshots (frontend is under development)
+<img src="screenshots/job offer.png" width="1100">
+<img src="screenshots/search.png" width="1100">
+
 ## Tech Stack 🚀
 
 **Backend:** Spring Boot, Java, PostgreSQL, Hibernate
@@ -52,5 +56,3 @@ DevJobsHub is a web application that allows companies to post job offers for pro
 
 - **JWT Authentication:** User authentication using JWT tokens.
 - **Endpoint Security:** Securing endpoints requiring authentication.
-
-## Frontend is under development
