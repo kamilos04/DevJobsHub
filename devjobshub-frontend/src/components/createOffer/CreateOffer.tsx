@@ -342,11 +342,11 @@ const CreateOffer = () => {
                             <div className='flex flex-col space-y-6 w-full'>
                                 <div className="grid w-full gap-2">
                                     <Label htmlFor="responsibilitiesText">Responsibilities</Label>
-                                    <Textarea id="responsibilitiesText" {...registerCreateOffer('responsibilitiesText')} />
+                                    <Textarea className='h-36' id="responsibilitiesText" {...registerCreateOffer('responsibilitiesText')} />
                                 </div>
                                 <div className="grid w-full gap-2">
                                     <Label htmlFor="aboutProject">About project</Label>
-                                    <Textarea id="aboutProject" {...registerCreateOffer('aboutProject')} />
+                                    <Textarea  className='h-36' id="aboutProject" {...registerCreateOffer('aboutProject')} />
                                 </div>
                             </div>
 
