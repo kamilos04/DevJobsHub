@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useParams, useSearchParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import Navbar from '../navbar/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
 import { getOfferById, likeOfferById, removeLikeOfferById, searchOffers } from '@/state/offer/action';
@@ -29,6 +29,7 @@ const OfferPage = () => {
     const dispatch = useDispatch<any>()
     const storeOffer = useSelector((store: any) => store.offer)
     const [isLiked, setIsLiked] = React.useState<boolean>(false)
+    const navigate = useNavigate()
 
 
     const isTechnologySectionNeeded = () => {
@@ -267,8 +268,8 @@ const OfferPage = () => {
                     <div className='flex flex-col gap-y-10 w-[25rem]'>
                         <div className='bg-my-card flex flex-col p-4 rounded-xl border-[1px] h-min items-center gap-y-3'>
                             {calcSecondsToExpirationDateFromString(storeOffer.offer.expirationDate) > 0 ? 
-                            <Button className='flex flex-row w-48 gap-x-2 h-12 rounded-3xl'>
-                                <GrSend className='scale-125' /> <span className='text-lg'>Apply</span>
+                            <Button className='flex flex-row w-48 gap-x-2 h-12 rounded-3xl' onClick={() => navigate(`/apply/${storeOffer.offer.id}`)}>
+                                <GrSend className='scale-125' /> <span className='text-lg' >Apply</span>
                             </Button> : 
                             <Button className='flex flex-row w-48 gap-x-2 h-12 rounded-3xl' variant={'secondary'} disabled>
                                 <GrSend className='scale-125' /> <span className='text-lg'>Offer expired</span>

@@ -22,13 +22,18 @@ import { RadioQuestionAndAnswer } from '@/types/radioQuestionAndAnswer';
 import MultipleChoiceQuestion from './MultipleChoiceQuestion';
 import { MultipleChoiceQuestionAndAnswer } from '@/types/multipleChoiceQuestionAndAnswer';
 import { Button } from "@/components/ui/button"
+import { emptyApplyRequest } from '@/types/applyRequest';
+import { applyForOfferById } from '@/state/application/action';
+import { useToast } from '@/hooks/use-toast'
+import { setFailNull } from '@/state/application/applicationSlice';
 
 const ApplyPage = () => {
     const { id } = useParams();
     const dispatch = useDispatch<any>()
     const storeOffer = useSelector((store: any) => (store.offer))
+    const storeApplication = useSelector((store: any) => (store.application))
     const [questionsList, setQuestionsList] = React.useState<Array<QuestionAndAnswerWithType>>([])
-
+    const { toast } = useToast()
 
     useEffect(() => {
         dispatch(getOfferById(Number(id)))
@@ -49,9 +54,38 @@ const ApplyPage = () => {
         }
     }, [storeOffer.success])
 
+
     useEffect(() => {
-        console.log(questionsList)
-    }, [questionsList])
+        if (storeApplication.fail === "applyForOfferById") {
+            if (storeApplication.error === "User already applied for this offer") {
+                toast({
+                    variant: "destructive",
+                    title: "You have already applied for this job offer!"
+                });
+
+            }
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "An error occurred!",
+                    description: "Make sure you enter your details correctly."
+                });
+            }
+            dispatch(setFailNull())
+        }
+
+    }, [storeApplication.fail])
+
+
+
+    const handleApplyClick = () => {
+        let request = emptyApplyRequest
+        request.cvUrl = "test"
+        request.questionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "question").map((el: QuestionAndAnswerWithType) => el.question as QuestionAndAnswer)
+        request.radioQuestionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "radioQuestion").map((el: QuestionAndAnswerWithType) => el.question as RadioQuestionAndAnswer)
+        request.multipleChoiceQuestionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "multipleChoiceQuestion").map((el: QuestionAndAnswerWithType) => el.question as MultipleChoiceQuestionAndAnswer)
+        dispatch(applyForOfferById({ id: storeOffer.offer.id, request: request }))
+    }
 
 
     return (
@@ -152,7 +186,7 @@ const ApplyPage = () => {
                         })}
                     </div>
                     <div className='flex flex-row justify-center w-full mt-6'>
-                        <Button className='w-32'>Apply</Button>
+                        <Button className='w-32' onClick={() => handleApplyClick()}>Apply</Button>
                     </div>
 
 
