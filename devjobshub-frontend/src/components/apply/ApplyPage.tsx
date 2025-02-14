@@ -13,11 +13,21 @@ import { TiDocumentText } from 'react-icons/ti';
 import { IoLocationOutline } from 'react-icons/io5';
 import { calcDaysToExpirationDateFromString, calcSecondsToExpirationDateFromString } from '@/utils/dateUtils';
 import { contractsStringFromOffer, getExpirationDate } from '@/utils/utils';
+import { QuestionAndAnswerWithType } from '@/types/questionAndAnswerWithType';
+import { addMultipleChoiceQuestionsToQuestionsList, addOpenQuestionsToQuestionsList, addRadioQuestionsToQuestionsList } from '@/utils/questionsUtils';
+import OpenQuestion from './OpenQuestion';
+import { QuestionAndAnswer } from '@/types/questionAndAnswer';
+import RadioQuestion from './RadioQuestion';
+import { RadioQuestionAndAnswer } from '@/types/radioQuestionAndAnswer';
+import MultipleChoiceQuestion from './MultipleChoiceQuestion';
+import { MultipleChoiceQuestionAndAnswer } from '@/types/multipleChoiceQuestionAndAnswer';
+import { Button } from "@/components/ui/button"
 
 const ApplyPage = () => {
     const { id } = useParams();
     const dispatch = useDispatch<any>()
     const storeOffer = useSelector((store: any) => (store.offer))
+    const [questionsList, setQuestionsList] = React.useState<Array<QuestionAndAnswerWithType>>([])
 
 
     useEffect(() => {
@@ -25,6 +35,23 @@ const ApplyPage = () => {
 
 
     }, [id])
+
+
+    useEffect(() => {
+        if (storeOffer.success === "getOfferById") {
+            let qlist: Array<QuestionAndAnswerWithType> = []
+            addOpenQuestionsToQuestionsList(storeOffer.offer.questions, qlist)
+            addRadioQuestionsToQuestionsList(storeOffer.offer.radioQuestions, qlist)
+            addMultipleChoiceQuestionsToQuestionsList(storeOffer.offer.multipleChoiceQuestions, qlist)
+            const sortedList = [...qlist].sort((a, b) => (a.question.number - b.question.number))
+            setQuestionsList(sortedList)
+
+        }
+    }, [storeOffer.success])
+
+    useEffect(() => {
+        console.log(questionsList)
+    }, [questionsList])
 
 
     return (
@@ -111,6 +138,23 @@ const ApplyPage = () => {
                             </div>
                         </div>
                     </div>
+                    <div className='w-full flex flex-col gap-y-10 mt-16'>
+                        {questionsList.map((element: QuestionAndAnswerWithType) => {
+                            if (element.type === "question") {
+                                return <OpenQuestion key={element.question.number} question={element.question as QuestionAndAnswer} setQuestionsList={setQuestionsList} />
+                            }
+                            if (element.type === "radioQuestion") {
+                                return <RadioQuestion key={element.question.number} question={element.question as RadioQuestionAndAnswer} setQuestionsList={setQuestionsList} />
+                            }
+                            if (element.type === "multipleChoiceQuestion") {
+                                return <MultipleChoiceQuestion key={element.question.number} question={element.question as MultipleChoiceQuestionAndAnswer} setQuestionsList={setQuestionsList} />
+                            }
+                        })}
+                    </div>
+                    <div className='flex flex-row justify-center w-full mt-6'>
+                        <Button className='w-32'>Apply</Button>
+                    </div>
+
 
                 </div>}
 
