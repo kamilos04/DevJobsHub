@@ -249,7 +249,7 @@ const SearchPage = () => {
         <div className='mt-8 p-4 w-[90rem] flex flex-col items-center rounded-2xl'>
           <div className='bg-my-card flex flex-col p-4 rounded-xl border-[1px] w-full'>
             <div className='flex flex-row justify-start mb-2'>
-              <h1 className='text-2xl mb-1'>What kind of job are you looking for?</h1>
+              <h1 className='text-2xl mb-1 font-bold'>What kind of job are you looking for?</h1>
             </div>
 
             <div className='flex flex-row'>

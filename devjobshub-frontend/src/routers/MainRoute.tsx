@@ -1,3 +1,4 @@
+import ApplyPage from '@/components/apply/ApplyPage'
 import CreateOffer from '@/components/createOffer/CreateOffer'
 import Login from '@/components/loginRegister/Login'
 import OfferPage from '@/components/offer/OfferPage'
@@ -13,6 +14,7 @@ const MainRoute = () => {
             <Route path='/create-offer' element={<CreateOffer/>}/>
             <Route path='/search' element={<SearchPage/>}/>
             <Route path="/offer/:id" element={<OfferPage/>}/>
+            <Route path="/apply/:id" element={<ApplyPage/>}/>
         </Routes>
     </div>
   )
