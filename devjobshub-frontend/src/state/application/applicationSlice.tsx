@@ -1,8 +1,5 @@
-import { Technology } from "@/types/technology";
-import { User } from "@/types/user";
+
 import { createSlice } from "@reduxjs/toolkit";
-import { Offer } from "@/types/offer";
-import { ac } from "node_modules/react-router/dist/development/route-data-Cw8htKcF.d.mts";
 import { applyForOfferById } from "./action";
 
 
