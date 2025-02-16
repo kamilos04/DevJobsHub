@@ -7,9 +7,14 @@ import axios from "axios";
 
 export const fetchProfile = createAsyncThunk(
     "profile/fetchProfile",
-    async ({ rejectWithValue }: any) => {
+    async (_: void, { rejectWithValue }: any) => {
         try {
             const jwt = localStorage.getItem("jwt")
+
+            if (!jwt) {
+                return rejectWithValue("no token");
+            }
+
             const { data } = await axios.get(`${API_URL}/api/my-profile`, {
                 headers: {
                     Authorization: `Bearer ${jwt}`

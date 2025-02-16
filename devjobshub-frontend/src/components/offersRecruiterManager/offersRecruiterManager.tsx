@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Navbar from '../navbar/Navbar'
 import {
   Pagination,
@@ -23,25 +23,55 @@ import {
 } from "@/components/ui/select"
 import { Offer } from '@/types/offer'
 import { Controller } from 'react-hook-form'
+import { Button } from '../ui/button'
+import { Checkbox } from "@/components/ui/checkbox"
+import { useLocation, useNavigate } from 'react-router'
+import { useDispatch, useSelector } from 'react-redux'
+import { useProfile } from '../profile/useProfile'
+import { getOffersFromRecruiter } from '@/state/offer/action'
+import OfferCardManager from './OfferCardManager'
 
 
 
 const OffersRecruiterManager = () => {
   const [sortBy, setSortBy] = React.useState<string>("dateTimeOfCreation")
   const [sortDirection, setSortDirection] = React.useState<string>("asc")
+  const [showValidOffers, setShowValidOffers] = React.useState<boolean>(true)
+  const [page, setPage] = React.useState<number>(0)
+  const location = useLocation()
+  const dispatch = useDispatch<any>()
+  const navigate = useNavigate()
+  const { getProfile, profileStore } = useProfile(true, true)
+  const offerStore = useSelector((store: any) => (store.offer))
 
+  useEffect(() => {
+    if (profileStore.profile) {
+      let params = `sortBy=${sortBy}&sortDirection=${sortDirection}&numberOfElements=10&pageNumber=${page}`
+      if(showValidOffers===true){
+        params += "&isActive=true"
+      }
+      dispatch(getOffersFromRecruiter({ id: profileStore.profile.id, params: params }))
+    }
+
+  }, [sortBy, sortDirection, showValidOffers, page, profileStore.profile])
+
+
+  useEffect(() => {
+    getProfile()
+  }, [location.pathname])
 
   return (
     <div className='flex flex-col'>
       <Navbar />
       <div className='flex flex-col items-center'>
         <div className='mt-8 p-4 w-[90rem] flex flex-col items-center rounded-2xl'>
-          <div className='flex flex-row w-full'>
-            <div className=' bg-my-card flex flex-col p-4 rounded-xl border-[1px] w-full'>
-              <p className='text-xl'>Offers managed by you</p>
+          <div className='flex flex-row w-full gap-x-4'>
+            <div className=' bg-my-card flex flex-col p-4 rounded-xl border-[1px] w-80 gap-y-4 h-min'>
+              <p className='text-xl font-bold'>Job offers manager</p>
+              <Button variant={'default'} onClick={() => navigate("/create-offer")}>Create a new job offer</Button>
             </div>
             <div className='flex flex-col w-full'>
-              <div className='flex flex-row space-x-4 items-center w-full'>
+              <div className='flex flex-row gap-x-6 items-center w-full'>
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="w-auto">
                     <span>Sort by: {sortBy === "dateTimeOfCreation" && "Creation date"}{sortBy === "expirationDate" && "Expiration date"}{sortBy === "name" && "Offer title"}</span>
@@ -70,10 +100,21 @@ const OffersRecruiterManager = () => {
                   </SelectContent>
                 </Select>
 
-
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="validOffers" onCheckedChange={(value: boolean) => setShowValidOffers(value)} checked={showValidOffers} />
+                  <label
+                    htmlFor="validOffers"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Show only valid offers
+                  </label>
+                </div>
 
               </div>
-
+              <div className='mt-4 flex flex-col gap-y-6'>
+                {offerStore.offersFromRecruiter?.content.map((element: Offer) => <OfferCardManager key={element.id} offer={element}/>)}
+                {offerStore.offersFromRecruiter?.totalElements === 0 && <span className='text-gray-300 text-2xl'>{"You don't manage any offers yes"}</span>}
+              </div>
 
 
 
@@ -82,33 +123,27 @@ const OffersRecruiterManager = () => {
 
         </div>
 
-        {/* <Pagination className='mt-3'>
+        {offerStore.offersFromRecruiter && <Pagination className='mt-3'>
           <PaginationContent>
 
             <PaginationItem>
               <PaginationPrevious className='cursor-pointer select-none' onClick={() => {
-                if (pageNumber - 1 >= 0) {
-                  // setPageNumber(pageNumber - 1)
-                  const par = new URLSearchParams(searchParams)
-                  par.set("pageNumber", `${pageNumber - 1}`)
-                  setSearchParams(par)
+                if (page - 1 >= 0) {
+                  setPage((value) => value-1)
                 }
 
               }} />
             </PaginationItem>
-            {[...Array(storeOffer.searchOffers?.totalPages || 0)].map((_, i) => {
-              if (i >= pageNumber - 3 && i <= pageNumber + 3) {
+            {[...Array(offerStore.offersFromRecruiter?.totalPages || 0)].map((_, i) => {
+              if (i >= page - 3 && i <= page + 3) {
                 return (
                   <PaginationItem key={i} >
                     <PaginationLink className='cursor-pointer select-none'
                       onClick={() => {
-                        // setPageNumber(i)
-                        const par = new URLSearchParams(searchParams)
-                        par.set("pageNumber", `${i}`)
-                        setSearchParams(par)
+                        setPage(i)
                       }}
 
-                      isActive={pageNumber === i ? true : false}
+                      isActive={page === i ? true : false}
                     >{i + 1}</PaginationLink>
                   </PaginationItem>)
               }
@@ -116,16 +151,13 @@ const OffersRecruiterManager = () => {
             )}
             <PaginationItem>
               <PaginationNext className='cursor-pointer select-none' onClick={() => {
-                if (pageNumber + 1 < storeOffer.searchOffers?.totalPages) {
-                  // setPageNumber(pageNumber + 1)
-                  const par = new URLSearchParams(searchParams)
-                  par.set("pageNumber", `${pageNumber + 1}`)
-                  setSearchParams(par)
+                if (page + 1 < offerStore.offersFromRecruiter?.totalPages) {
+                  setPage((value) => value+1)
                 }
               }} />
             </PaginationItem>
           </PaginationContent>
-        </Pagination> */}
+        </Pagination>}
       </div>
     </div>
   )
