@@ -11,12 +11,21 @@ export const searchTechnologies = createAsyncThunk(
     async (text: string, { rejectWithValue }) => {
         try {
             const jwt = localStorage.getItem("jwt")
-            const { data } = await axios.get(`${API_URL}/api/technology/search?text=${text}`, {
-                headers: {
-                    Authorization: `Bearer ${jwt}`
-                }
-            })
-            return data
+
+            if (jwt) {
+                const { data } = await axios.get(`${API_URL}/api/technology/search?text=${text}`, {
+                    headers: {
+                        Authorization: `Bearer ${jwt}`
+                    }
+                })
+                return data
+            }
+            else {
+                const { data } = await axios.get(`${API_URL}/api/technology/search?text=${text}`)
+                return data
+            }
+
+
         }
         catch (error: any) {
             return rejectWithValue(error.response.data.message)
@@ -29,11 +38,7 @@ export const getTechnologiesByIds = createAsyncThunk(
     async (ids: string, { rejectWithValue }) => {
         try {
             const jwt = localStorage.getItem("jwt")
-            const { data } = await axios.get(`${API_URL}/api/technology/by-ids?ids=${ids}`, {
-                headers: {
-                    Authorization: `Bearer ${jwt}`
-                }
-            })
+            const { data } = await axios.get(`${API_URL}/api/technology/by-ids?ids=${ids}`)
             return data
         }
         catch (error: any) {
