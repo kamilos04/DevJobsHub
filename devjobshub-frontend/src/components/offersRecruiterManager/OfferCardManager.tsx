@@ -90,7 +90,7 @@ const OfferCardManager = ({ offer }: { offer: Offer }) => {
         </div>
         <div className='flex flex-col gap-y-2'>
           <Button variant={'default'}>Update</Button>
-          <Button variant={'default'}>See applications</Button>
+          <Button variant={'default'} onClick={() => navigate(`/recruiter/applications/${offer.id}`)}>See applications</Button>
           <Button variant={'destructive'}>Delete</Button>
         </div>
       </div>

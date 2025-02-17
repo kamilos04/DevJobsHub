@@ -3,7 +3,6 @@ import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
 import { createOffer as createOffer, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, searchOffers } from "./action";
 import { Offer } from "@/types/offer";
-import { ac } from "node_modules/react-router/dist/development/route-data-Cw8htKcF.d.mts";
 
 interface PageResponseOffers {
     content: Array<Offer> | undefined | null,

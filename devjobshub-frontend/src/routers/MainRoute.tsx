@@ -1,3 +1,4 @@
+import { ApplicationsManager } from '@/components/applicationsManager/ApplicationsManager'
 import ApplyPage from '@/components/apply/ApplyPage'
 import CreateOffer from '@/components/createOffer/CreateOffer'
 import Login from '@/components/loginRegister/Login'
@@ -17,6 +18,7 @@ const MainRoute = () => {
             <Route path="/offer/:id" element={<OfferPage/>}/>
             <Route path="/apply/:id" element={<ApplyPage/>}/>
             <Route path="/recruiter/manager" element={<OffersRecruiterManager/>}/>
+            <Route path="/recruiter/applications/:offerId" element={<ApplicationsManager/>}/>
         </Routes>
     </div>
   )

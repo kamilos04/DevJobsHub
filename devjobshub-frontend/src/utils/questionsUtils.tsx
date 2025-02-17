@@ -41,6 +41,7 @@ export const convertQuestionsListToListOfMultipleChoiceQuestions = (questions: A
 
 
 
+
 export const addOpenQuestionsToQuestionsList = (questions: Array<Question>, questionsList: Array<QuestionAndAnswerWithType>) => {
     questions.forEach((element: Question) => {
         const questionAndAnswer: QuestionAndAnswer = {number: element.number, question: element.question, answer: ""}
@@ -61,6 +62,34 @@ export const addRadioQuestionsToQuestionsList = (questions: Array<RadioQuestion>
 export const addMultipleChoiceQuestionsToQuestionsList = (questions: Array<MultipleChoiceQuestion>, questionsList: Array<QuestionAndAnswerWithType>) => {
     questions.forEach((element: MultipleChoiceQuestion) => {
         const multipleChoiceQuestionAndAnswer: MultipleChoiceQuestionAndAnswer = {question: element.question, number: element.number, possibleAnswers: element.possibleAnswers, answers: []}
+        const multipleChoiceQuestionAndAnswerWithType: QuestionAndAnswerWithType = {question: multipleChoiceQuestionAndAnswer, type: "multipleChoiceQuestion"}
+        questionsList.push(multipleChoiceQuestionAndAnswerWithType)
+    })
+}
+
+
+
+
+export const addOpenQuestionsWithAnswerToQuestionsList = (questions: Array<QuestionAndAnswer>, questionsList: Array<QuestionAndAnswerWithType>) => {
+    questions.forEach((element: QuestionAndAnswer) => {
+        const questionAndAnswer: QuestionAndAnswer = {number: element.number, question: element.question, answer: element.answer}
+        const questionAndAnswerWithType: QuestionAndAnswerWithType = {question: questionAndAnswer, type: "question"}
+        questionsList.push(questionAndAnswerWithType)
+    })
+}
+
+
+export const addRadioQuestionsWithAnswerToQuestionsList = (questions: Array<RadioQuestionAndAnswer>, questionsList: Array<QuestionAndAnswerWithType>) => {
+    questions.forEach((element: RadioQuestionAndAnswer) => {
+        const radioQuestionAndAnswer: RadioQuestionAndAnswer = {question: element.question, number: element.number, possibleAnswers: element.possibleAnswers, answer: element.answer}
+        const radioQuestionAndAnswerWithType: QuestionAndAnswerWithType = {question: radioQuestionAndAnswer, type: "radioQuestion"}
+        questionsList.push(radioQuestionAndAnswerWithType)
+    })
+}
+
+export const addMultipleChoiceQuestionsWithAnswerToQuestionsList = (questions: Array<MultipleChoiceQuestionAndAnswer>, questionsList: Array<QuestionAndAnswerWithType>) => {
+    questions.forEach((element: MultipleChoiceQuestionAndAnswer) => {
+        const multipleChoiceQuestionAndAnswer: MultipleChoiceQuestionAndAnswer = {question: element.question, number: element.number, possibleAnswers: element.possibleAnswers, answers: element.answers}
         const multipleChoiceQuestionAndAnswerWithType: QuestionAndAnswerWithType = {question: multipleChoiceQuestionAndAnswer, type: "multipleChoiceQuestion"}
         questionsList.push(multipleChoiceQuestionAndAnswerWithType)
     })
