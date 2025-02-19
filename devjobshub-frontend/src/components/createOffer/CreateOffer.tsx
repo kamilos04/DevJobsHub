@@ -36,10 +36,6 @@ import ExpirationDatePicker from './ExpirationDatePicker'
 import SelectTechnologiesDialog from './SelectTechnologiesDialog'
 import { Technology } from '@/types/technology'
 import EditBulletPoints from './EditBulletPoints'
-import { Question } from '@/types/question'
-import { RadioQuestion } from '@/types/question'
-import { MultipleChoiceQuestion } from '@/types/multipleChoiceQuestion'
-import CreateQuestion from './CreateQuestion'
 import EditRecruitmentQuestions from './EditRecruitmentQuestions'
 import { QuestionWithType } from '@/types/questionWithType'
 import { emptyCreateOfferRequest } from '@/types/createOfferRequest'
@@ -49,12 +45,55 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch, useSelector } from 'react-redux'
 import { createOffer } from '@/state/offer/action'
+import { useLocation, useNavigate } from 'react-router'
+import { useProfile } from '../profile/useProfile'
+import { useToast } from '@/hooks/use-toast'
+import { setFailNull, setSuccessNull } from '@/state/offer/offerSlice'
+import { IoMdArrowRoundBack } from 'react-icons/io'
 
 
 const CreateOffer = () => {
     const [expirationDate, setExpirationDate] = React.useState<Date>()
     const dispatch = useDispatch<any>()
     const offerStore = useSelector((store: any) => (store.offer))
+    const { getProfile, profileStore } = useProfile(true, true)
+    const { toast } = useToast()
+    const navigate = useNavigate()
+    const location = useLocation()
+
+
+
+    useEffect(() => {
+        getProfile()
+    }, [location.pathname])
+
+
+
+    useEffect(() => {
+        if (offerStore.success === "createOffer") {
+            toast({
+                variant: "default",
+                className: "bg-green-800",
+                title: "The offer has been created.",
+            });
+            dispatch(setSuccessNull())
+            navigate("/recruiter/manager")
+        }
+    }, [offerStore.success])
+
+
+    useEffect(() => {
+        if (offerStore.fail === "createOffer") {
+            toast({
+                variant: "destructive",
+                title: "An error occurred!",
+                description: "Make sure you enter your details correctly."
+            });
+
+            dispatch(setFailNull())
+        }
+    }, [offerStore.fail])
+
 
     const createOfferSchema = yup.object().shape({
         aboutProject: yup.string(),
@@ -159,9 +198,6 @@ const CreateOffer = () => {
     const [requirements, setRequirements] = React.useState<Array<string>>([])
     const [niceToHave, setNiceToHave] = React.useState<Array<string>>([])
     const [whatWeOffer, setWhatWeOffer] = React.useState<Array<string>>([])
-    const [questions, setQuestions] = React.useState<Array<Question>>([])
-    const [radioQuestions, setRadioQuestions] = React.useState<Array<RadioQuestion>>([])
-    const [multipleChoiceQuestions, setMultipleChoiceQuestions] = React.useState<Array<MultipleChoiceQuestion>>([])
     const [questionsList, setQuestionsList] = React.useState<Array<QuestionWithType>>([])
 
 
@@ -188,7 +224,7 @@ const CreateOffer = () => {
         request.questions = convertQuestionsListToListOfOpenQuestions(questionsList)
         request.radioQuestions = convertQuestionsListToListOfRadioQuestions(questionsList)
         request.multipleChoiceQuestions = convertQuestionsListToListOfMultipleChoiceQuestions(questionsList)
-        
+
 
         if (data.isUoP === true) {
             if (data.showSalaryUoP === true) {
@@ -248,10 +284,13 @@ const CreateOffer = () => {
     return (
         <div className='flex flex-col'>
             <Navbar />
-            <div className='flex flex-col items-center'>
+            {profileStore.profile && <div className='flex flex-col items-center'>
 
                 <form onSubmit={handleCreateOffer(onCreateOfferSubmit)}>
                     <div className='border-[1px] w-min mt-5 rounded-lg p-8'>
+                        <div className='flex flex-row items-start w-full mb-2'>
+                            <Button type='button' className='flex flex-row gap-x-1' onClick={() => navigate("/recruiter/manager")}><IoMdArrowRoundBack />Offers manager</Button>
+                        </div>
                         <div className='flex flex-row justify-center mb-3'>
                             <h1 className='text-2xl font-bold'>Create a new job offer</h1>
                         </div>
@@ -260,22 +299,22 @@ const CreateOffer = () => {
                             <div className='flex flex-col space-y-6'>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="title">Title</Label>
-                                    <Input type="text" id="title" placeholder="Enter the job offer title" {...registerCreateOffer("name")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                                    <Input type="text" id="title" placeholder="Enter the job offer title" {...registerCreateOffer("name")} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); } }} />
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.name?.message}</p>
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="firmName">Company name</Label>
-                                    <Input type="text" id="firmName" placeholder="Enter the company name" {...registerCreateOffer("firmName")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                                    <Input type="text" id="firmName" placeholder="Enter the company name" {...registerCreateOffer("firmName")} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); } }} />
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.firmName?.message}</p>
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="localization">Company address: city</Label>
-                                    <Input type="text" id="localization" placeholder="Warszawa" {...registerCreateOffer("localization")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                                    <Input type="text" id="localization" placeholder="Warszawa" {...registerCreateOffer("localization")} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); } }} />
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.localization?.message}</p>
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="address">Company address: street name and building number</Label>
-                                    <Input type="text" id="address" placeholder="Kolejowa 14/20" {...registerCreateOffer("address")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                                    <Input type="text" id="address" placeholder="Kolejowa 14/20" {...registerCreateOffer("address")} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); } }} />
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.address?.message}</p>
                                 </div>
                             </div>
@@ -296,7 +335,7 @@ const CreateOffer = () => {
                                         {createOfferErrors.expirationTime?.message && <p className="text-red-500 text-sm font-normal">{createOfferErrors.expirationTime?.message}</p>}
                                     </div>
                                 </div>
-                                
+
                                 <div className='flex flex-col space-y-4 mb-16 mt-8 justify-center'>
                                     <SelectTechnologiesDialog technologies={requiredTechnologies} setTechnologies={setRequiredTechnologies} text="Change required technologies" />
                                     <SelectTechnologiesDialog technologies={niceToHaveTechnologies} setTechnologies={setNiceToHaveTechnologies} text="Change optional technologies" />
@@ -343,7 +382,7 @@ const CreateOffer = () => {
                                 </div>
                                 <div className="grid w-full gap-2">
                                     <Label htmlFor="aboutProject">About project</Label>
-                                    <Textarea  className='h-36' id="aboutProject" {...registerCreateOffer('aboutProject')} />
+                                    <Textarea className='h-36' id="aboutProject" {...registerCreateOffer('aboutProject')} />
                                 </div>
                             </div>
 
@@ -450,7 +489,7 @@ const CreateOffer = () => {
                     </div>
 
                 </form>
-            </div>
+            </div>}
         </div>
     )
 }

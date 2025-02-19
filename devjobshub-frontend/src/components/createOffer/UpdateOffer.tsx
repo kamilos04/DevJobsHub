@@ -49,10 +49,13 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch, useSelector } from 'react-redux'
 import { createOffer, getOfferById, updateOffer } from '@/state/offer/action'
-import { useLocation, useParams } from 'react-router'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { useProfile } from '../profile/useProfile'
 import { Offer } from '@/types/offer'
 import { profile } from 'console'
+import { useToast } from '@/hooks/use-toast'
+import { setFailNull, setSuccessNull } from '@/state/offer/offerSlice'
+import { IoMdArrowRoundBack } from 'react-icons/io'
 
 
 const UpdateOffer = () => {
@@ -61,14 +64,41 @@ const UpdateOffer = () => {
     const { offerId } = useParams()
     const { getProfile, profileStore } = useProfile(true, true)
     const location = useLocation()
+    const { toast } = useToast()
+    const navigate = useNavigate()
 
 
     useEffect(() => {
         dispatch(getOfferById(Number(offerId)))
         getProfile()
-        
+
 
     }, [location.pathname])
+
+
+    useEffect(() => {
+        if (offerStore.success === "updateOffer") {
+            toast({
+                variant: "default",
+                className: "bg-green-800",
+                title: "The offer has been updated.",
+            });
+            dispatch(setSuccessNull())
+        }
+    }, [offerStore.success])
+
+
+    useEffect(() => {
+        if (offerStore.fail === "updateOffer") {
+            toast({
+                variant: "destructive",
+                title: "An error occurred!",
+                description: "Make sure you enter your details correctly."
+            });
+
+            dispatch(setFailNull())
+        }
+    }, [offerStore.fail])
 
     useEffect(() => {
         if (profileStore.profile) {
@@ -361,6 +391,9 @@ const UpdateOffer = () => {
 
                 <form onSubmit={handleCreateOffer(onCreateOfferSubmit)}>
                     <div className='border-[1px] w-min mt-5 rounded-lg p-8'>
+                        <div className='flex flex-row items-start w-full mb-2'>
+                            <Button type='button' className='flex flex-row gap-x-1' onClick={() => navigate("/recruiter/manager")}><IoMdArrowRoundBack />Offers manager</Button>
+                        </div>
                         <div className='flex flex-row justify-center mb-3'>
                             <h1 className='text-2xl font-bold'>Offer ID: {offerStore.offer.id}</h1>
                         </div>

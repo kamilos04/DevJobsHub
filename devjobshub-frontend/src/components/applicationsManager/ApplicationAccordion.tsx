@@ -37,7 +37,14 @@ export const ApplicationAccordion = ({ application }: { application: Application
     return (
         <div>
             <AccordionItem value="item-1">
-                <AccordionTrigger>Applied on: {application.dateTimeOfCreation.slice(0, -3)}</AccordionTrigger>
+                <AccordionTrigger>
+                    <div className='flex flex-row space-x-8'>
+                        <span>
+                            Applied on: {application.dateTimeOfCreation.slice(0, -3)}
+                        </span>
+                        <span>Application ID: {application.id}</span>
+                        </div>
+                    </AccordionTrigger>
                 <AccordionContent>
                     <div className='flex flex-row justify-between'>
                         <div className='flex flex-col gap-y-6'>

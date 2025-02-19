@@ -27,29 +27,29 @@ const OfferCardManager = ({ offer }: { offer: Offer }) => {
     { value: "MANAGER", label: "Manager" },
     { value: "CLEVEL", label: "C-level" }]
 
-    const jobLevelToLabel = (text: string) => {
-      const found = levels.find((element) => element.value === text);
-      return found ? found.label : "";
-    };
+  const jobLevelToLabel = (text: string) => {
+    const found = levels.find((element) => element.value === text);
+    return found ? found.label : "";
+  };
 
-    const handleLikeClick = (event: any) => {
-            event.stopPropagation()
-            if (isLiked === false) {
-                dispatch(likeOfferById(offer?.id))
-                setIsLiked(true)
-            }
-            else if (isLiked === true) {
-                dispatch(removeLikeOfferById(offer?.id))
-                setIsLiked(false)
-            }
-        }
+  const handleLikeClick = (event: any) => {
+    event.stopPropagation()
+    if (isLiked === false) {
+      dispatch(likeOfferById(offer?.id))
+      setIsLiked(true)
+    }
+    else if (isLiked === true) {
+      dispatch(removeLikeOfferById(offer?.id))
+      setIsLiked(false)
+    }
+  }
 
 
-    useEffect(() => {
-      if(offer && offer.isLiked !== null) {
-          setIsLiked(offer.isLiked)
-      }
-    }, [offer])
+  useEffect(() => {
+    if (offer && offer.isLiked !== null) {
+      setIsLiked(offer.isLiked)
+    }
+  }, [offer])
 
 
   return (
@@ -83,18 +83,21 @@ const OfferCardManager = ({ offer }: { offer: Offer }) => {
 
           </div>
           <div className='flex flex-row items-center gap-x-1 text-gray-400 mt-2'>
-              <MdOutlineDateRange className='text-xl' />
-              <span>Expiration date: {offer.expirationDate.slice(0,-3)}</span>
-            </div>
+            <MdOutlineDateRange className='text-xl' />
+            <span>Expiration date: {offer.expirationDate.slice(0, -3)}</span>
+          </div>
 
         </div>
         <div className='flex flex-col gap-y-2'>
-          <Button variant={'default'}>Update</Button>
+          <Button variant={'default'} onClick={() => navigate(`/recruiter/update-offer/${offer.id}`)}>Update</Button>
           <Button variant={'default'} onClick={() => navigate(`/recruiter/applications/${offer.id}`)}>See applications</Button>
           <Button variant={'destructive'}>Delete</Button>
         </div>
       </div>
-
+      <Separator className='mb-1 mt-2' />
+      <div className='flex flex-row justify-end'>
+        <span className='text-sm text-gray-400'>Offer ID: {offer.id}</span>
+      </div>
     </div>
   )
 }
