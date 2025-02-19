@@ -31,6 +31,9 @@ export const ApplicationAccordion = ({ application }: { application: Application
         dispatch(setApplicationStatus({id: application.id, status: status}))
     }
 
+
+    
+
     return (
         <div>
             <AccordionItem value="item-1">

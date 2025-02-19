@@ -25,6 +25,26 @@ export const createOffer = createAsyncThunk(
     }
 )
 
+
+
+export const updateOffer = createAsyncThunk(
+    "offer/updateOffer",
+    async ({id, reqData}:{id: number, reqData: CreateOfferRequest}, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.put(`${API_URL}/api/offer/${id}`, reqData, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
 export const searchOffers = createAsyncThunk(
     "offer/searchOffers",
     async (params: string, { rejectWithValue }) => {

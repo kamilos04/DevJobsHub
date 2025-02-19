@@ -43,18 +43,131 @@ import CreateQuestion from './CreateQuestion'
 import EditRecruitmentQuestions from './EditRecruitmentQuestions'
 import { QuestionWithType } from '@/types/questionWithType'
 import { emptyCreateOfferRequest } from '@/types/createOfferRequest'
-import { formatExpirationDate } from '@/utils/dateUtils'
-import { convertQuestionsListToListOfMultipleChoiceQuestions, convertQuestionsListToListOfOpenQuestions, convertQuestionsListToListOfRadioQuestions } from '@/utils/questionsUtils'
+import { formatExpirationDate, parseDateTime } from '@/utils/dateUtils'
+import { convertQuestionsFromOfferToQuestionWithTypeList, convertQuestionsListToListOfMultipleChoiceQuestions, convertQuestionsListToListOfOpenQuestions, convertQuestionsListToListOfRadioQuestions } from '@/utils/questionsUtils'
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch, useSelector } from 'react-redux'
-import { createOffer } from '@/state/offer/action'
+import { createOffer, getOfferById, updateOffer } from '@/state/offer/action'
+import { useLocation, useParams } from 'react-router'
+import { useProfile } from '../profile/useProfile'
+import { Offer } from '@/types/offer'
+import { profile } from 'console'
 
 
-const CreateOffer = () => {
-    const [expirationDate, setExpirationDate] = React.useState<Date>()
+const UpdateOffer = () => {
     const dispatch = useDispatch<any>()
     const offerStore = useSelector((store: any) => (store.offer))
+    const { offerId } = useParams()
+    const { getProfile, profileStore } = useProfile(true, true)
+    const location = useLocation()
+
+
+    useEffect(() => {
+        dispatch(getOfferById(Number(offerId)))
+        getProfile()
+        
+
+    }, [location.pathname])
+
+    useEffect(() => {
+        if (profileStore.profile) {
+            if (offerStore.offer) {
+                const jobOffer: Offer = offerStore.offer
+                setValueCreateOffer("aboutProject", jobOffer.aboutProject)
+                setValueCreateOffer("address", jobOffer.address)
+                setValueCreateOffer("firmName", jobOffer.firmName)
+                setValueCreateOffer("jobLevel", jobOffer.jobLevel)
+                setValueCreateOffer("localization", jobOffer.localization)
+                setValueCreateOffer("name", jobOffer.name)
+                setValueCreateOffer("operatingMode", jobOffer.operatingMode)
+                setValueCreateOffer("responsibilitiesText", jobOffer.responsibilitiesText)
+                setValueCreateOffer("specialization", jobOffer.specialization)
+
+                const dateResult = parseDateTime(jobOffer.expirationDate)
+                setValueCreateOffer("expirationDate", dateResult.date)
+                setValueCreateOffer("expirationTime", dateResult.time)
+
+                setResponsibilities(jobOffer.responsibilities)
+                setNiceToHave(jobOffer.niceToHave)
+                setRequirements(jobOffer.requirements)
+                setWhatWeOffer(jobOffer.whatWeOffer)
+
+                setRequiredTechnologies(jobOffer.requiredTechnologies)
+                setNiceToHaveTechnologies(jobOffer.niceToHaveTechnologies)
+
+                setQuestionsList(convertQuestionsFromOfferToQuestionWithTypeList(jobOffer.questions, jobOffer.radioQuestions, jobOffer.multipleChoiceQuestions))
+
+
+                if (jobOffer.isSalaryMonthlyUoP !== null) {
+                    setValueCreateOffer("isUoP", true)
+                    if (jobOffer.minSalaryUoP && jobOffer.maxSalaryUoP) {
+                        setValueCreateOffer("minSalaryUoP", jobOffer.minSalaryUoP)
+                        setValueCreateOffer("maxSalaryUoP", jobOffer.maxSalaryUoP)
+                        setValueCreateOffer("showSalaryUoP", true)
+                    }
+                    else {
+                        setValueCreateOffer("showSalaryUoP", false)
+                    }
+                    if (jobOffer.isSalaryMonthlyUoP === true) {
+                        setValueCreateOffer("monthlyOrHourlyUoP", "monthly")
+                    }
+                    else {
+                        setValueCreateOffer("monthlyOrHourlyUoP", "hourly")
+                    }
+                }
+                else {
+                    setValueCreateOffer("isUoP", false)
+                }
+
+
+                if (jobOffer.isSalaryMonthlyB2B !== null) {
+                    setValueCreateOffer("isB2B", true)
+                    if (jobOffer.minSalaryB2B && jobOffer.maxSalaryB2B) {
+                        setValueCreateOffer("minSalaryB2B", jobOffer.minSalaryB2B)
+                        setValueCreateOffer("maxSalaryB2B", jobOffer.maxSalaryB2B)
+                        setValueCreateOffer("showSalaryB2B", true)
+                    }
+                    else {
+                        setValueCreateOffer("showSalaryB2B", false)
+                    }
+                    if (jobOffer.isSalaryMonthlyB2B === true) {
+                        setValueCreateOffer("monthlyOrHourlyB2B", "monthly")
+                    }
+                    else {
+                        setValueCreateOffer("monthlyOrHourlyB2B", "hourly")
+                    }
+                }
+                else {
+                    setValueCreateOffer("isB2B", false)
+                }
+
+
+
+                if (jobOffer.isSalaryMonthlyUZ !== null) {
+                    setValueCreateOffer("isUZ", true)
+                    if (jobOffer.minSalaryUZ && jobOffer.maxSalaryUZ) {
+                        setValueCreateOffer("minSalaryUZ", jobOffer.minSalaryUZ)
+                        setValueCreateOffer("maxSalaryUZ", jobOffer.maxSalaryUZ)
+                        setValueCreateOffer("showSalaryUZ", true)
+                    }
+                    else {
+                        setValueCreateOffer("showSalaryUZ", false)
+                    }
+                    if (jobOffer.isSalaryMonthlyUZ === true) {
+                        setValueCreateOffer("monthlyOrHourlyUZ", "monthly")
+                    }
+                    else {
+                        setValueCreateOffer("monthlyOrHourlyUZ", "hourly")
+                    }
+                }
+                else {
+                    setValueCreateOffer("isUZ", false)
+                }
+            }
+        }
+
+    }, [offerStore.offer, profileStore.profile])
 
     const createOfferSchema = yup.object().shape({
         aboutProject: yup.string(),
@@ -159,16 +272,12 @@ const CreateOffer = () => {
     const [requirements, setRequirements] = React.useState<Array<string>>([])
     const [niceToHave, setNiceToHave] = React.useState<Array<string>>([])
     const [whatWeOffer, setWhatWeOffer] = React.useState<Array<string>>([])
-    const [questions, setQuestions] = React.useState<Array<Question>>([])
-    const [radioQuestions, setRadioQuestions] = React.useState<Array<RadioQuestion>>([])
-    const [multipleChoiceQuestions, setMultipleChoiceQuestions] = React.useState<Array<MultipleChoiceQuestion>>([])
     const [questionsList, setQuestionsList] = React.useState<Array<QuestionWithType>>([])
 
 
 
     const onCreateOfferSubmit = (data: any) => {
         const request = emptyCreateOfferRequest
-        console.log(request.isSalaryMonthlyUZ)
         request.name = data.name
         request.firmName = data.firmName
         request.jobLevel = data.jobLevel
@@ -188,7 +297,7 @@ const CreateOffer = () => {
         request.questions = convertQuestionsListToListOfOpenQuestions(questionsList)
         request.radioQuestions = convertQuestionsListToListOfRadioQuestions(questionsList)
         request.multipleChoiceQuestions = convertQuestionsListToListOfMultipleChoiceQuestions(questionsList)
-        
+
 
         if (data.isUoP === true) {
             if (data.showSalaryUoP === true) {
@@ -239,7 +348,7 @@ const CreateOffer = () => {
         }
 
 
-        dispatch(createOffer(request))
+        dispatch(updateOffer({ reqData: request, id: Number(offerId) }))
         console.log(request)
 
     }
@@ -248,34 +357,34 @@ const CreateOffer = () => {
     return (
         <div className='flex flex-col'>
             <Navbar />
-            <div className='flex flex-col items-center'>
+            {offerStore.offer && <div className='flex flex-col items-center'>
 
                 <form onSubmit={handleCreateOffer(onCreateOfferSubmit)}>
                     <div className='border-[1px] w-min mt-5 rounded-lg p-8'>
                         <div className='flex flex-row justify-center mb-3'>
-                            <h1 className='text-2xl font-bold'>Create a new job offer</h1>
+                            <h1 className='text-2xl font-bold'>Offer ID: {offerStore.offer.id}</h1>
                         </div>
                         <Separator />
                         <div className='flex flex-row flex-wrap space-x-8 mt-6 justify-between'>
                             <div className='flex flex-col space-y-6'>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="title">Title</Label>
-                                    <Input type="text" id="title" placeholder="Enter the job offer title" {...registerCreateOffer("name")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                                    <Input type="text" id="title" placeholder="Enter the job offer title" {...registerCreateOffer("name")} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); } }} />
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.name?.message}</p>
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="firmName">Company name</Label>
-                                    <Input type="text" id="firmName" placeholder="Enter the company name" {...registerCreateOffer("firmName")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                                    <Input type="text" id="firmName" placeholder="Enter the company name" {...registerCreateOffer("firmName")} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); } }} />
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.firmName?.message}</p>
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="localization">Company address: city</Label>
-                                    <Input type="text" id="localization" placeholder="Warszawa" {...registerCreateOffer("localization")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                                    <Input type="text" id="localization" placeholder="Warszawa" {...registerCreateOffer("localization")} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); } }} />
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.localization?.message}</p>
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="address">Company address: street name and building number</Label>
-                                    <Input type="text" id="address" placeholder="Kolejowa 14/20" {...registerCreateOffer("address")} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                                    <Input type="text" id="address" placeholder="Kolejowa 14/20" {...registerCreateOffer("address")} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); } }} />
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.address?.message}</p>
                                 </div>
                             </div>
@@ -296,7 +405,7 @@ const CreateOffer = () => {
                                         {createOfferErrors.expirationTime?.message && <p className="text-red-500 text-sm font-normal">{createOfferErrors.expirationTime?.message}</p>}
                                     </div>
                                 </div>
-                                
+
                                 <div className='flex flex-col space-y-4 mb-16 mt-8 justify-center'>
                                     <SelectTechnologiesDialog technologies={requiredTechnologies} setTechnologies={setRequiredTechnologies} text="Change required technologies" />
                                     <SelectTechnologiesDialog technologies={niceToHaveTechnologies} setTechnologies={setNiceToHaveTechnologies} text="Change optional technologies" />
@@ -334,7 +443,6 @@ const CreateOffer = () => {
 
 
 
-
                         <div className='flex flex-row w-full space-x-8 mt-0'>
                             <div className='flex flex-col space-y-6 w-full'>
                                 <div className="grid w-full gap-2">
@@ -343,7 +451,7 @@ const CreateOffer = () => {
                                 </div>
                                 <div className="grid w-full gap-2">
                                     <Label htmlFor="aboutProject">About project</Label>
-                                    <Textarea  className='h-36' id="aboutProject" {...registerCreateOffer('aboutProject')} />
+                                    <Textarea className='h-36' id="aboutProject" {...registerCreateOffer('aboutProject')} />
                                 </div>
                             </div>
 
@@ -444,15 +552,15 @@ const CreateOffer = () => {
                         <EditRecruitmentQuestions questionsList={questionsList} setQuestionsList={setQuestionsList} />
 
                         <div className='flex flex-row justify-end mt-10'>
-                            <Button type='submit' className='w-32'>Create offer</Button>
+                            <Button type='submit' className='w-32'>Update offer</Button>
                         </div>
 
                     </div>
 
                 </form>
-            </div>
+            </div>}
         </div>
     )
 }
 
-export default CreateOffer
+export default UpdateOffer

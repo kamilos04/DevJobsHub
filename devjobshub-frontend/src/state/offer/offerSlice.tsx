@@ -1,7 +1,7 @@
 import { Technology } from "@/types/technology";
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { createOffer as createOffer, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, searchOffers } from "./action";
+import { createOffer as createOffer, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, searchOffers, updateOffer } from "./action";
 import { Offer } from "@/types/offer";
 
 interface PageResponseOffers {
@@ -59,6 +59,25 @@ const offerSlice = createSlice({
                     state.fail = "createOffer",
                     state.error = action.payload
             })
+
+
+            .addCase(updateOffer.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+            })
+                .addCase(updateOffer.fulfilled, (state, action) => {
+                    state.isLoading = false,
+                        state.success = "updateOffer"
+                })
+                .addCase(updateOffer.rejected, (state, action) => {
+                    state.isLoading = false,
+                        state.fail = "updateOffer",
+                        state.error = action.payload
+                })
+
+
 
 
             .addCase(searchOffers.pending, (state, action) => {

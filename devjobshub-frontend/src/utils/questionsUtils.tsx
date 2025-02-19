@@ -69,6 +69,35 @@ export const addMultipleChoiceQuestionsToQuestionsList = (questions: Array<Multi
 
 
 
+export const convertQuestionsFromOfferToQuestionWithTypeList = (questions: Array<Question>, radioQuestions: Array<RadioQuestion>, multipleChoiceQuestions: Array<MultipleChoiceQuestion>) => {
+    let qlist: Array<QuestionAndAnswerWithType> = []
+    addOpenQuestionsToQuestionsList(questions, qlist)
+    addRadioQuestionsToQuestionsList(radioQuestions, qlist)
+    addMultipleChoiceQuestionsToQuestionsList(multipleChoiceQuestions, qlist)
+    const sortedList = [...qlist].sort((a, b) => (a.question.number - b.question.number))
+
+
+    let result: Array<QuestionWithType> = []
+    sortedList.forEach((element: QuestionAndAnswerWithType) => {
+        if(element.type==="question"){
+            result.push({question: element.question.question, possibleAnswers: null, type: "question"})
+        }
+        else if(element.type==="radioQuestion"){
+            if("possibleAnswers" in element.question){
+                result.push({question: element.question.question, possibleAnswers: element.question.possibleAnswers, type: "radioQuestion"})
+            }
+            
+        }
+        else if(element.type==="multipleChoiceQuestion"){
+            if("possibleAnswers" in element.question){
+                result.push({question: element.question.question, possibleAnswers: element.question.possibleAnswers, type: "multipleChoiceQuestion"})
+            }
+            
+        }
+    })
+    return result
+}
+
 
 export const addOpenQuestionsWithAnswerToQuestionsList = (questions: Array<QuestionAndAnswer>, questionsList: Array<QuestionAndAnswerWithType>) => {
     questions.forEach((element: QuestionAndAnswer) => {
@@ -94,3 +123,5 @@ export const addMultipleChoiceQuestionsWithAnswerToQuestionsList = (questions: A
         questionsList.push(multipleChoiceQuestionAndAnswerWithType)
     })
 }
+
+

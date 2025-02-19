@@ -8,6 +8,15 @@ export const formatExpirationDate = (date: Date, time: string): string => {
     return `${day}-${month}-${year} ${time}:59`;
 };
 
+export const parseDateTime = (dateTimeStr: string): { date: Date; time: string } => {
+    const [datePart, timePart] = dateTimeStr.split(" ");
+    const [day, month, year] = datePart.split("-").map(Number);
+    
+    const date = new Date(year, month - 1, day);
+  
+    return { date, time: timePart.slice(0,-3) };
+  };
+
 
 export const parseStringToDate = (dateString: string) => {
     return parse(dateString, 'dd-MM-yyyy HH:mm:ss', new Date());

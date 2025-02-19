@@ -68,7 +68,7 @@ const OffersRecruiterManager = () => {
           <div className='flex flex-row w-full gap-x-4'>
             <div className=' bg-my-card flex flex-col p-4 rounded-xl border-[1px] w-80 gap-y-4 h-min'>
               <p className='text-xl font-bold'>Job offers manager</p>
-              <Button variant={'default'} onClick={() => navigate("/create-offer")}>Create a new job offer</Button>
+              <Button variant={'default'} onClick={() => navigate("/recruiter/create-offer")}>Create a new job offer</Button>
             </div>
             <div className='flex flex-col w-full'>
               <div className='flex flex-row gap-x-6 items-center w-full'>
