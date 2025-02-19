@@ -7,9 +7,6 @@ import { Input } from '../ui/input'
 import { Controller } from 'react-hook-form'
 
 const ContractType = ({ control, isContractCheckbox = {}, showSalaryCheckbox = {}, selectMonthlyOrHourly = {}, inputMinSalary = {}, inputMaxSalary = {}, errorMonthlyOrHourly, errorMin, errorMax, disabled, disabledSalary }: any) => {
-    // const handleCheckBox = (e: any) => {
-    //     console.log(e)
-    // }
     return (
         <div className='flex flex-col space-y-3 p-4 border-[1px] rounded-lg w-min bg-my-card'>
             <div className="flex items-center space-x-2">

@@ -50,8 +50,6 @@ public class OfferDto {
 
     private List<ApplicationDto> applications = new ArrayList<>();
 
-    private List<ApplicationDto> favouriteApplications = new ArrayList<>();
-
     private String localization;
 
     private String address;

@@ -36,54 +36,60 @@ import ExpirationDatePicker from './ExpirationDatePicker'
 import SelectTechnologiesDialog from './SelectTechnologiesDialog'
 import { Technology } from '@/types/technology'
 import EditBulletPoints from './EditBulletPoints'
+import { Question } from '@/types/question'
+import { RadioQuestion } from '@/types/question'
+import { MultipleChoiceQuestion } from '@/types/multipleChoiceQuestion'
+import CreateQuestion from './CreateQuestion'
 import EditRecruitmentQuestions from './EditRecruitmentQuestions'
 import { QuestionWithType } from '@/types/questionWithType'
 import { emptyCreateOfferRequest } from '@/types/createOfferRequest'
-import { formatExpirationDate } from '@/utils/dateUtils'
-import { convertQuestionsListToListOfMultipleChoiceQuestions, convertQuestionsListToListOfOpenQuestions, convertQuestionsListToListOfRadioQuestions } from '@/utils/questionsUtils'
+import { formatExpirationDate, parseDateTime } from '@/utils/dateUtils'
+import { convertQuestionsFromOfferToQuestionWithTypeList, convertQuestionsListToListOfMultipleChoiceQuestions, convertQuestionsListToListOfOpenQuestions, convertQuestionsListToListOfRadioQuestions } from '@/utils/questionsUtils'
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch, useSelector } from 'react-redux'
-import { createOffer } from '@/state/offer/action'
-import { useLocation, useNavigate } from 'react-router'
+import { createOffer, getOfferById, updateOffer } from '@/state/offer/action'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { useProfile } from '../profile/useProfile'
+import { Offer } from '@/types/offer'
+import { profile } from 'console'
 import { useToast } from '@/hooks/use-toast'
 import { setFailNull, setSuccessNull } from '@/state/offer/offerSlice'
 import { IoMdArrowRoundBack } from 'react-icons/io'
 
 
-const CreateOffer = () => {
-    const [expirationDate, setExpirationDate] = React.useState<Date>()
+const UpdateOffer = () => {
     const dispatch = useDispatch<any>()
     const offerStore = useSelector((store: any) => (store.offer))
+    const { offerId } = useParams()
     const { getProfile, profileStore } = useProfile(true, true)
+    const location = useLocation()
     const { toast } = useToast()
     const navigate = useNavigate()
-    const location = useLocation()
-
 
 
     useEffect(() => {
+        dispatch(getOfferById(Number(offerId)))
         getProfile()
+
+
     }, [location.pathname])
 
 
-
     useEffect(() => {
-        if (offerStore.success === "createOffer") {
+        if (offerStore.success === "updateOffer") {
             toast({
                 variant: "default",
                 className: "bg-green-800",
-                title: "The offer has been created.",
+                title: "The offer has been updated.",
             });
             dispatch(setSuccessNull())
-            navigate("/recruiter/manager")
         }
     }, [offerStore.success])
 
 
     useEffect(() => {
-        if (offerStore.fail === "createOffer") {
+        if (offerStore.fail === "updateOffer") {
             toast({
                 variant: "destructive",
                 title: "An error occurred!",
@@ -94,6 +100,104 @@ const CreateOffer = () => {
         }
     }, [offerStore.fail])
 
+    useEffect(() => {
+        if (profileStore.profile) {
+            if (offerStore.offer) {
+                const jobOffer: Offer = offerStore.offer
+                setValueCreateOffer("aboutProject", jobOffer.aboutProject)
+                setValueCreateOffer("address", jobOffer.address)
+                setValueCreateOffer("firmName", jobOffer.firmName)
+                setValueCreateOffer("jobLevel", jobOffer.jobLevel)
+                setValueCreateOffer("localization", jobOffer.localization)
+                setValueCreateOffer("name", jobOffer.name)
+                setValueCreateOffer("operatingMode", jobOffer.operatingMode)
+                setValueCreateOffer("responsibilitiesText", jobOffer.responsibilitiesText)
+                setValueCreateOffer("specialization", jobOffer.specialization)
+
+                const dateResult = parseDateTime(jobOffer.expirationDate)
+                setValueCreateOffer("expirationDate", dateResult.date)
+                setValueCreateOffer("expirationTime", dateResult.time)
+
+                setResponsibilities(jobOffer.responsibilities)
+                setNiceToHave(jobOffer.niceToHave)
+                setRequirements(jobOffer.requirements)
+                setWhatWeOffer(jobOffer.whatWeOffer)
+
+                setRequiredTechnologies(jobOffer.requiredTechnologies)
+                setNiceToHaveTechnologies(jobOffer.niceToHaveTechnologies)
+
+                setQuestionsList(convertQuestionsFromOfferToQuestionWithTypeList(jobOffer.questions, jobOffer.radioQuestions, jobOffer.multipleChoiceQuestions))
+
+
+                if (jobOffer.isSalaryMonthlyUoP !== null) {
+                    setValueCreateOffer("isUoP", true)
+                    if (jobOffer.minSalaryUoP && jobOffer.maxSalaryUoP) {
+                        setValueCreateOffer("minSalaryUoP", jobOffer.minSalaryUoP)
+                        setValueCreateOffer("maxSalaryUoP", jobOffer.maxSalaryUoP)
+                        setValueCreateOffer("showSalaryUoP", true)
+                    }
+                    else {
+                        setValueCreateOffer("showSalaryUoP", false)
+                    }
+                    if (jobOffer.isSalaryMonthlyUoP === true) {
+                        setValueCreateOffer("monthlyOrHourlyUoP", "monthly")
+                    }
+                    else {
+                        setValueCreateOffer("monthlyOrHourlyUoP", "hourly")
+                    }
+                }
+                else {
+                    setValueCreateOffer("isUoP", false)
+                }
+
+
+                if (jobOffer.isSalaryMonthlyB2B !== null) {
+                    setValueCreateOffer("isB2B", true)
+                    if (jobOffer.minSalaryB2B && jobOffer.maxSalaryB2B) {
+                        setValueCreateOffer("minSalaryB2B", jobOffer.minSalaryB2B)
+                        setValueCreateOffer("maxSalaryB2B", jobOffer.maxSalaryB2B)
+                        setValueCreateOffer("showSalaryB2B", true)
+                    }
+                    else {
+                        setValueCreateOffer("showSalaryB2B", false)
+                    }
+                    if (jobOffer.isSalaryMonthlyB2B === true) {
+                        setValueCreateOffer("monthlyOrHourlyB2B", "monthly")
+                    }
+                    else {
+                        setValueCreateOffer("monthlyOrHourlyB2B", "hourly")
+                    }
+                }
+                else {
+                    setValueCreateOffer("isB2B", false)
+                }
+
+
+
+                if (jobOffer.isSalaryMonthlyUZ !== null) {
+                    setValueCreateOffer("isUZ", true)
+                    if (jobOffer.minSalaryUZ && jobOffer.maxSalaryUZ) {
+                        setValueCreateOffer("minSalaryUZ", jobOffer.minSalaryUZ)
+                        setValueCreateOffer("maxSalaryUZ", jobOffer.maxSalaryUZ)
+                        setValueCreateOffer("showSalaryUZ", true)
+                    }
+                    else {
+                        setValueCreateOffer("showSalaryUZ", false)
+                    }
+                    if (jobOffer.isSalaryMonthlyUZ === true) {
+                        setValueCreateOffer("monthlyOrHourlyUZ", "monthly")
+                    }
+                    else {
+                        setValueCreateOffer("monthlyOrHourlyUZ", "hourly")
+                    }
+                }
+                else {
+                    setValueCreateOffer("isUZ", false)
+                }
+            }
+        }
+
+    }, [offerStore.offer, profileStore.profile])
 
     const createOfferSchema = yup.object().shape({
         aboutProject: yup.string(),
@@ -204,7 +308,6 @@ const CreateOffer = () => {
 
     const onCreateOfferSubmit = (data: any) => {
         const request = emptyCreateOfferRequest
-        console.log(request.isSalaryMonthlyUZ)
         request.name = data.name
         request.firmName = data.firmName
         request.jobLevel = data.jobLevel
@@ -275,7 +378,7 @@ const CreateOffer = () => {
         }
 
 
-        dispatch(createOffer(request))
+        dispatch(updateOffer({ reqData: request, id: Number(offerId) }))
         console.log(request)
 
     }
@@ -284,7 +387,7 @@ const CreateOffer = () => {
     return (
         <div className='flex flex-col'>
             <Navbar />
-            {profileStore.profile && <div className='flex flex-col items-center'>
+            {offerStore.offer && <div className='flex flex-col items-center'>
 
                 <form onSubmit={handleCreateOffer(onCreateOfferSubmit)}>
                     <div className='border-[1px] w-min mt-5 rounded-lg p-8'>
@@ -292,7 +395,7 @@ const CreateOffer = () => {
                             <Button type='button' className='flex flex-row gap-x-1' onClick={() => navigate("/recruiter/manager")}><IoMdArrowRoundBack />Offers manager</Button>
                         </div>
                         <div className='flex flex-row justify-center mb-3'>
-                            <h1 className='text-2xl font-bold'>Create a new job offer</h1>
+                            <h1 className='text-2xl font-bold'>Offer ID: {offerStore.offer.id}</h1>
                         </div>
                         <Separator />
                         <div className='flex flex-row flex-wrap space-x-8 mt-6 justify-between'>
@@ -370,7 +473,6 @@ const CreateOffer = () => {
 
                             </div>
                         </div>
-
 
 
 
@@ -483,7 +585,7 @@ const CreateOffer = () => {
                         <EditRecruitmentQuestions questionsList={questionsList} setQuestionsList={setQuestionsList} />
 
                         <div className='flex flex-row justify-end mt-10'>
-                            <Button type='submit' className='w-32'>Create offer</Button>
+                            <Button type='submit' className='w-32'>Update offer</Button>
                         </div>
 
                     </div>
@@ -494,4 +596,4 @@ const CreateOffer = () => {
     )
 }
 
-export default CreateOffer
+export default UpdateOffer

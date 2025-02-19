@@ -15,7 +15,7 @@ const initialState = {
     success: null,
     fail: null,
     error: null,
-    profile: undefined} satisfies InitialState as InitialState
+    profile: null} satisfies InitialState as InitialState
 
 const profileSlice = createSlice({
     name: 'profile',

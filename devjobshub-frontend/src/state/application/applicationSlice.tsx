@@ -1,16 +1,23 @@
-import { Technology } from "@/types/technology";
-import { User } from "@/types/user";
-import { createSlice } from "@reduxjs/toolkit";
-import { Offer } from "@/types/offer";
-import { ac } from "node_modules/react-router/dist/development/route-data-Cw8htKcF.d.mts";
-import { applyForOfferById } from "./action";
 
+import { createSlice } from "@reduxjs/toolkit";
+import { applyForOfferById, getApplicationsFromOffer, setApplicationStatus } from "./action";
+import { Application } from "@/types/application";
+
+
+interface PageResponseApplications {
+    content: Array<Application> | undefined | null,
+    number: number,
+    elements: number,
+    totalPages: number,
+    totalElements: number
+}
 
 interface InitialState {
     isLoading: boolean,
     success: string | null,
     fail: string | null,
     error: any | null,
+    applications: PageResponseApplications | null
 }
 
 const initialState = {
@@ -18,6 +25,7 @@ const initialState = {
     success: null,
     fail: null,
     error: null,
+    applications: null
 } satisfies InitialState as InitialState
 
 const applicationSlice = createSlice({
@@ -49,6 +57,41 @@ const applicationSlice = createSlice({
             })
 
 
+
+            .addCase(getApplicationsFromOffer.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+            })
+            .addCase(getApplicationsFromOffer.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "getApplicationsFromOffer"
+                state.applications = action.payload
+            })
+            .addCase(getApplicationsFromOffer.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "getApplicationsFromOffer",
+                    state.error = action.payload
+                    state.applications = null
+            })
+
+            
+            .addCase(setApplicationStatus.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+            })
+            .addCase(setApplicationStatus.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "setApplicationStatus"
+            })
+            .addCase(setApplicationStatus.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "setApplicationStatus",
+                    state.error = action.payload
+            })
 
 
     }

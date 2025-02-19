@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/offer/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/offer/search").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/technology/search").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/technology/by-ids").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -62,7 +63,8 @@ public class SecurityConfig {
 
                 cfg.setAllowedOrigins(Arrays.asList(
                         "http://localhost:5173",
-                        "http://157.158.191.53:5173"
+                        "http://157.158.191.53:5173",
+                        "http://192.168.1.13:5173"
                 ));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
