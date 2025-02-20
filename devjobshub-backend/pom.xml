@@ -124,9 +124,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.12.200</version>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.30.23</version>
 		</dependency>
 	</dependencies>
 
