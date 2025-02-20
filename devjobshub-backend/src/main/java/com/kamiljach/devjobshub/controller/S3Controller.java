@@ -1,6 +1,7 @@
 package com.kamiljach.devjobshub.controller;
 
 import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
+import com.kamiljach.devjobshub.exceptions.exceptions.UserAlreadyAppliedForThisOfferException;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import com.kamiljach.devjobshub.response.PresignedUrlResponse;
 import com.kamiljach.devjobshub.service.S3Service;
@@ -24,7 +25,7 @@ public class S3Controller {
     }
 
     @GetMapping("/presigned-cv/{offerId}")
-    public ResponseEntity<PresignedUrlResponse> getPresignedUrlForCV(@PathVariable("offerId") Long offerId, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException {
-        return new ResponseEntity<PresignedUrlResponse>(s3Service.getPresignedUrlForCV(offerId, jwt), HttpStatus.OK);
+    public ResponseEntity<PresignedUrlResponse> getPresignedUrlForCV(@PathVariable("offerId") Long offerId, @RequestParam("fileExtension") String fileExtension, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, UserAlreadyAppliedForThisOfferException {
+        return new ResponseEntity<PresignedUrlResponse>(s3Service.getPresignedUrlForCV(offerId, fileExtension, jwt), HttpStatus.OK);
     }
 }

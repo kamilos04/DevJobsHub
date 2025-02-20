@@ -10,6 +10,7 @@ import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import com.kamiljach.devjobshub.response.PresignedUrlResponse;
+import com.kamiljach.devjobshub.service.ApplicationService;
 import com.kamiljach.devjobshub.service.S3Service;
 import com.kamiljach.devjobshub.service.UserService;
 import org.springframework.stereotype.Service;
@@ -34,11 +35,14 @@ public class S3ServiceImpl implements S3Service {
     private OfferRepository offerRepository;
     private UserService userService;
 
+    private ApplicationService applicationService;
 
-    public S3ServiceImpl(AwsConfig awsConfig, OfferRepository offerRepository, UserService userService) {
+
+    public S3ServiceImpl(AwsConfig awsConfig, OfferRepository offerRepository, UserService userService, ApplicationService applicationService) {
         this.awsConfig = awsConfig;
         this.offerRepository = offerRepository;
         this.userService = userService;
+        this.applicationService = applicationService;
     }
 
     public String createPresignedUrl(String keyName, Map<String, String> metadata) {
@@ -63,12 +67,13 @@ public class S3ServiceImpl implements S3Service {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public PresignedUrlResponse getPresignedUrlForCV(Long offerId, String jwt) throws OfferNotFoundByIdException {
+    public PresignedUrlResponse getPresignedUrlForCV(Long offerId, String fileExtension, String jwt) throws OfferNotFoundByIdException, UserAlreadyAppliedForThisOfferException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
 
         User user = userService.findUserByJwt(jwt);
+        applicationService.ifUserAlreadyAppliedForOfferThrowException(user, offer);
 
-        String key = String.format("cv/%d-%d", offer.getId(), user.getId());
+        String key = String.format("cv/%d-%d.%s", offer.getId(), user.getId(), fileExtension);
 
         PresignedUrlResponse response = new PresignedUrlResponse();
         response.setUrl(createPresignedUrl(key, new HashMap<String, String>()));
