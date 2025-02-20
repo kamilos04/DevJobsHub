@@ -25,14 +25,14 @@ export const ApplicationAccordion = ({ application }: { application: Application
     addRadioQuestionsWithAnswerToQuestionsList(application.radioQuestionsAndAnswers, qlist)
     addMultipleChoiceQuestionsWithAnswerToQuestionsList(application.multipleChoiceQuestionsAndAnswers, qlist)
     const questionsList: Array<QuestionAndAnswerWithType> = [...qlist].sort((a, b) => (a.question.number - b.question.number))
-    
+
 
     const handleChangeStatus = (status: string) => {
-        dispatch(setApplicationStatus({id: application.id, status: status}))
+        dispatch(setApplicationStatus({ id: application.id, status: status }))
     }
 
 
-    
+
 
     return (
         <div>
@@ -43,8 +43,8 @@ export const ApplicationAccordion = ({ application }: { application: Application
                             Applied on: {application.dateTimeOfCreation.slice(0, -3)}
                         </span>
                         <span>Application ID: {application.id}</span>
-                        </div>
-                    </AccordionTrigger>
+                    </div>
+                </AccordionTrigger>
                 <AccordionContent>
                     <div className='flex flex-row justify-between'>
                         <div className='flex flex-col gap-y-6'>
@@ -61,9 +61,11 @@ export const ApplicationAccordion = ({ application }: { application: Application
                             })}
                         </div>
                         <div className='flex flex-col gap-y-2 justify-end'>
-                            {application.status !== "FAVOURITE" &&<Button variant={'default'} onClick={() => handleChangeStatus("FAVOURITE")}>Move to favourites</Button>}
+                            <Button variant={'default'} className='bg-green-600'>Download CV</Button>
+                            {application.status !== "FAVOURITE" && <Button variant={'default'} onClick={() => handleChangeStatus("FAVOURITE")}>Move to favourites</Button>}
                             {application.status !== "REJECTED" && <Button variant={'default'} onClick={() => handleChangeStatus("REJECTED")}>Move to rejected</Button>}
-                            {application.status !== "NO_STATUS" &&<Button variant={'default'} onClick={() => handleChangeStatus("NO_STATUS")}>Remove status</Button>}
+                            {application.status !== "NO_STATUS" && <Button variant={'default'} onClick={() => handleChangeStatus("NO_STATUS")}>Remove status</Button>}
+
                         </div>
                     </div>
 

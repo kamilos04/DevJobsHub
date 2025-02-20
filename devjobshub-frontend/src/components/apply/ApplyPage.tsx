@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import Navbar from '../navbar/Navbar'
-import { useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { getOfferById } from '@/state/offer/action';
 import { store } from '@/state/store';
@@ -25,31 +25,53 @@ import { Button } from "@/components/ui/button"
 import { emptyApplyRequest } from '@/types/applyRequest';
 import { applyForOfferById } from '@/state/application/action';
 import { useToast } from '@/hooks/use-toast'
-import { setFailNull } from '@/state/application/applicationSlice';
+import { setFailNull, setSuccessNull } from '@/state/application/applicationSlice';
+import { setFailNull as setFailNullFiles } from '@/state/files/filesSlice';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { getPresignedUrlForCv, uploadFileWithPresignedUrl } from '@/state/files/action';
+import { FileStack } from 'lucide-react';
+import { setPresignedUrlCvNull } from '@/state/files/filesSlice';
 
 const ApplyPage = () => {
     const { id } = useParams();
     const dispatch = useDispatch<any>()
     const storeOffer = useSelector((store: any) => (store.offer))
     const storeApplication = useSelector((store: any) => (store.application))
+    const filesStore = useSelector((store: any) => (store.files))
     const [questionsList, setQuestionsList] = React.useState<Array<QuestionAndAnswerWithType>>([])
     const { toast } = useToast()
+    const [cvFile, setCvFile] = React.useState<File | null>(null)
+    const location = useLocation()
+    const navigate = useNavigate()
 
     useEffect(() => {
         dispatch(getOfferById(Number(id)))
-
-
-    }, [id])
+        dispatch(setPresignedUrlCvNull())
+    }, [location.pathname])
 
 
     useEffect(() => {
+        if (cvFile && storeOffer.offer) {
+            dispatch(getPresignedUrlForCv({ offerId: storeOffer.offer.id, fileExtension: cvFile.name.split(".").pop() || "" }))
+        }
+    }, [cvFile])
+
+    useEffect(() => {
+        console.log(filesStore.presignedUrlCv)
+    }, [filesStore])
+
+    useEffect(() => {
         if (storeOffer.success === "getOfferById") {
+
             let qlist: Array<QuestionAndAnswerWithType> = []
             addOpenQuestionsToQuestionsList(storeOffer.offer.questions, qlist)
             addRadioQuestionsToQuestionsList(storeOffer.offer.radioQuestions, qlist)
             addMultipleChoiceQuestionsToQuestionsList(storeOffer.offer.multipleChoiceQuestions, qlist)
             const sortedList = [...qlist].sort((a, b) => (a.question.number - b.question.number))
             setQuestionsList(sortedList)
+
+
 
         }
     }, [storeOffer.success])
@@ -77,14 +99,54 @@ const ApplyPage = () => {
     }, [storeApplication.fail])
 
 
+    useEffect(() => {
+        if (storeApplication.success === "applyForOfferById") {
+            toast({
+                variant: "default",
+                className: "bg-green-800",
+                title: "The application has been sent.",
+            });
+            dispatch(setSuccessNull())
+            navigate(`/offer/${storeOffer.offer.id}`)
+        }
+
+    }, [storeApplication.success])
+
+
+    useEffect(() => {
+        if (filesStore.success === "uploadFileWithPresignedUrl") {
+            let request = emptyApplyRequest
+            request.cvUrl = filesStore.presignedUrlCv.key
+            request.questionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "question").map((el: QuestionAndAnswerWithType) => el.question as QuestionAndAnswer)
+            request.radioQuestionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "radioQuestion").map((el: QuestionAndAnswerWithType) => el.question as RadioQuestionAndAnswer)
+            request.multipleChoiceQuestionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "multipleChoiceQuestion").map((el: QuestionAndAnswerWithType) => el.question as MultipleChoiceQuestionAndAnswer)
+            dispatch(applyForOfferById({ id: storeOffer.offer.id, request: request }))
+        }
+        else if (filesStore.fail === "uploadFileWithPresignedUrl") {
+            toast({
+                variant: "destructive",
+                title: "An error occurred while uploading the file!",
+            });
+            dispatch(setFailNullFiles())
+        }
+    }, [filesStore.success, filesStore.fail])
+
 
     const handleApplyClick = () => {
-        let request = emptyApplyRequest
-        request.cvUrl = "test"
-        request.questionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "question").map((el: QuestionAndAnswerWithType) => el.question as QuestionAndAnswer)
-        request.radioQuestionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "radioQuestion").map((el: QuestionAndAnswerWithType) => el.question as RadioQuestionAndAnswer)
-        request.multipleChoiceQuestionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "multipleChoiceQuestion").map((el: QuestionAndAnswerWithType) => el.question as MultipleChoiceQuestionAndAnswer)
-        dispatch(applyForOfferById({ id: storeOffer.offer.id, request: request }))
+        if (cvFile) {
+            if (filesStore.presignedUrlCv) {
+                dispatch(uploadFileWithPresignedUrl({ presignedUrl: filesStore.presignedUrlCv.url, file: cvFile }))
+            }
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "An error occurred while uploading the file!",
+                    description: "Make sure you haven't applied before."
+                });
+            }
+
+        }
+
     }
 
 
@@ -172,7 +234,18 @@ const ApplyPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='w-full flex flex-col gap-y-10 mt-16'>
+                    <div className='flex flex-row w-full justify-start mt-16 mb-12'>
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="cv" className='text-base'>Attach your CV</Label>
+                            <Input id="cv" type="file" onChange={(e) => {
+                                const fileList: FileList | null = e.target.files
+                                if (fileList && fileList.length > 0) {
+                                    setCvFile(fileList[0])
+                                }
+                            }} />
+                        </div>
+                    </div>
+                    <div className='w-full flex flex-col gap-y-10'>
                         {questionsList.map((element: QuestionAndAnswerWithType) => {
                             if (element.type === "question") {
                                 return <OpenQuestion key={element.question.number} question={element.question as QuestionAndAnswer} setQuestionsList={setQuestionsList} />
