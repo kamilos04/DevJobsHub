@@ -397,7 +397,6 @@ public class OfferServiceImplTests {
         List<Offer> listOffer = mock(List.class);
         when(userService.findUserByJwt(validJwt)).thenReturn(userA);
         when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
-        doNothing().when(offerServiceSpy).validatePermissionLikeOffer(userA);
         when(userA.getLikedOffers()).thenReturn(listOffer);
         when(listOffer.contains(offer1)).thenReturn(false);
 
@@ -432,7 +431,6 @@ public class OfferServiceImplTests {
         List<Offer> listOffer = mock(List.class);
         when(userService.findUserByJwt(validJwt)).thenReturn(userA);
         when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
-        doNothing().when(offerServiceSpy).validatePermissionLikeOffer(userA);
         when(userA.getLikedOffers()).thenReturn(listOffer);
         when(listOffer.contains(offer1)).thenReturn(true);
 
@@ -443,22 +441,6 @@ public class OfferServiceImplTests {
         verify(userRepository, never()).save(any());
     }
 
-    @Test
-    public void OfferService_likeOffer_ThrowsNoPermissionException() throws NoPermissionException, OfferIsAlreadyLikedByUserException, OfferNotFoundByIdException {
-        Long validId = 1L;
-        String validJwt = "some jwt";
-        User userA = mock(User.class);
-
-        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
-        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
-        doThrow(NoPermissionException.class).when(offerServiceSpy).validatePermissionLikeOffer(userA);
-
-        assertThrows(NoPermissionException.class, () -> offerServiceSpy.likeOffer(validId, validJwt));
-
-        verify(userA, never()).addLikedOffer(any());
-        verify(offerRepository, never()).save(any());
-        verify(userRepository, never()).save(any());
-    }
 
     @Test
     public void OfferService_removeLikeOffer_Success() throws NoPermissionException, OfferIsNotLikedByUserException, OfferNotFoundByIdException {
@@ -468,7 +450,6 @@ public class OfferServiceImplTests {
         List<Offer> listOffer = mock(List.class);
         when(userService.findUserByJwt(validJwt)).thenReturn(userA);
         when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
-        doNothing().when(offerServiceSpy).validatePermissionRemoveLikeOffer(userA);
         when(userA.getLikedOffers()).thenReturn(listOffer);
         when(listOffer.contains(offer1)).thenReturn(true);
 
@@ -504,7 +485,6 @@ public class OfferServiceImplTests {
         List<Offer> listOffer = mock(List.class);
         when(userService.findUserByJwt(validJwt)).thenReturn(userA);
         when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
-        doNothing().when(offerServiceSpy).validatePermissionRemoveLikeOffer(userA);
         when(userA.getLikedOffers()).thenReturn(listOffer);
         when(listOffer.contains(offer1)).thenReturn(false);
 
@@ -515,24 +495,6 @@ public class OfferServiceImplTests {
         verify(userRepository, never()).save(any());
     }
 
-
-    @Test
-    public void OfferService_removeLikeOffer_ThrowsNoPermissionException() throws NoPermissionException, OfferNotFoundByIdException {
-        Long validId = 1L;
-        String validJwt = "some jwt";
-        User userA = mock(User.class);
-
-        when(userService.findUserByJwt(validJwt)).thenReturn(userA);
-        when(offerRepository.findById(validId)).thenReturn(Optional.of(offer1));
-        doThrow(NoPermissionException.class).when(offerServiceSpy).validatePermissionRemoveLikeOffer(userA);
-
-
-        assertThrows(NoPermissionException.class, () -> offerServiceSpy.removeLikeOffer(validId, validJwt));
-
-        verify(userA, never()).addLikedOffer(any());
-        verify(offerRepository, never()).save(any());
-        verify(userRepository, never()).save(any());
-    }
 
 
     @Test

@@ -238,7 +238,6 @@ public class OfferServiceImpl implements OfferService {
     public void likeOffer(Long id, String jwt) throws OfferNotFoundByIdException, OfferIsAlreadyLikedByUserException, NoPermissionException {
         User user = userService.findUserByJwt(jwt);
         Offer offer = offerRepository.findById(id).orElseThrow(OfferNotFoundByIdException::new);
-//        validatePermissionLikeOffer(user);
 
         if (user.getLikedOffers().contains(offer)){
             throw new OfferIsAlreadyLikedByUserException();
@@ -253,8 +252,6 @@ public class OfferServiceImpl implements OfferService {
         User user = userService.findUserByJwt(jwt);
 
         Offer offer = offerRepository.findById(id).orElseThrow(OfferNotFoundByIdException::new);
-
-//        validatePermissionRemoveLikeOffer(user);
 
         if (!user.getLikedOffers().contains(offer)){
             throw new OfferIsNotLikedByUserException();
@@ -355,20 +352,6 @@ public class OfferServiceImpl implements OfferService {
             return;
         }
         else if (offer.getRecruiters().contains(user)){
-            return;
-        }
-        throw new NoPermissionException();
-    }
-
-    public void validatePermissionLikeOffer(User user) throws NoPermissionException {
-        if(!user.getIsFirm()){
-            return;
-        }
-        throw new NoPermissionException();
-    }
-
-    public void validatePermissionRemoveLikeOffer(User user) throws NoPermissionException {
-        if(!user.getIsFirm()){
             return;
         }
         throw new NoPermissionException();

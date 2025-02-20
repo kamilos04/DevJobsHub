@@ -33,6 +33,5 @@ public interface OfferMapper {
     @Mapping(target = "dateTimeOfCreation", ignore = true)
     @Mapping(target = "recruiters", ignore = true)
     @Mapping(target = "applications", ignore = true)
-    @Mapping(target = "favouriteApplications", ignore = true)
     OfferDto offerToOfferDto(Offer offer);
 }
