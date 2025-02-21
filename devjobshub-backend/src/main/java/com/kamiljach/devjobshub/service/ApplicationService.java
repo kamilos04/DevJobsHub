@@ -22,4 +22,6 @@ public interface ApplicationService {
     public void setApplicationStatus(Long applicationId, APPLICATION_STATUS status, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException;
     public void ifUserAlreadyAppliedForOfferThrowException(User user, Offer offer) throws UserAlreadyAppliedForThisOfferException;
 
+    public void validatePermissionGetApplicationById(User user, Application application) throws NoPermissionException;
+
 }

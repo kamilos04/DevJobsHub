@@ -1,31 +1,28 @@
 package com.kamiljach.devjobshub.service.impl;
 
 import com.kamiljach.devjobshub.config.AwsConfig;
-import com.kamiljach.devjobshub.dto.ApplicationDto;
 import com.kamiljach.devjobshub.exceptions.exceptions.*;
-import com.kamiljach.devjobshub.model.APPLICATION_STATUS;
 import com.kamiljach.devjobshub.model.Application;
 import com.kamiljach.devjobshub.model.Offer;
 import com.kamiljach.devjobshub.model.User;
+import com.kamiljach.devjobshub.repository.ApplicationRepository;
 import com.kamiljach.devjobshub.repository.OfferRepository;
-import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import com.kamiljach.devjobshub.response.PresignedUrlResponse;
 import com.kamiljach.devjobshub.service.ApplicationService;
 import com.kamiljach.devjobshub.service.S3Service;
 import com.kamiljach.devjobshub.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import software.amazon.awssdk.auth.credentials.AwsCredentials;
-import software.amazon.awssdk.services.s3.S3Client;
 
 
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,15 +34,18 @@ public class S3ServiceImpl implements S3Service {
 
     private ApplicationService applicationService;
 
+    private ApplicationRepository applicationRepository;
 
-    public S3ServiceImpl(AwsConfig awsConfig, OfferRepository offerRepository, UserService userService, ApplicationService applicationService) {
+
+    public S3ServiceImpl(AwsConfig awsConfig, OfferRepository offerRepository, UserService userService, ApplicationService applicationService, ApplicationRepository applicationRepository) {
         this.awsConfig = awsConfig;
         this.offerRepository = offerRepository;
         this.userService = userService;
         this.applicationService = applicationService;
+        this.applicationRepository = applicationRepository;
     }
 
-    public String createPresignedUrl(String keyName, Map<String, String> metadata) {
+    public String createPresignedUrlPut(String keyName, Map<String, String> metadata) {
 
 
             PutObjectRequest objectRequest = PutObjectRequest.builder()
@@ -66,6 +66,25 @@ public class S3ServiceImpl implements S3Service {
     }
 
 
+    public String createPresignedUrlGet(String keyName) {
+
+
+        GetObjectRequest objectRequest = GetObjectRequest.builder()
+                .bucket(awsConfig.bucketName)
+                .key(keyName)
+                .build();
+
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(60))
+                .getObjectRequest(objectRequest)
+                .build();
+
+        PresignedGetObjectRequest presignedRequest = awsConfig.s3Presigner().presignGetObject(presignRequest);
+
+        return presignedRequest.url().toExternalForm();
+    }
+
+
     @Transactional(rollbackFor = Exception.class)
     public PresignedUrlResponse getPresignedUrlForCV(Long offerId, String fileExtension, String jwt) throws OfferNotFoundByIdException, UserAlreadyAppliedForThisOfferException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
@@ -76,7 +95,21 @@ public class S3ServiceImpl implements S3Service {
         String key = String.format("cv/%d-%d.%s", offer.getId(), user.getId(), fileExtension);
 
         PresignedUrlResponse response = new PresignedUrlResponse();
-        response.setUrl(createPresignedUrl(key, new HashMap<String, String>()));
+        response.setUrl(createPresignedUrlPut(key, new HashMap<String, String>()));
+        response.setKey(key);
+        return response;
+    }
+
+
+    public PresignedUrlResponse getPresignedUrlToDownloadCV(Long applicationId, String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
+        Application application = applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundByIdException::new);
+        User user = userService.findUserByJwt(jwt);
+        applicationService.validatePermissionGetApplicationById(user, application);
+
+        String key = application.getCvUrl();
+
+        PresignedUrlResponse response = new PresignedUrlResponse();
+        response.setUrl(createPresignedUrlGet(key));
         response.setKey(key);
         return response;
     }
