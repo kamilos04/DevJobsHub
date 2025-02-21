@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
     Accordion,
     AccordionContent,
@@ -15,11 +15,18 @@ import { RadioQuestionAndAnswer } from '@/types/radioQuestionAndAnswer'
 import { MultipleChoiceQuestion } from './MultipleChoiceQuestion'
 import { MultipleChoiceQuestionAndAnswer } from '@/types/multipleChoiceQuestionAndAnswer'
 import { Button } from '../ui/button'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setApplicationStatus } from '@/state/application/action'
+import { getPresignedUrlToDownloadCV } from '@/state/files/action'
+import { setSuccessNull } from '@/state/files/filesSlice'
+import { Offer } from '@/types/offer'
+import { useToast } from '@/hooks/use-toast'
 
-export const ApplicationAccordion = ({ application }: { application: Application }) => {
+export const ApplicationAccordion = ({ application, offer }: { application: Application, offer: Offer }) => {
+    const filesStore = useSelector((store: any) => (store.files))
+    const hasDownloaded = useRef(false)
     const dispatch = useDispatch<any>()
+    const {toast} = useToast()
     let qlist: Array<QuestionAndAnswerWithType> = []
     addOpenQuestionsWithAnswerToQuestionsList(application.questionsAndAnswers, qlist)
     addRadioQuestionsWithAnswerToQuestionsList(application.radioQuestionsAndAnswers, qlist)
@@ -32,11 +39,53 @@ export const ApplicationAccordion = ({ application }: { application: Application
     }
 
 
+    const handleClickDownloadCV = () => {
+        dispatch(getPresignedUrlToDownloadCV({ applicationId: application.id }))
+    }
 
+
+    const downloadFile = async (fileUrl: string, filename: string) => {
+        try {
+            const response = await fetch(fileUrl, { method: "GET" });
+
+            if (!response.ok) {
+                throw new Error(`error`);
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            window.URL.revokeObjectURL(url);
+            hasDownloaded.current = false
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: "An error occurred while downloading the file!"
+            });
+        }
+    };
+
+
+
+    useEffect(() => {
+        if (filesStore.success === "getPresignedUrlToDownloadCV" && !hasDownloaded.current) {
+            hasDownloaded.current = true
+            dispatch(setSuccessNull())
+            downloadFile(filesStore.presignedUrlCvToDownload.url, `offerID_${offer.id} applicationID_${application.id}.${filesStore.presignedUrlCvToDownload.key.split(".").pop()}`)
+            
+        }
+    }, [filesStore.success])
 
     return (
         <div>
-            <AccordionItem value="item-1">
+            <AccordionItem value={String(application.id)}>
                 <AccordionTrigger>
                     <div className='flex flex-row space-x-8'>
                         <span>
@@ -61,7 +110,7 @@ export const ApplicationAccordion = ({ application }: { application: Application
                             })}
                         </div>
                         <div className='flex flex-col gap-y-2 justify-end'>
-                            <Button variant={'default'} className='bg-green-600'>Download CV</Button>
+                            <Button variant={'default'} className='bg-green-600' onClick={() => handleClickDownloadCV()}>Download CV</Button>
                             {application.status !== "FAVOURITE" && <Button variant={'default'} onClick={() => handleChangeStatus("FAVOURITE")}>Move to favourites</Button>}
                             {application.status !== "REJECTED" && <Button variant={'default'} onClick={() => handleChangeStatus("REJECTED")}>Move to rejected</Button>}
                             {application.status !== "NO_STATUS" && <Button variant={'default'} onClick={() => handleChangeStatus("NO_STATUS")}>Remove status</Button>}

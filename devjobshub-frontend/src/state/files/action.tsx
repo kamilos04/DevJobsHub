@@ -37,3 +37,23 @@ export const getPresignedUrlForCv = createAsyncThunk(
         }
     }
 )
+
+
+
+export const getPresignedUrlToDownloadCV = createAsyncThunk(
+    "files/getPresignedUrlToDownloadCV",
+    async ({applicationId}: {applicationId: Number}, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.get(`${API_URL}/api/presigned-cv-download/${applicationId}`, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)

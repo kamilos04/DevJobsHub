@@ -185,7 +185,7 @@ export const ApplicationsManager = () => {
                     </div>
                     <div className='flex flex-col w-full'>
                         <Accordion type="single" collapsible className="w-full">
-                            {applicationStore.applications?.content.map((element: Application) => <ApplicationAccordion key={element.id} application={element} />)}
+                            {applicationStore.applications?.content.map((element: Application) => <ApplicationAccordion key={element.id} application={element} offer={storeOffer.offer}/>)}
                         </Accordion>
                     </div>
                     {applicationStore.applications && <Pagination className='mt-3'>

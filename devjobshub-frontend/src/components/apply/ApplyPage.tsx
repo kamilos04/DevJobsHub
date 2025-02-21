@@ -44,6 +44,7 @@ const ApplyPage = () => {
     const [cvFile, setCvFile] = React.useState<File | null>(null)
     const location = useLocation()
     const navigate = useNavigate()
+    const [applyButtonDisabled, setApplyButtonDisabled] = React.useState<boolean>(false)
 
     useEffect(() => {
         dispatch(getOfferById(Number(id)))
@@ -57,9 +58,6 @@ const ApplyPage = () => {
         }
     }, [cvFile])
 
-    useEffect(() => {
-        console.log(filesStore.presignedUrlCv)
-    }, [filesStore])
 
     useEffect(() => {
         if (storeOffer.success === "getOfferById") {
@@ -93,6 +91,7 @@ const ApplyPage = () => {
                     description: "Make sure you enter your details correctly."
                 });
             }
+            setApplyButtonDisabled(false)
             dispatch(setFailNull())
         }
 
@@ -107,6 +106,7 @@ const ApplyPage = () => {
                 title: "The application has been sent.",
             });
             dispatch(setSuccessNull())
+            setApplyButtonDisabled(false)
             navigate(`/offer/${storeOffer.offer.id}`)
         }
 
@@ -127,6 +127,7 @@ const ApplyPage = () => {
                 variant: "destructive",
                 title: "An error occurred while uploading the file!",
             });
+            setApplyButtonDisabled(false)
             dispatch(setFailNullFiles())
         }
     }, [filesStore.success, filesStore.fail])
@@ -144,6 +145,7 @@ const ApplyPage = () => {
                     description: "Make sure you haven't applied before."
                 });
             }
+            setApplyButtonDisabled(true)
 
         }
 
@@ -259,7 +261,7 @@ const ApplyPage = () => {
                         })}
                     </div>
                     <div className='flex flex-row justify-center w-full mt-6'>
-                        <Button className='w-32' onClick={() => handleApplyClick()}>Apply</Button>
+                        <Button disabled={applyButtonDisabled} className='w-32' onClick={() => handleApplyClick()}>Apply</Button>
                     </div>
 
 
