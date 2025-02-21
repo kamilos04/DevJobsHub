@@ -26,12 +26,13 @@ import { emptyApplyRequest } from '@/types/applyRequest';
 import { applyForOfferById } from '@/state/application/action';
 import { useToast } from '@/hooks/use-toast'
 import { setFailNull, setSuccessNull } from '@/state/application/applicationSlice';
-import { setFailNull as setFailNullFiles } from '@/state/files/filesSlice';
+import { setFailNull as setFailNullFiles, setSuccessNull as setSuccessNullFiles } from '@/state/files/filesSlice';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { getPresignedUrlForCv, uploadFileWithPresignedUrl } from '@/state/files/action';
 import { FileStack } from 'lucide-react';
 import { setPresignedUrlCvNull } from '@/state/files/filesSlice';
+import { useProfile } from '../profile/useProfile';
 
 const ApplyPage = () => {
     const { id } = useParams();
@@ -41,12 +42,14 @@ const ApplyPage = () => {
     const filesStore = useSelector((store: any) => (store.files))
     const [questionsList, setQuestionsList] = React.useState<Array<QuestionAndAnswerWithType>>([])
     const { toast } = useToast()
+    const { getProfile, profileStore } = useProfile(true, false)
     const [cvFile, setCvFile] = React.useState<File | null>(null)
     const location = useLocation()
     const navigate = useNavigate()
     const [applyButtonDisabled, setApplyButtonDisabled] = React.useState<boolean>(false)
 
     useEffect(() => {
+        getProfile()
         dispatch(getOfferById(Number(id)))
         dispatch(setPresignedUrlCvNull())
     }, [location.pathname])
@@ -54,7 +57,17 @@ const ApplyPage = () => {
 
     useEffect(() => {
         if (cvFile && storeOffer.offer) {
-            dispatch(getPresignedUrlForCv({ offerId: storeOffer.offer.id, fileExtension: cvFile.name.split(".").pop() || "" }))
+            if (cvFile.size < 1024 * 1024 * 5) {
+                dispatch(getPresignedUrlForCv({ offerId: storeOffer.offer.id, fileExtension: cvFile.name.split(".").pop() || "" }))
+            }
+            else{
+                setCvFile(null)
+                toast({
+                    variant: "destructive",
+                    title: "File size is too large!"
+                });
+                
+            }
         }
     }, [cvFile])
 
@@ -121,6 +134,7 @@ const ApplyPage = () => {
             request.radioQuestionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "radioQuestion").map((el: QuestionAndAnswerWithType) => el.question as RadioQuestionAndAnswer)
             request.multipleChoiceQuestionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "multipleChoiceQuestion").map((el: QuestionAndAnswerWithType) => el.question as MultipleChoiceQuestionAndAnswer)
             dispatch(applyForOfferById({ id: storeOffer.offer.id, request: request }))
+            dispatch(setSuccessNullFiles())
         }
         else if (filesStore.fail === "uploadFileWithPresignedUrl") {
             toast({
@@ -137,6 +151,7 @@ const ApplyPage = () => {
         if (cvFile) {
             if (filesStore.presignedUrlCv) {
                 dispatch(uploadFileWithPresignedUrl({ presignedUrl: filesStore.presignedUrlCv.url, file: cvFile }))
+                setApplyButtonDisabled(true)
             }
             else {
                 toast({
@@ -145,8 +160,14 @@ const ApplyPage = () => {
                     description: "Make sure you haven't applied before."
                 });
             }
-            setApplyButtonDisabled(true)
+            
 
+        }
+        else{
+            toast({
+                variant: "destructive",
+                title: "You have to attach CV!",
+            });
         }
 
     }
@@ -244,7 +265,7 @@ const ApplyPage = () => {
                                 if (fileList && fileList.length > 0) {
                                     setCvFile(fileList[0])
                                 }
-                            }} />
+                            }}/>
                         </div>
                     </div>
                     <div className='w-full flex flex-col gap-y-10'>

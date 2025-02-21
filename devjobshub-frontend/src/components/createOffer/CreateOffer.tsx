@@ -2,33 +2,11 @@ import React, { useEffect } from 'react'
 import Navbar from '../navbar/Navbar'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import TechnologiesCombobox from './TechnologiesCombobox'
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import ContractType from './ContractType'
-import { Controller, useForm } from 'react-hook-form'
-import { watch } from 'fs'
+import { useForm } from 'react-hook-form'
 import SelectJobLevel from './SelectJobLevel'
 import SelectSpecialization from './SelectSpecialization'
 import SelectOperatingMode from './SelectOperatingMode'
@@ -53,7 +31,6 @@ import { IoMdArrowRoundBack } from 'react-icons/io'
 
 
 const CreateOffer = () => {
-    const [expirationDate, setExpirationDate] = React.useState<Date>()
     const dispatch = useDispatch<any>()
     const offerStore = useSelector((store: any) => (store.offer))
     const { getProfile, profileStore } = useProfile(true, true)

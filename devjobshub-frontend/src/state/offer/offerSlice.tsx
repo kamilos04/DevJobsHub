@@ -85,7 +85,7 @@ const offerSlice = createSlice({
                 state.fail = null
                 state.success = null
                 state.error = null
-                state.searchOffers = null
+                // state.searchOffers = null
             })
             .addCase(searchOffers.fulfilled, (state, action) => {
                 state.isLoading = false,

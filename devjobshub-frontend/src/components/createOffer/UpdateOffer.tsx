@@ -2,33 +2,12 @@ import React, { useEffect } from 'react'
 import Navbar from '../navbar/Navbar'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import TechnologiesCombobox from './TechnologiesCombobox'
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import ContractType from './ContractType'
-import { Controller, useForm } from 'react-hook-form'
-import { watch } from 'fs'
+import {  useForm } from 'react-hook-form'
 import SelectJobLevel from './SelectJobLevel'
 import SelectSpecialization from './SelectSpecialization'
 import SelectOperatingMode from './SelectOperatingMode'
@@ -36,10 +15,6 @@ import ExpirationDatePicker from './ExpirationDatePicker'
 import SelectTechnologiesDialog from './SelectTechnologiesDialog'
 import { Technology } from '@/types/technology'
 import EditBulletPoints from './EditBulletPoints'
-import { Question } from '@/types/question'
-import { RadioQuestion } from '@/types/question'
-import { MultipleChoiceQuestion } from '@/types/multipleChoiceQuestion'
-import CreateQuestion from './CreateQuestion'
 import EditRecruitmentQuestions from './EditRecruitmentQuestions'
 import { QuestionWithType } from '@/types/questionWithType'
 import { emptyCreateOfferRequest } from '@/types/createOfferRequest'
@@ -52,25 +27,26 @@ import { createOffer, getOfferById, updateOffer } from '@/state/offer/action'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { useProfile } from '../profile/useProfile'
 import { Offer } from '@/types/offer'
-import { profile } from 'console'
 import { useToast } from '@/hooks/use-toast'
 import { setFailNull, setSuccessNull } from '@/state/offer/offerSlice'
 import { IoMdArrowRoundBack } from 'react-icons/io'
 
 
 const UpdateOffer = () => {
+    const { getProfile, profileStore } = useProfile(true, true)
     const dispatch = useDispatch<any>()
     const offerStore = useSelector((store: any) => (store.offer))
     const { offerId } = useParams()
-    const { getProfile, profileStore } = useProfile(true, true)
+    
     const location = useLocation()
     const { toast } = useToast()
     const navigate = useNavigate()
 
 
     useEffect(() => {
-        dispatch(getOfferById(Number(offerId)))
         getProfile()
+        dispatch(getOfferById(Number(offerId)))
+        
 
 
     }, [location.pathname])

@@ -286,7 +286,7 @@ const OfferPage = () => {
                                     if(element.id !== storeOffer.offer.id){
                                         return(<SmallOfferCard key={element.id} offer={element}/>)
                                     }
-                                    return(<></>)
+                                    return(null)
                                     })}
                             </div>
                         </div>
