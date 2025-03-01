@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Navbar from '../navbar/Navbar'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -28,6 +28,8 @@ import { useProfile } from '../profile/useProfile'
 import { useToast } from '@/hooks/use-toast'
 import { setFailNull, setSuccessNull } from '@/state/offer/offerSlice'
 import { IoMdArrowRoundBack } from 'react-icons/io'
+import { getPresignedUrlForCompanyImage, uploadFileWithPresignedUrl } from '@/state/files/action'
+import { resetFilesStore, setFailNull as setFailNullFiles, setSuccessNull as setSuccessNullFiles } from '@/state/files/filesSlice';
 
 
 const CreateOffer = () => {
@@ -37,10 +39,14 @@ const CreateOffer = () => {
     const { toast } = useToast()
     const navigate = useNavigate()
     const location = useLocation()
-
-
+    const [cvFile, setCvFile] = React.useState<File | null>(null)
+    const [createButtonDisabled, setCreateButtonDisabled] = React.useState<boolean>(false)
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const filesStore = useSelector((store: any) => (store.files))
+    const [req, setReq] = React.useState<any>(null)
 
     useEffect(() => {
+        dispatch(resetFilesStore())
         getProfile()
     }, [location.pathname])
 
@@ -70,6 +76,24 @@ const CreateOffer = () => {
             dispatch(setFailNull())
         }
     }, [offerStore.fail])
+
+
+
+    useEffect(() => {
+        if (cvFile) {
+            if (cvFile.size < 1024 * 1024 * 5) {
+                dispatch(getPresignedUrlForCompanyImage({ fileExtension: cvFile.name.split(".").pop() || "" }))
+            }
+            else {
+                setCvFile(null)
+                toast({
+                    variant: "destructive",
+                    title: "File size is too large!"
+                });
+
+            }
+        }
+    }, [cvFile])
 
 
     const createOfferSchema = yup.object().shape({
@@ -181,7 +205,6 @@ const CreateOffer = () => {
 
     const onCreateOfferSubmit = (data: any) => {
         const request = emptyCreateOfferRequest
-        console.log(request.isSalaryMonthlyUZ)
         request.name = data.name
         request.firmName = data.firmName
         request.jobLevel = data.jobLevel
@@ -201,6 +224,13 @@ const CreateOffer = () => {
         request.questions = convertQuestionsListToListOfOpenQuestions(questionsList)
         request.radioQuestions = convertQuestionsListToListOfRadioQuestions(questionsList)
         request.multipleChoiceQuestions = convertQuestionsListToListOfMultipleChoiceQuestions(questionsList)
+
+        if (cvFile) {
+            if (filesStore.presignedUrlForCompanyImage) {
+                request.imageUrl = filesStore.presignedUrlForCompanyImage.key
+            }
+        }
+
 
 
         if (data.isUoP === true) {
@@ -251,11 +281,62 @@ const CreateOffer = () => {
             }
         }
 
-
-        dispatch(createOffer(request))
         console.log(request)
+        // dispatch(createOffer(request))
+        setReq(request)
+        if (cvFile) {
+            if (filesStore.presignedUrlForCompanyImage) {
+                dispatch(uploadFileWithPresignedUrl({ presignedUrl: filesStore.presignedUrlForCompanyImage.url, file: cvFile }))
+                setCreateButtonDisabled(true)
+            }
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "An error occurred while uploading the file!",
+                });
+            }
+
+
+        }
+        else {
+            dispatch(createOffer(request))
+        }
 
     }
+
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const fileList = e.target.files;
+        if (fileList && fileList.length > 0) {
+            setCvFile(fileList[0]);
+        }
+    };
+
+    const clearFile = () => {
+        setCvFile(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
+
+    useEffect(() => {
+        if (filesStore.success === "uploadFileWithPresignedUrl") {
+            dispatch(createOffer(req))
+            dispatch(setSuccessNullFiles())
+        }
+        else if (filesStore.fail === "uploadFileWithPresignedUrl") {
+            toast({
+                variant: "destructive",
+                title: "An error occurred while uploading the file!",
+            });
+            setCreateButtonDisabled(false)
+            dispatch(setFailNullFiles())
+        }
+    }, [filesStore.success, filesStore.fail])
+
+
+
 
 
     return (
@@ -294,6 +375,9 @@ const CreateOffer = () => {
                                     <Input type="text" id="address" placeholder="Kolejowa 14/20" {...registerCreateOffer("address")} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); } }} />
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.address?.message}</p>
                                 </div>
+
+
+
                             </div>
 
 
@@ -313,10 +397,23 @@ const CreateOffer = () => {
                                     </div>
                                 </div>
 
-                                <div className='flex flex-col space-y-4 mb-16 mt-8 justify-center'>
+                                <div className='flex flex-col space-y-4 mt-8 mb-8 justify-center'>
                                     <SelectTechnologiesDialog technologies={requiredTechnologies} setTechnologies={setRequiredTechnologies} text="Change required technologies" />
                                     <SelectTechnologiesDialog technologies={niceToHaveTechnologies} setTechnologies={setNiceToHaveTechnologies} text="Change optional technologies" />
+
                                 </div>
+
+                                <div className='flex flex-col gap-y-2 items-center'>
+
+                                    <div className="grid items-center gap-1.5">
+                                        <Label htmlFor="cv" className='text-base'>Attach a picture with your company logo</Label>
+                                        <Input id="cv" type="file" ref={fileInputRef} onChange={handleFileChange} />
+
+                                    </div>
+                                    <Button className='w-full' variant={'outline'} type='button' onClick={clearFile} disabled={!cvFile}>Delete picture</Button>
+                                </div>
+
+
                             </div>
 
 
@@ -325,7 +422,7 @@ const CreateOffer = () => {
 
 
 
-                        <div className='flex flex-col mt-6'>
+                        <div className='flex flex-col mt-8'>
                             <p className='font-bold'>Bullet points</p>
                             <div className='flex flex-col flex-wrap w-full mb-16 mt-3'>
                                 <div className='flex flex-row w-full mb-4'>
@@ -460,7 +557,7 @@ const CreateOffer = () => {
                         <EditRecruitmentQuestions questionsList={questionsList} setQuestionsList={setQuestionsList} />
 
                         <div className='flex flex-row justify-end mt-10'>
-                            <Button type='submit' className='w-32'>Create offer</Button>
+                            <Button type='submit' className='w-32' disabled={createButtonDisabled || filesStore.isLoading}>Create offer</Button>
                         </div>
 
                     </div>

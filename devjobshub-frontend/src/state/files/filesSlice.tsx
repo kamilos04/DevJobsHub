@@ -1,7 +1,7 @@
 import { Technology } from "@/types/technology";
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { getPresignedUrlForCv, getPresignedUrlToDownloadCV, uploadFileWithPresignedUrl } from "./action";
+import { getPresignedUrlForCompanyImage, getPresignedUrlForCv, getPresignedUrlToDownloadCV, uploadFileWithPresignedUrl } from "./action";
 import { PresignedUrlResponse } from "@/types/presignedUrlResponse";
 
 
@@ -12,6 +12,7 @@ interface InitialState {
     error: any | null
     presignedUrlCv: PresignedUrlResponse | null,
     presignedUrlCvToDownload: PresignedUrlResponse | null,
+    presignedUrlForCompanyImage: PresignedUrlResponse | null
 }
 
 const initialState = {
@@ -20,7 +21,8 @@ const initialState = {
     fail: null,
     error: null,
     presignedUrlCv: null,
-    presignedUrlCvToDownload: null
+    presignedUrlCvToDownload: null,
+    presignedUrlForCompanyImage: null
 } satisfies InitialState as InitialState
 
 const filesSlice = createSlice({
@@ -38,6 +40,12 @@ const filesSlice = createSlice({
         },
         setPresignedUrlCvToDownloadNull(state){
             state.presignedUrlCvToDownload = null
+        },
+        setpresignedUrlForCompanyImageNull(state){
+            state.presignedUrlForCompanyImage = null
+        },
+        resetFilesStore(state){
+            state = initialState
         }
 
     },
@@ -97,9 +105,29 @@ const filesSlice = createSlice({
                             state.error = action.payload
                     })
 
+
+
+                    .addCase(getPresignedUrlForCompanyImage.pending, (state, action) => {
+                        state.isLoading = true
+                        state.fail = null
+                        state.success = null
+                        state.error = null
+                        state.presignedUrlForCompanyImage = null
+                    })
+                        .addCase(getPresignedUrlForCompanyImage.fulfilled, (state, action) => {
+                            state.isLoading = false,
+                                state.success = "getPresignedUrlForCompanyImage"
+                                state.presignedUrlForCompanyImage = action.payload
+                        })
+                        .addCase(getPresignedUrlForCompanyImage.rejected, (state, action) => {
+                            state.isLoading = false,
+                                state.fail = "getPresignedUrlForCompanyImage",
+                                state.error = action.payload
+                        })
+
     }
 })
 
 
 export default filesSlice.reducer
-export const { setSuccessNull, setFailNull, setPresignedUrlCvNull, setPresignedUrlCvToDownloadNull } = filesSlice.actions
+export const { setSuccessNull, setFailNull, setPresignedUrlCvNull, setPresignedUrlCvToDownloadNull, setpresignedUrlForCompanyImageNull, resetFilesStore } = filesSlice.actions

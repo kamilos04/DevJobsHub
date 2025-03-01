@@ -81,13 +81,17 @@ const OfferPage = () => {
                     <div className='flex flex-col gap-y-8'>
                         <div className='bg-my-card flex flex-col p-8 rounded-xl border-[1px] w-[50rem]'>
                             <div className='flex flex-row justify-between'>
-                                <div>
-                                    <h1 className='text-2xl font-bold text-blue-400'>{storeOffer.offer?.name}</h1>
-                                    <div className='flex flex-row mt-1 mb-2 items-center gap-x-1 text-gray-300'>
-                                        <MdOutlineWorkOutline className='text-2xl' />
-                                        <span className='text-lg'>{storeOffer.offer?.firmName}</span>
+                                <div className='flex flex-row gap-x-4 mb-2'>
+                                    {storeOffer.offer.imageUrl && <img src={`https://devjobshub.s3.eu-central-1.amazonaws.com/${storeOffer.offer.imageUrl}`} alt="company logo" className='h-20 aspect-square rounded-xl' />}
+                                    <div>
+                                        <h1 className='text-2xl font-bold text-blue-400'>{storeOffer.offer?.name}</h1>
+                                        <div className='flex flex-row mt-1  items-center gap-x-1 text-gray-300'>
+                                            <MdOutlineWorkOutline className='text-2xl' />
+                                            <span className='text-lg'>{storeOffer.offer?.firmName}</span>
+                                        </div>
                                     </div>
                                 </div>
+
 
                                 <MdFavoriteBorder className={`text-3xl cursor-pointer ${isLiked && "text-pink-700"}`} onClick={() => handleLikeClick()} />
                             </div>
@@ -267,15 +271,15 @@ const OfferPage = () => {
                     </div>
                     <div className='flex flex-col gap-y-10 w-[25rem]'>
                         <div className='bg-my-card flex flex-col p-4 rounded-xl border-[1px] h-min items-center gap-y-3'>
-                            {calcSecondsToExpirationDateFromString(storeOffer.offer.expirationDate) > 0 ? 
-                            <Button className='flex flex-row w-48 gap-x-2 h-12 rounded-3xl' onClick={() => navigate(`/apply/${storeOffer.offer.id}`)}>
-                                <GrSend className='scale-125' /> <span className='text-lg' >Apply</span>
-                            </Button> : 
-                            <Button className='flex flex-row w-48 gap-x-2 h-12 rounded-3xl' variant={'secondary'} disabled>
-                                <GrSend className='scale-125' /> <span className='text-lg'>Offer expired</span>
-                            </Button>}
-                            
-                            
+                            {calcSecondsToExpirationDateFromString(storeOffer.offer.expirationDate) > 0 ?
+                                <Button className='flex flex-row w-48 gap-x-2 h-12 rounded-3xl' onClick={() => navigate(`/apply/${storeOffer.offer.id}`)}>
+                                    <GrSend className='scale-125' /> <span className='text-lg' >Apply</span>
+                                </Button> :
+                                <Button className='flex flex-row w-48 gap-x-2 h-12 rounded-3xl' variant={'secondary'} disabled>
+                                    <GrSend className='scale-125' /> <span className='text-lg'>Offer expired</span>
+                                </Button>}
+
+
                             <p className='text-sm text-gray-500'>By clicking apply you consent to the processing of your personal data.</p>
 
                         </div>
@@ -283,11 +287,11 @@ const OfferPage = () => {
                             <p className='text-xl font-bold'>Check other offers:</p>
                             <div className='flex flex-col gap-y-5'>
                                 {storeOffer.searchOffers?.content.map((element: Offer) => {
-                                    if(element.id !== storeOffer.offer.id){
-                                        return(<SmallOfferCard key={element.id} offer={element}/>)
+                                    if (element.id !== storeOffer.offer.id) {
+                                        return (<SmallOfferCard key={element.id} offer={element} />)
                                     }
-                                    return(null)
-                                    })}
+                                    return (null)
+                                })}
                             </div>
                         </div>
 

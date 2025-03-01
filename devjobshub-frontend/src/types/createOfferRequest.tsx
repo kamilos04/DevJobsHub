@@ -31,6 +31,7 @@ export interface CreateOfferRequest {
     questions: Question[];
     radioQuestions: RadioQuestion[];
     multipleChoiceQuestions: MultipleChoiceQuestion[];
+    imageUrl: string | null;
 }
 
 export const emptyCreateOfferRequest: CreateOfferRequest = {
@@ -61,5 +62,6 @@ export const emptyCreateOfferRequest: CreateOfferRequest = {
     niceToHaveTechnologies: [],
     questions: [],
     radioQuestions: [],
-    multipleChoiceQuestions: []
+    multipleChoiceQuestions: [],
+    imageUrl: null
 }
