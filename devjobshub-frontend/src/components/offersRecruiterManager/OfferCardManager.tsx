@@ -93,27 +93,34 @@ const OfferCardManager = ({ offer }: { offer: Offer }) => {
           </div>
         </div>
 
-        <div className='flex flex-col gap-y-2'>
-          <Button variant={'default'} onClick={() => navigate(`/recruiter/applications/${offer.id}`)}>See applications</Button>
-          <Button variant={'default'} onClick={() => navigate(`/recruiter/update-offer/${offer.id}`)}>Update</Button>
-          
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant={'destructive'}>Delete</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently remove the offer and its associated applications.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={() => dispatch(deleteOfferById(offer.id))}>Delete</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+        <div className='flex flex-row gap-x-2'>
+          <div className='flex flex-col gap-y-2'>
+            <Button variant={'outline'} onClick={() => navigate(`/recruiter/applications/${offer.id}`)}>See applications</Button>
+            <Button variant={'outline'} onClick={() => navigate(`/recruiter/update-offer/${offer.id}`)}>Update</Button>
+          </div>
+          <div className='flex flex-col gap-y-2'>
+            <Button variant={'outline'} onClick={() => window.open(`/offer/${offer.id}`, "_blank")}>Open the offer</Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant={'destructive'}>Delete</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently remove the offer and its associated applications.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => dispatch(deleteOfferById(offer.id))}>Delete</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+
+
         </div>
       </div>
       <Separator className='mb-1 mt-2' />
