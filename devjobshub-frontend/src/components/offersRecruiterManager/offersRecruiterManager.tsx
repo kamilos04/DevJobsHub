@@ -30,6 +30,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useProfile } from '../profile/useProfile'
 import { getOffersFromRecruiter } from '@/state/offer/action'
 import OfferCardManager from './OfferCardManager'
+import { setFailNull, setSuccessNull } from '@/state/offer/offerSlice'
+import { useToast } from '@/hooks/use-toast'
 
 
 
@@ -43,14 +45,20 @@ const OffersRecruiterManager = () => {
   const navigate = useNavigate()
   const { getProfile, profileStore } = useProfile(true, true)
   const offerStore = useSelector((store: any) => (store.offer))
+  const { toast } = useToast()
+
+
+  const dispatchRequest = () => {
+    let params = `sortBy=${sortBy}&sortDirection=${sortDirection}&numberOfElements=10&pageNumber=${page}`
+    if (showValidOffers === true) {
+      params += "&isActive=true"
+    }
+    dispatch(getOffersFromRecruiter({ id: profileStore.profile.id, params: params }))
+  }
 
   useEffect(() => {
     if (profileStore.profile) {
-      let params = `sortBy=${sortBy}&sortDirection=${sortDirection}&numberOfElements=10&pageNumber=${page}`
-      if(showValidOffers===true){
-        params += "&isActive=true"
-      }
-      dispatch(getOffersFromRecruiter({ id: profileStore.profile.id, params: params }))
+      dispatchRequest()
     }
 
   }, [sortBy, sortDirection, showValidOffers, page, profileStore.profile])
@@ -59,6 +67,30 @@ const OffersRecruiterManager = () => {
   useEffect(() => {
     getProfile()
   }, [location.pathname])
+
+
+  useEffect(() => {
+    if (offerStore.success === "deleteOfferById") {
+      dispatch(setSuccessNull())
+      dispatchRequest()
+      toast({
+        variant: "default",
+        className: "bg-green-800",
+        title: "The offer has been deleted.",
+      });
+    }
+  }, [offerStore.success])
+
+
+  useEffect(() => {
+    if (offerStore.fail === "deleteOfferById") {
+      dispatch(setFailNull())
+      toast({
+        variant: "destructive",
+        title: "Something went wrong.",
+      });
+    }
+  }, [offerStore.fail])
 
   return (
     <div className='flex flex-col'>
@@ -112,7 +144,7 @@ const OffersRecruiterManager = () => {
 
               </div>
               <div className='mt-4 flex flex-col gap-y-6'>
-                {offerStore.offersFromRecruiter?.content.map((element: Offer) => <OfferCardManager key={element.id} offer={element}/>)}
+                {offerStore.offersFromRecruiter?.content.map((element: Offer) => <OfferCardManager key={element.id} offer={element} />)}
                 {offerStore.offersFromRecruiter?.totalElements === 0 && <span className='text-gray-300 text-2xl'>{"You don't manage any offers yet"}</span>}
               </div>
 
@@ -128,7 +160,7 @@ const OffersRecruiterManager = () => {
             <PaginationItem>
               <PaginationPrevious className='cursor-pointer select-none' onClick={() => {
                 if (page - 1 >= 0) {
-                  setPage((value) => value-1)
+                  setPage((value) => value - 1)
                 }
 
               }} />
@@ -151,7 +183,7 @@ const OffersRecruiterManager = () => {
             <PaginationItem>
               <PaginationNext className='cursor-pointer select-none' onClick={() => {
                 if (page + 1 < offerStore.offersFromRecruiter?.totalPages) {
-                  setPage((value) => value+1)
+                  setPage((value) => value + 1)
                 }
               }} />
             </PaginationItem>
