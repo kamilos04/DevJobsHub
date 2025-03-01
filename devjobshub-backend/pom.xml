@@ -123,6 +123,11 @@
 			<version>2.2.220</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.30.23</version>
+		</dependency>
 	</dependencies>
 
 

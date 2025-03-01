@@ -1,7 +1,7 @@
 import { Technology } from "@/types/technology";
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { createOffer as createOffer, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, searchOffers, updateOffer } from "./action";
+import { createOffer as createOffer, deleteOfferById, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, searchOffers, updateOffer } from "./action";
 import { Offer } from "@/types/offer";
 
 interface PageResponseOffers {
@@ -85,7 +85,7 @@ const offerSlice = createSlice({
                 state.fail = null
                 state.success = null
                 state.error = null
-                state.searchOffers = null
+                // state.searchOffers = null
             })
             .addCase(searchOffers.fulfilled, (state, action) => {
                 state.isLoading = false,
@@ -174,6 +174,21 @@ const offerSlice = createSlice({
             })
 
 
+            .addCase(deleteOfferById.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+            })
+            .addCase(deleteOfferById.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "deleteOfferById"
+            })
+            .addCase(deleteOfferById.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "deleteOfferById",
+                    state.error = action.payload
+            })
 
 
     }

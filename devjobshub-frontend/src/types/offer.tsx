@@ -38,5 +38,6 @@ export interface Offer {
     radioQuestions: RadioQuestion[];
     multipleChoiceQuestions: MultipleChoiceQuestion[];
     recruiters?: any | undefined
-    isLiked: boolean | null
+    isLiked: boolean | null,
+    imageUrl: string | null
 }

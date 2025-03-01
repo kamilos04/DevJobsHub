@@ -11,9 +11,20 @@ import { RiStairsLine } from "react-icons/ri";
 import { off } from 'process';
 import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
-import { likeOfferById, removeLikeOfferById } from '@/state/offer/action';
+import { deleteOfferById, likeOfferById, removeLikeOfferById } from '@/state/offer/action';
 import { Button } from '../ui/button';
 import { MdOutlineDateRange } from "react-icons/md";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const OfferCardManager = ({ offer }: { offer: Offer }) => {
   const navigate = useNavigate()
@@ -32,17 +43,6 @@ const OfferCardManager = ({ offer }: { offer: Offer }) => {
     return found ? found.label : "";
   };
 
-  const handleLikeClick = (event: any) => {
-    event.stopPropagation()
-    if (isLiked === false) {
-      dispatch(likeOfferById(offer?.id))
-      setIsLiked(true)
-    }
-    else if (isLiked === true) {
-      dispatch(removeLikeOfferById(offer?.id))
-      setIsLiked(false)
-    }
-  }
 
 
   useEffect(() => {
@@ -52,46 +52,75 @@ const OfferCardManager = ({ offer }: { offer: Offer }) => {
   }, [offer])
 
 
+
   return (
     <div className='flex flex-col bg-my-card rounded-md border-[1px] pl-4 pr-4 pt-3 pb-3 w-full'>
       <div className='flex flex-row justify-between'>
-        <div className='flex flex-col'>
-          <h2 className='font-bold text-blue-300'>{offer.name}</h2>
-          <div className='flex flex-row mt-1 mb-2 items-center gap-x-1 text-gray-400'>
-            <MdOutlineWorkOutline className='text-xl' />
-            <span>{offer.firmName}</span>
-          </div>
-
-          <div className='flex flex-row gap-x-8'>
-
-
-            <div className='flex flex-row items-center gap-x-1 text-gray-400'>
-              <IoLocationOutline className='text-xl' />
-              <span>{offer.localization}</span>
+        <div className='flex flex-row gap-x-3'>
+          {offer.imageUrl && <img src={`https://devjobshub.s3.eu-central-1.amazonaws.com/${offer.imageUrl}`} alt="company logo" className='h-20 aspect-square rounded-xl' />}
+          <div className='flex flex-col'>
+            <h2 className='font-bold text-blue-300'>{offer.name}</h2>
+            <div className='flex flex-row mt-1 mb-2 items-center gap-x-1 text-gray-400'>
+              <MdOutlineWorkOutline className='text-xl' />
+              <span>{offer.firmName}</span>
             </div>
 
-            <div className='flex flex-row items-center gap-x-1 text-gray-400'>
-              <FaRegBuilding className='text-xl' />
-              <span>{offer.operatingMode.charAt(0).toUpperCase() + offer.operatingMode.slice(1).toLocaleLowerCase()}</span>
+            <div className='flex flex-row gap-x-8'>
+
+
+              <div className='flex flex-row items-center gap-x-1 text-gray-400'>
+                <IoLocationOutline className='text-xl' />
+                <span>{offer.localization}</span>
+              </div>
+
+              <div className='flex flex-row items-center gap-x-1 text-gray-400'>
+                <FaRegBuilding className='text-xl' />
+                <span>{offer.operatingMode.charAt(0).toUpperCase() + offer.operatingMode.slice(1).toLocaleLowerCase()}</span>
+              </div>
+
+              <div className='flex flex-row items-center gap-x-1 text-gray-400'>
+                <RiStairsLine className='text-xl' />
+                <span>{jobLevelToLabel(offer.jobLevel)}</span>
+              </div>
+
+
+            </div>
+            <div className='flex flex-row items-center gap-x-1 text-gray-400 mt-2'>
+              <MdOutlineDateRange className='text-xl' />
+              <span>Expiration date: {offer.expirationDate.slice(0, -3)}</span>
             </div>
 
-            <div className='flex flex-row items-center gap-x-1 text-gray-400'>
-              <RiStairsLine className='text-xl' />
-              <span>{jobLevelToLabel(offer.jobLevel)}</span>
-            </div>
-
-
           </div>
-          <div className='flex flex-row items-center gap-x-1 text-gray-400 mt-2'>
-            <MdOutlineDateRange className='text-xl' />
-            <span>Expiration date: {offer.expirationDate.slice(0, -3)}</span>
-          </div>
-
         </div>
-        <div className='flex flex-col gap-y-2'>
-          <Button variant={'default'} onClick={() => navigate(`/recruiter/update-offer/${offer.id}`)}>Update</Button>
-          <Button variant={'default'} onClick={() => navigate(`/recruiter/applications/${offer.id}`)}>See applications</Button>
-          <Button variant={'destructive'}>Delete</Button>
+
+        <div className='flex flex-row gap-x-2'>
+          <div className='flex flex-col gap-y-2'>
+            <Button variant={'outline'} onClick={() => navigate(`/recruiter/applications/${offer.id}`)}>See applications</Button>
+            <Button variant={'outline'} onClick={() => navigate(`/recruiter/update-offer/${offer.id}`)}>Update</Button>
+          </div>
+          <div className='flex flex-col gap-y-2'>
+            <Button variant={'outline'} onClick={() => window.open(`/offer/${offer.id}`, "_blank")}>Open the offer</Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant={'destructive'}>Delete</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently remove the offer and its associated applications.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => dispatch(deleteOfferById(offer.id))}>Delete</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+
+
         </div>
       </div>
       <Separator className='mb-1 mt-2' />

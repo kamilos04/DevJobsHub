@@ -29,7 +29,7 @@ export const createOffer = createAsyncThunk(
 
 export const updateOffer = createAsyncThunk(
     "offer/updateOffer",
-    async ({id, reqData}:{id: number, reqData: CreateOfferRequest}, { rejectWithValue }) => {
+    async ({ id, reqData }: { id: number, reqData: CreateOfferRequest }, { rejectWithValue }) => {
         try {
             const jwt = localStorage.getItem("jwt")
             const { data } = await axios.put(`${API_URL}/api/offer/${id}`, reqData, {
@@ -59,7 +59,7 @@ export const searchOffers = createAsyncThunk(
                 })
                 return data
             }
-            else{
+            else {
                 const { data } = await axios.get(`${API_URL}/api/offer/search?${params}`)
                 return data
             }
@@ -76,20 +76,20 @@ export const getOfferById = createAsyncThunk(
         try {
             const jwt = localStorage.getItem("jwt")
 
-            if(jwt){
+            if (jwt) {
                 const { data } = await axios.get(`${API_URL}/api/offer/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${jwt}`
-                }
-            })
-            return data
+                    headers: {
+                        Authorization: `Bearer ${jwt}`
+                    }
+                })
+                return data
             }
-            else{
+            else {
                 const { data } = await axios.get(`${API_URL}/api/offer/${id}`)
                 return data
             }
 
-            
+
         }
         catch (error: any) {
             return rejectWithValue(error.response.data.message)
@@ -145,6 +145,29 @@ export const getOffersFromRecruiter = createAsyncThunk(
                 }
             })
             return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+
+export const deleteOfferById = createAsyncThunk(
+    "offer/deleteOfferById",
+    async (id: number, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+
+            const { data } = await axios.delete(`${API_URL}/api/offer/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+
+
+
         }
         catch (error: any) {
             return rejectWithValue(error.response.data.message)

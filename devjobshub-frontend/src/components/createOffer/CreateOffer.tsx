@@ -1,34 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Navbar from '../navbar/Navbar'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import TechnologiesCombobox from './TechnologiesCombobox'
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import ContractType from './ContractType'
-import { Controller, useForm } from 'react-hook-form'
-import { watch } from 'fs'
+import { useForm } from 'react-hook-form'
 import SelectJobLevel from './SelectJobLevel'
 import SelectSpecialization from './SelectSpecialization'
 import SelectOperatingMode from './SelectOperatingMode'
@@ -50,20 +28,25 @@ import { useProfile } from '../profile/useProfile'
 import { useToast } from '@/hooks/use-toast'
 import { setFailNull, setSuccessNull } from '@/state/offer/offerSlice'
 import { IoMdArrowRoundBack } from 'react-icons/io'
+import { getPresignedUrlForCompanyImage, uploadFileWithPresignedUrl } from '@/state/files/action'
+import { resetFilesStore, setFailNull as setFailNullFiles, setSuccessNull as setSuccessNullFiles } from '@/state/files/filesSlice';
 
 
 const CreateOffer = () => {
-    const [expirationDate, setExpirationDate] = React.useState<Date>()
     const dispatch = useDispatch<any>()
     const offerStore = useSelector((store: any) => (store.offer))
     const { getProfile, profileStore } = useProfile(true, true)
     const { toast } = useToast()
     const navigate = useNavigate()
     const location = useLocation()
-
-
+    const [cvFile, setCvFile] = React.useState<File | null>(null)
+    const [createButtonDisabled, setCreateButtonDisabled] = React.useState<boolean>(false)
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const filesStore = useSelector((store: any) => (store.files))
+    const [req, setReq] = React.useState<any>(null)
 
     useEffect(() => {
+        dispatch(resetFilesStore())
         getProfile()
     }, [location.pathname])
 
@@ -93,6 +76,24 @@ const CreateOffer = () => {
             dispatch(setFailNull())
         }
     }, [offerStore.fail])
+
+
+
+    useEffect(() => {
+        if (cvFile) {
+            if (cvFile.size < 1024 * 1024 * 5) {
+                dispatch(getPresignedUrlForCompanyImage({ fileExtension: cvFile.name.split(".").pop() || "" }))
+            }
+            else {
+                setCvFile(null)
+                toast({
+                    variant: "destructive",
+                    title: "File size is too large!"
+                });
+
+            }
+        }
+    }, [cvFile])
 
 
     const createOfferSchema = yup.object().shape({
@@ -204,7 +205,6 @@ const CreateOffer = () => {
 
     const onCreateOfferSubmit = (data: any) => {
         const request = emptyCreateOfferRequest
-        console.log(request.isSalaryMonthlyUZ)
         request.name = data.name
         request.firmName = data.firmName
         request.jobLevel = data.jobLevel
@@ -224,6 +224,13 @@ const CreateOffer = () => {
         request.questions = convertQuestionsListToListOfOpenQuestions(questionsList)
         request.radioQuestions = convertQuestionsListToListOfRadioQuestions(questionsList)
         request.multipleChoiceQuestions = convertQuestionsListToListOfMultipleChoiceQuestions(questionsList)
+
+        if (cvFile) {
+            if (filesStore.presignedUrlForCompanyImage) {
+                request.imageUrl = filesStore.presignedUrlForCompanyImage.key
+            }
+        }
+
 
 
         if (data.isUoP === true) {
@@ -274,11 +281,62 @@ const CreateOffer = () => {
             }
         }
 
-
-        dispatch(createOffer(request))
         console.log(request)
+        // dispatch(createOffer(request))
+        setReq(request)
+        if (cvFile) {
+            if (filesStore.presignedUrlForCompanyImage) {
+                dispatch(uploadFileWithPresignedUrl({ presignedUrl: filesStore.presignedUrlForCompanyImage.url, file: cvFile }))
+                setCreateButtonDisabled(true)
+            }
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "An error occurred while uploading the file!",
+                });
+            }
+
+
+        }
+        else {
+            dispatch(createOffer(request))
+        }
 
     }
+
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const fileList = e.target.files;
+        if (fileList && fileList.length > 0) {
+            setCvFile(fileList[0]);
+        }
+    };
+
+    const clearFile = () => {
+        setCvFile(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
+
+    useEffect(() => {
+        if (filesStore.success === "uploadFileWithPresignedUrl") {
+            dispatch(createOffer(req))
+            dispatch(setSuccessNullFiles())
+        }
+        else if (filesStore.fail === "uploadFileWithPresignedUrl") {
+            toast({
+                variant: "destructive",
+                title: "An error occurred while uploading the file!",
+            });
+            setCreateButtonDisabled(false)
+            dispatch(setFailNullFiles())
+        }
+    }, [filesStore.success, filesStore.fail])
+
+
+
 
 
     return (
@@ -295,7 +353,7 @@ const CreateOffer = () => {
                             <h1 className='text-2xl font-bold'>Create a new job offer</h1>
                         </div>
                         <Separator />
-                        <div className='flex flex-row flex-wrap space-x-8 mt-6 justify-between'>
+                        <div className='flex flex-row flex-wrap gap-x-8 mt-6 justify-between'>
                             <div className='flex flex-col space-y-6'>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="title">Title</Label>
@@ -317,6 +375,9 @@ const CreateOffer = () => {
                                     <Input type="text" id="address" placeholder="Kolejowa 14/20" {...registerCreateOffer("address")} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); } }} />
                                     <p className="text-red-500 text-sm font-normal">{createOfferErrors.address?.message}</p>
                                 </div>
+
+
+
                             </div>
 
 
@@ -327,19 +388,32 @@ const CreateOffer = () => {
                             </div>
 
                             <div className='flex flex-col'>
-                                <div className='flex flex-col rounded-lg bg-my-card p-4 w-min h-min border-[1px] space-y-6'>
-                                    <ExpirationDatePicker control={controlCreateOffer} error={createOfferErrors.expirationDate?.message} />
+                                <div className='flex flex-col rounded-lg bg-my-card p-4 w-full h-min border-[1px] space-y-6'>
+                                    <ExpirationDatePicker control={controlCreateOffer} error={createOfferErrors.expirationDate?.message}/>
                                     <div className='flex flex-col space-y-2'>
-                                        <Label htmlFor="expirationTime">Offer expiration time</Label>
+                                        <Label htmlFor="expirationTime" >Offer expiration time</Label>
                                         <input type='time' className='text-md bg-background p-1 pl-3 border-[1px] rounded-lg w-[6rem] text-sm' id="expirationTime" {...registerCreateOffer('expirationTime')}></input>
                                         {createOfferErrors.expirationTime?.message && <p className="text-red-500 text-sm font-normal">{createOfferErrors.expirationTime?.message}</p>}
                                     </div>
                                 </div>
 
-                                <div className='flex flex-col space-y-4 mb-16 mt-8 justify-center'>
+                                <div className='flex flex-col space-y-4 mt-8 mb-8 justify-center'>
                                     <SelectTechnologiesDialog technologies={requiredTechnologies} setTechnologies={setRequiredTechnologies} text="Change required technologies" />
                                     <SelectTechnologiesDialog technologies={niceToHaveTechnologies} setTechnologies={setNiceToHaveTechnologies} text="Change optional technologies" />
+
                                 </div>
+
+                                <div className='flex flex-col gap-y-2 items-center'>
+
+                                    <div className="grid items-center gap-1.5">
+                                        <Label htmlFor="cv" className='text-base'>Attach a picture with your company logo</Label>
+                                        <Input id="cv" type="file" ref={fileInputRef} onChange={handleFileChange} />
+
+                                    </div>
+                                    <Button className='w-full' variant={'outline'} type='button' onClick={clearFile} disabled={!cvFile}>Delete picture</Button>
+                                </div>
+
+
                             </div>
 
 
@@ -348,7 +422,7 @@ const CreateOffer = () => {
 
 
 
-                        <div className='flex flex-col mt-6'>
+                        <div className='flex flex-col mt-8'>
                             <p className='font-bold'>Bullet points</p>
                             <div className='flex flex-col flex-wrap w-full mb-16 mt-3'>
                                 <div className='flex flex-row w-full mb-4'>
@@ -483,7 +557,7 @@ const CreateOffer = () => {
                         <EditRecruitmentQuestions questionsList={questionsList} setQuestionsList={setQuestionsList} />
 
                         <div className='flex flex-row justify-end mt-10'>
-                            <Button type='submit' className='w-32'>Create offer</Button>
+                            <Button type='submit' className='w-32' disabled={createButtonDisabled || filesStore.isLoading}>Create offer</Button>
                         </div>
 
                     </div>

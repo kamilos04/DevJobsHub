@@ -34,6 +34,15 @@ import { getApplicationsFromOffer } from '@/state/application/action';
 import { Application } from '@/types/application';
 import { ApplicationAccordion } from './ApplicationAccordion';
 import { IoMdArrowRoundBack } from "react-icons/io";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+  } from "@/components/ui/pagination"
 
 export const ApplicationsManager = () => {
     const { offerId } = useParams();
@@ -53,22 +62,22 @@ export const ApplicationsManager = () => {
 
 
     const dispatchRequest = () => {
-        if(storeOffer.offer){
+        if (storeOffer.offer) {
             let params = `numberOfElements=10&pageNumber=${page}`
-            if(tab !== "ALL"){
+            if (tab !== "ALL") {
                 params += `&status=${tab}`
             }
-            dispatch(getApplicationsFromOffer({id: storeOffer.offer.id, params: params}))
+            dispatch(getApplicationsFromOffer({ id: storeOffer.offer.id, params: params }))
         }
     }
 
 
     useEffect(() => {
         dispatchRequest()
-    }, [storeOffer, tab])
+    }, [storeOffer, tab, page])
 
     useEffect(() => {
-        if(applicationStore.success === "setApplicationStatus"){
+        if (applicationStore.success === "setApplicationStatus") {
             dispatchRequest()
         }
     }, [applicationStore.success])
@@ -163,7 +172,9 @@ export const ApplicationsManager = () => {
                         </div>
                     </div>
                     <div className='w-full flex flex-row justify-center mt-16 mb-4'>
-                        <Tabs defaultValue="account" className="w-[40rem]" value={tab} onValueChange={setTab}>
+                        <Tabs defaultValue="account" className="w-[40rem]" value={tab} onValueChange={(value: string) => {setPage(0)
+                            setTab(value)
+                        }}>
                             <TabsList className="grid w-full grid-cols-4">
                                 <TabsTrigger value="ALL">All</TabsTrigger>
                                 <TabsTrigger value="NO_STATUS">Without status</TabsTrigger>
@@ -174,12 +185,43 @@ export const ApplicationsManager = () => {
                     </div>
                     <div className='flex flex-col w-full'>
                         <Accordion type="single" collapsible className="w-full">
-                            {applicationStore.applications?.content.map((element: Application) => <ApplicationAccordion key={element.id} application={element}/>)}
+                            {applicationStore.applications?.content.map((element: Application) => <ApplicationAccordion key={element.id} application={element} offer={storeOffer.offer}/>)}
                         </Accordion>
                     </div>
-                    <div className='flex flex-row justify-center w-full mt-6'>
-                        {/* <Button className='w-32' onClick={() => handleApplyClick()}>Apply</Button> */}
-                    </div>
+                    {applicationStore.applications && <Pagination className='mt-3'>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious className='cursor-pointer select-none' onClick={() => {
+                                    if (page - 1 >= 0) {
+                                        setPage((value) => value - 1)
+                                    }
+
+                                }} />
+                            </PaginationItem>
+                            {[...Array(applicationStore.applications.totalPages || 0)].map((_, i) => {
+                                if (i >= page - 3 && i <= page + 3) {
+                                    return (
+                                        <PaginationItem key={i} >
+                                            <PaginationLink className='cursor-pointer select-none'
+                                                onClick={() => {
+                                                    setPage(i)
+                                                }}
+
+                                                isActive={page === i ? true : false}
+                                            >{i + 1}</PaginationLink>
+                                        </PaginationItem>)
+                                }
+                            }
+                            )}
+                            <PaginationItem>
+                                <PaginationNext className='cursor-pointer select-none' onClick={() => {
+                                    if (page + 1 < applicationStore.applications.totalPages) {
+                                        setPage((value) => value + 1)
+                                    }
+                                }} />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>}
 
 
                 </div>}

@@ -238,7 +238,7 @@ const Login = () => {
                                     </div>
                                     <div className="space-y-1">
                                         <Label htmlFor="registerPassword">New password</Label>
-                                        <Input id="registerPassword" type="password" {...registerForm('registerPassword')} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();}}}/>
+                                        <Input id="registerPassword" type="password" {...registerForm('registerPassword')}/>
                                         <p className="text-red-500 text-sm font-normal">{registerErrors.registerPassword?.message}</p>
                                     </div>
                                 </CardContent></div>
