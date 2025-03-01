@@ -43,17 +43,6 @@ const OfferCardManager = ({ offer }: { offer: Offer }) => {
     return found ? found.label : "";
   };
 
-  const handleLikeClick = (event: any) => {
-    event.stopPropagation()
-    if (isLiked === false) {
-      dispatch(likeOfferById(offer?.id))
-      setIsLiked(true)
-    }
-    else if (isLiked === true) {
-      dispatch(removeLikeOfferById(offer?.id))
-      setIsLiked(false)
-    }
-  }
 
 
   useEffect(() => {

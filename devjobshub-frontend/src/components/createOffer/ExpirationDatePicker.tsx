@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils"
 
 const ExpirationDatePicker = ({ control, error }: any) => {
     return (
-        <div>
+        <div className='w-full'>
             <Controller
                 name="expirationDate"
                 control={control}
@@ -24,7 +24,7 @@ const ExpirationDatePicker = ({ control, error }: any) => {
                                     <Button
                                         variant={"outline"}
                                         className={cn(
-                                            "w-[280px] justify-start text-left font-normal",
+                                            "justify-start text-left font-normal w-full",
                                             !field.value && "text-muted-foreground"
                                         )}
                                     >
@@ -38,6 +38,7 @@ const ExpirationDatePicker = ({ control, error }: any) => {
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         initialFocus
+                                        
                                     />
                                 </PopoverContent>
                             </Popover>

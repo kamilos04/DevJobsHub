@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Navbar from '../navbar/Navbar'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import ContractType from './ContractType'
-import {  useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import SelectJobLevel from './SelectJobLevel'
 import SelectSpecialization from './SelectSpecialization'
 import SelectOperatingMode from './SelectOperatingMode'
@@ -30,6 +30,8 @@ import { Offer } from '@/types/offer'
 import { useToast } from '@/hooks/use-toast'
 import { setFailNull, setSuccessNull } from '@/state/offer/offerSlice'
 import { IoMdArrowRoundBack } from 'react-icons/io'
+import { getPresignedUrlForCompanyImage, uploadFileWithPresignedUrl } from '@/state/files/action'
+import { resetFilesStore, setFailNull as setFailNullFiles, setSuccessNull as setSuccessNullFiles } from '@/state/files/filesSlice';
 
 
 const UpdateOffer = () => {
@@ -37,16 +39,21 @@ const UpdateOffer = () => {
     const dispatch = useDispatch<any>()
     const offerStore = useSelector((store: any) => (store.offer))
     const { offerId } = useParams()
-    
+
     const location = useLocation()
     const { toast } = useToast()
     const navigate = useNavigate()
-
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [cvFile, setCvFile] = React.useState<File | null>(null)
+    const [isAlreadyImage, setIsAlreadyImage] = React.useState<boolean>(false)
+    const [req, setReq] = React.useState<any>(null)
+    const filesStore = useSelector((store: any) => (store.files))
+    const [updateButtonDisabled, setUpdateButtonDisabled] = React.useState<boolean>(false)
 
     useEffect(() => {
         getProfile()
         dispatch(getOfferById(Number(offerId)))
-        
+
 
 
     }, [location.pathname])
@@ -60,6 +67,7 @@ const UpdateOffer = () => {
                 title: "The offer has been updated.",
             });
             dispatch(setSuccessNull())
+            setUpdateButtonDisabled(false)
         }
     }, [offerStore.success])
 
@@ -73,6 +81,7 @@ const UpdateOffer = () => {
             });
 
             dispatch(setFailNull())
+            setUpdateButtonDisabled(false)
         }
     }, [offerStore.fail])
 
@@ -80,6 +89,13 @@ const UpdateOffer = () => {
         if (profileStore.profile) {
             if (offerStore.offer) {
                 const jobOffer: Offer = offerStore.offer
+                if (jobOffer.imageUrl) {
+                    setIsAlreadyImage(true)
+                }
+                else{
+                    setIsAlreadyImage(false)
+                }
+
                 setValueCreateOffer("aboutProject", jobOffer.aboutProject)
                 setValueCreateOffer("address", jobOffer.address)
                 setValueCreateOffer("firmName", jobOffer.firmName)
@@ -282,8 +298,40 @@ const UpdateOffer = () => {
 
 
 
+    useEffect(() => {
+            if (cvFile) {
+                setIsAlreadyImage(false)
+                if (cvFile.size < 1024 * 1024 * 5) {
+                    dispatch(getPresignedUrlForCompanyImage({ fileExtension: cvFile.name.split(".").pop() || "" }))
+                }
+                else {
+                    setCvFile(null)
+                    toast({
+                        variant: "destructive",
+                        title: "File size is too large!"
+                    });
+    
+                }
+            }
+        }, [cvFile])
+
+
     const onCreateOfferSubmit = (data: any) => {
         const request = emptyCreateOfferRequest
+
+        if (isAlreadyImage === false) {
+            if (cvFile) {
+                if (filesStore.presignedUrlForCompanyImage) {
+                    request.imageUrl = filesStore.presignedUrlForCompanyImage.key
+                }
+            } else {
+                request.imageUrl = null
+            }
+        }
+        else {
+            request.imageUrl = offerStore.offer.imageUrl
+        }
+
         request.name = data.name
         request.firmName = data.firmName
         request.jobLevel = data.jobLevel
@@ -353,11 +401,70 @@ const UpdateOffer = () => {
             }
         }
 
+        // setReq(request)
+        // dispatch(updateOffer({ reqData: request, id: Number(offerId) }))
+        // console.log(request)
 
-        dispatch(updateOffer({ reqData: request, id: Number(offerId) }))
-        console.log(request)
+
+        setReq(request)
+        if (cvFile) {
+            if (filesStore.presignedUrlForCompanyImage) {
+                dispatch(uploadFileWithPresignedUrl({ presignedUrl: filesStore.presignedUrlForCompanyImage.url, file: cvFile }))
+                setUpdateButtonDisabled(true)
+            }
+            else {
+                toast({
+                    variant: "destructive",
+                    title: "An error occurred while uploading the file!",
+                });
+            }
+
+
+        }
+        else {
+            dispatch(updateOffer({ reqData: request, id: Number(offerId) }))
+        }
 
     }
+
+
+
+
+    useEffect(() => {
+            if (filesStore.success === "uploadFileWithPresignedUrl") {
+                dispatch(updateOffer({ reqData: req, id: Number(offerId) }))
+                dispatch(setSuccessNullFiles())
+            }
+            else if (filesStore.fail === "uploadFileWithPresignedUrl") {
+                toast({
+                    variant: "destructive",
+                    title: "An error occurred while uploading the file!",
+                });
+                setUpdateButtonDisabled(false)
+                dispatch(setFailNullFiles())
+            }
+        }, [filesStore.success, filesStore.fail])
+
+
+
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const fileList = e.target.files;
+        if (fileList && fileList.length > 0) {
+            setCvFile(fileList[0]);
+        }
+    };
+
+    const clearFile = () => {
+        setIsAlreadyImage(false)
+        setCvFile(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
+
+
 
 
     return (
@@ -374,7 +481,7 @@ const UpdateOffer = () => {
                             <h1 className='text-2xl font-bold'>Offer ID: {offerStore.offer.id}</h1>
                         </div>
                         <Separator />
-                        <div className='flex flex-row flex-wrap space-x-8 mt-6 justify-between'>
+                        <div className='flex flex-row flex-wrap gap-x-12 mt-6 justify-between'>
                             <div className='flex flex-col space-y-6'>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="title">Title</Label>
@@ -405,8 +512,8 @@ const UpdateOffer = () => {
                                 <SelectSpecialization control={controlCreateOffer} error={createOfferErrors.specialization?.message} />
                             </div>
 
-                            <div className='flex flex-col'>
-                                <div className='flex flex-col rounded-lg bg-my-card p-4 w-min h-min border-[1px] space-y-6'>
+                            <div className='flex flex-col flex-grow'>
+                                <div className='flex flex-col rounded-lg bg-my-card p-4 w-full h-min border-[1px] space-y-6 '>
                                     <ExpirationDatePicker control={controlCreateOffer} error={createOfferErrors.expirationDate?.message} />
                                     <div className='flex flex-col space-y-2'>
                                         <Label htmlFor="expirationTime">Offer expiration time</Label>
@@ -415,9 +522,19 @@ const UpdateOffer = () => {
                                     </div>
                                 </div>
 
-                                <div className='flex flex-col space-y-4 mb-16 mt-8 justify-center'>
+                                <div className='flex flex-col space-y-4 mb-8 mt-8 justify-center'>
                                     <SelectTechnologiesDialog technologies={requiredTechnologies} setTechnologies={setRequiredTechnologies} text="Change required technologies" />
                                     <SelectTechnologiesDialog technologies={niceToHaveTechnologies} setTechnologies={setNiceToHaveTechnologies} text="Change optional technologies" />
+                                </div>
+
+                                <div className='flex flex-col gap-y-2 items-center'>
+
+                                    <div className="grid items-center gap-1.5">
+                                        <Label htmlFor="cv" className='text-base'>Attach a picture with your company logo</Label>
+                                        <Input id="cv" type="file" ref={fileInputRef} onChange={handleFileChange} />
+
+                                    </div>
+                                    <Button className='w-full' variant={'outline'} type='button' onClick={() => clearFile()} disabled={!(cvFile || isAlreadyImage)}>Delete picture</Button>
                                 </div>
                             </div>
 
@@ -561,7 +678,7 @@ const UpdateOffer = () => {
                         <EditRecruitmentQuestions questionsList={questionsList} setQuestionsList={setQuestionsList} />
 
                         <div className='flex flex-row justify-end mt-10'>
-                            <Button type='submit' className='w-32'>Update offer</Button>
+                            <Button type='submit' className='w-32' disabled={updateButtonDisabled}>Update offer</Button>
                         </div>
 
                     </div>

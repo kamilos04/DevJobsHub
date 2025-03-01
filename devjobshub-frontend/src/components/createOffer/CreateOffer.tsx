@@ -353,7 +353,7 @@ const CreateOffer = () => {
                             <h1 className='text-2xl font-bold'>Create a new job offer</h1>
                         </div>
                         <Separator />
-                        <div className='flex flex-row flex-wrap space-x-8 mt-6 justify-between'>
+                        <div className='flex flex-row flex-wrap gap-x-8 mt-6 justify-between'>
                             <div className='flex flex-col space-y-6'>
                                 <div className="grid w-full max-w-sm items-center gap-2">
                                     <Label htmlFor="title">Title</Label>
@@ -388,10 +388,10 @@ const CreateOffer = () => {
                             </div>
 
                             <div className='flex flex-col'>
-                                <div className='flex flex-col rounded-lg bg-my-card p-4 w-min h-min border-[1px] space-y-6'>
-                                    <ExpirationDatePicker control={controlCreateOffer} error={createOfferErrors.expirationDate?.message} />
+                                <div className='flex flex-col rounded-lg bg-my-card p-4 w-full h-min border-[1px] space-y-6'>
+                                    <ExpirationDatePicker control={controlCreateOffer} error={createOfferErrors.expirationDate?.message}/>
                                     <div className='flex flex-col space-y-2'>
-                                        <Label htmlFor="expirationTime">Offer expiration time</Label>
+                                        <Label htmlFor="expirationTime" >Offer expiration time</Label>
                                         <input type='time' className='text-md bg-background p-1 pl-3 border-[1px] rounded-lg w-[6rem] text-sm' id="expirationTime" {...registerCreateOffer('expirationTime')}></input>
                                         {createOfferErrors.expirationTime?.message && <p className="text-red-500 text-sm font-normal">{createOfferErrors.expirationTime?.message}</p>}
                                     </div>
