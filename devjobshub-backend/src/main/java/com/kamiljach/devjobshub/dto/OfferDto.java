@@ -86,5 +86,6 @@ public class OfferDto {
 
     private Boolean isLiked;
 
+    private String imageUrl;
 
 }

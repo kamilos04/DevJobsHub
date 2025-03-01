@@ -89,6 +89,8 @@ public class CreateOfferRequest {
     @NotBlank(message = "expirationDate can not be blank")
     private String expirationDate;
 
+    private String imageUrl;
+
 
     public Offer mapToExistingOffer(Offer existingOffer) {
         Offer offer = OfferMapper.INSTANCE.createOfferRequestToExistingOffer(this, existingOffer);

@@ -63,6 +63,8 @@ public class Offer {
 
     private LocalDateTime dateTimeOfCreation;
 
+    private String imageUrl;
+
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "likedOffers")
     private List<User> likedByUsers = new ArrayList<>();
 

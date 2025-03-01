@@ -8,14 +8,14 @@ import com.kamiljach.devjobshub.model.User;
 import com.kamiljach.devjobshub.repository.ApplicationRepository;
 import com.kamiljach.devjobshub.repository.OfferRepository;
 import com.kamiljach.devjobshub.response.PresignedUrlResponse;
-import com.kamiljach.devjobshub.service.ApplicationService;
-import com.kamiljach.devjobshub.service.S3Service;
-import com.kamiljach.devjobshub.service.UserService;
+import com.kamiljach.devjobshub.service.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import software.amazon.awssdk.awscore.AwsRequestOverrideConfiguration;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
@@ -36,13 +36,19 @@ public class S3ServiceImpl implements S3Service {
 
     private ApplicationRepository applicationRepository;
 
+    private OfferService offerService;
 
-    public S3ServiceImpl(AwsConfig awsConfig, OfferRepository offerRepository, UserService userService, ApplicationService applicationService, ApplicationRepository applicationRepository) {
+    private UtilityService utilityService;
+
+
+    public S3ServiceImpl(AwsConfig awsConfig, OfferRepository offerRepository, UserService userService, ApplicationService applicationService, ApplicationRepository applicationRepository, OfferService offerService, UtilityService utilityService) {
         this.awsConfig = awsConfig;
         this.offerRepository = offerRepository;
         this.userService = userService;
         this.applicationService = applicationService;
         this.applicationRepository = applicationRepository;
+        this.offerService = offerService;
+        this.utilityService = utilityService;
     }
 
     public String createPresignedUrlPut(String keyName, Map<String, String> metadata) {
@@ -60,9 +66,37 @@ public class S3ServiceImpl implements S3Service {
                     .build();
 
             PresignedPutObjectRequest presignedRequest = awsConfig.s3Presigner().presignPutObject(presignRequest);
-            String myURL = presignedRequest.url().toString();
 
             return presignedRequest.url().toExternalForm();
+    }
+
+
+    public String createPresignedUrlPut_PublicFile(String keyName, Map<String, String> metadata) {
+
+
+        AwsRequestOverrideConfiguration override = AwsRequestOverrideConfiguration.builder()
+                .putRawQueryParameter("x-amz-acl", "public-read")
+                .build();
+
+
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(awsConfig.bucketName)
+                .key(keyName)
+                .metadata(metadata)
+                .acl(ObjectCannedACL.PUBLIC_READ)
+                .overrideConfiguration(override)
+                .build();
+
+
+
+        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(60))
+                .putObjectRequest(objectRequest)
+                .build();
+
+        PresignedPutObjectRequest presignedRequest = awsConfig.s3Presigner().presignPutObject(presignRequest);
+
+        return presignedRequest.url().toExternalForm();
     }
 
 
@@ -96,6 +130,21 @@ public class S3ServiceImpl implements S3Service {
 
         PresignedUrlResponse response = new PresignedUrlResponse();
         response.setUrl(createPresignedUrlPut(key, new HashMap<String, String>()));
+        response.setKey(key);
+        return response;
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public PresignedUrlResponse getPresignedUrlForFirmImage(String fileExtension, String jwt) throws NoFirmAccountCanNotDoThatException {
+
+        User user = userService.findUserByJwt(jwt);
+        utilityService.isFirmOrThrowException(user);
+
+        String key = String.format("firm-images/%d.%s", System.currentTimeMillis(), fileExtension);
+
+        PresignedUrlResponse response = new PresignedUrlResponse();
+        response.setUrl(createPresignedUrlPut_PublicFile(key, new HashMap<String, String>()));
         response.setKey(key);
         return response;
     }

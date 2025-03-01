@@ -1,9 +1,6 @@
 package com.kamiljach.devjobshub.controller;
 
-import com.kamiljach.devjobshub.exceptions.exceptions.ApplicationNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.NoPermissionException;
-import com.kamiljach.devjobshub.exceptions.exceptions.OfferNotFoundByIdException;
-import com.kamiljach.devjobshub.exceptions.exceptions.UserAlreadyAppliedForThisOfferException;
+import com.kamiljach.devjobshub.exceptions.exceptions.*;
 import com.kamiljach.devjobshub.request.application.CreateApplicationRequest;
 import com.kamiljach.devjobshub.response.PresignedUrlResponse;
 import com.kamiljach.devjobshub.service.S3Service;
@@ -30,6 +27,12 @@ public class S3Controller {
     public ResponseEntity<PresignedUrlResponse> getPresignedUrlForCV(@PathVariable("offerId") Long offerId, @RequestParam("fileExtension") String fileExtension, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, UserAlreadyAppliedForThisOfferException {
         return new ResponseEntity<PresignedUrlResponse>(s3Service.getPresignedUrlForCV(offerId, fileExtension, jwt), HttpStatus.OK);
     }
+
+    @GetMapping("/presigned-firm-image")
+    public ResponseEntity<PresignedUrlResponse> getPresignedUrlForFirmImage(@RequestParam("fileExtension") String fileExtension, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, UserAlreadyAppliedForThisOfferException, NoFirmAccountCanNotDoThatException {
+        return new ResponseEntity<>(s3Service.getPresignedUrlForFirmImage(fileExtension, jwt), HttpStatus.OK);
+    }
+
 
     @GetMapping("/presigned-cv-download/{applicationId}")
     public ResponseEntity<PresignedUrlResponse> getPresignedUrlToDownloadCV(@PathVariable("applicationId") Long applicationId, @RequestHeader("Authorization")String jwt) throws ApplicationNotFoundByIdException, NoPermissionException {
