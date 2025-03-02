@@ -176,3 +176,23 @@ export const deleteOfferById = createAsyncThunk(
 )
 
 
+
+export const getLikedOffers = createAsyncThunk(
+    "offer/getLikedOffers",
+    async ({params }: { params: string }, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.get(`${API_URL}/api/offer/liked?${params}`, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+

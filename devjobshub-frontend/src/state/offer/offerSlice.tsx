@@ -1,7 +1,7 @@
 import { Technology } from "@/types/technology";
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { createOffer as createOffer, deleteOfferById, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, searchOffers, updateOffer } from "./action";
+import { createOffer as createOffer, deleteOfferById, getLikedOffers, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, searchOffers, updateOffer } from "./action";
 import { Offer } from "@/types/offer";
 
 interface PageResponseOffers {
@@ -19,7 +19,8 @@ interface InitialState {
     error: any | null,
     searchOffers: PageResponseOffers | undefined | null,
     offer: Offer | null,
-    offersFromRecruiter: PageResponseOffers | null
+    offersFromRecruiter: PageResponseOffers | null,
+    likedOffers: PageResponseOffers | null
 }
 
 const initialState = {
@@ -29,7 +30,8 @@ const initialState = {
     error: null,
     searchOffers: null,
     offer: null,
-    offersFromRecruiter: null
+    offersFromRecruiter: null,
+    likedOffers: null
 } satisfies InitialState as InitialState
 
 const offerSlice = createSlice({
@@ -67,15 +69,15 @@ const offerSlice = createSlice({
                 state.success = null
                 state.error = null
             })
-                .addCase(updateOffer.fulfilled, (state, action) => {
-                    state.isLoading = false,
-                        state.success = "updateOffer"
-                })
-                .addCase(updateOffer.rejected, (state, action) => {
-                    state.isLoading = false,
-                        state.fail = "updateOffer",
-                        state.error = action.payload
-                })
+            .addCase(updateOffer.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "updateOffer"
+            })
+            .addCase(updateOffer.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "updateOffer",
+                    state.error = action.payload
+            })
 
 
 
@@ -190,6 +192,27 @@ const offerSlice = createSlice({
                     state.error = action.payload
             })
 
+
+
+            .addCase(getLikedOffers.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+
+            })
+            .addCase(getLikedOffers.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.success = "getLikedOffers"
+                state.likedOffers = action.payload
+
+            })
+            .addCase(getLikedOffers.rejected, (state, action) => {
+                state.isLoading = false
+                state.fail = "getLikedOffers"
+                state.error = action.payload
+                state.likedOffers = null
+            })
 
     }
 })
