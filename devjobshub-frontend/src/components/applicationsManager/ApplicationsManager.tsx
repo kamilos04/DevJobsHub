@@ -139,12 +139,12 @@ export const ApplicationsManager = () => {
                             </div>
 
                             <div className='flex flex-col w-[20rem]'>
-                                <div className='flex flex-row mt-1 mb-2 items-center gap-x-2 text-gray-300'>
+                                {contractsStringFromOffer(storeOffer.offer) && <div className='flex flex-row mt-1 mb-2 items-center gap-x-2 text-gray-300'>
                                     <div className='p-4 bg-slate-800 rounded-2xl  border-[1px] border-blue-500'>
                                         <TiDocumentText className='text-xl text-white' />
                                     </div>
                                     <span>{contractsStringFromOffer(storeOffer.offer)}</span>
-                                </div>
+                                </div>}
 
                                 <div className='flex flex-row mt-1 mb-2 items-center gap-x-3 text-gray-300'>
                                     <div className='p-4 bg-slate-800 rounded-2xl  border-[1px] border-blue-500'>
@@ -186,9 +186,10 @@ export const ApplicationsManager = () => {
                     <div className='flex flex-col w-full'>
                         <Accordion type="single" collapsible className="w-full">
                             {applicationStore.applications?.content.map((element: Application) => <ApplicationAccordion key={element.id} application={element} offer={storeOffer.offer}/>)}
+                            {applicationStore.applications?.totalElements === 0 && <div className='text-gray-300 text-xl mt-6'>{"There are no applications yet."}</div>}
                         </Accordion>
                     </div>
-                    {applicationStore.applications && <Pagination className='mt-3'>
+                    {(applicationStore.applications?.totalElements > 0) && <Pagination className='mt-3'>
                         <PaginationContent>
                             <PaginationItem>
                                 <PaginationPrevious className='cursor-pointer select-none' onClick={() => {

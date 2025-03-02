@@ -54,7 +54,7 @@ const OfferCardManager = ({ offer }: { offer: Offer }) => {
 
 
   return (
-    <div className='flex flex-col bg-my-card rounded-md border-[1px] pl-4 pr-4 pt-3 pb-3 w-full'>
+    <div className='flex flex-col bg-my-card rounded-md border-[1px] pl-3 pr-3 pt-3 pb-3 w-full'>
       <div className='flex flex-row justify-between'>
         <div className='flex flex-row gap-x-3'>
           {offer.imageUrl && <img src={`https://devjobshub.s3.eu-central-1.amazonaws.com/${offer.imageUrl}`} alt="company logo" className='h-20 aspect-square rounded-xl' />}

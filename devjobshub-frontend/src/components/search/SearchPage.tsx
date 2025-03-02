@@ -386,7 +386,7 @@ const SearchPage = () => {
             </div>
 
           </div>
-          <Pagination className='mt-3'>
+          {(storeOffer.searchOffers?.totalElements > 0) && <Pagination className='mt-3'>
             <PaginationContent>
 
               <PaginationItem>
@@ -432,7 +432,7 @@ const SearchPage = () => {
                 }} />
               </PaginationItem>
             </PaginationContent>
-          </Pagination>
+          </Pagination>}
         </div>
         {/* </form> */}
       </div>

@@ -33,6 +33,7 @@ import { getPresignedUrlForCv, uploadFileWithPresignedUrl } from '@/state/files/
 import { FileStack } from 'lucide-react';
 import { setPresignedUrlCvNull } from '@/state/files/filesSlice';
 import { useProfile } from '../profile/useProfile';
+import { IoMdArrowRoundBack } from 'react-icons/io';
 
 const ApplyPage = () => {
     const { id } = useParams();
@@ -60,13 +61,13 @@ const ApplyPage = () => {
             if (cvFile.size < 1024 * 1024 * 5) {
                 dispatch(getPresignedUrlForCv({ offerId: storeOffer.offer.id, fileExtension: cvFile.name.split(".").pop() || "" }))
             }
-            else{
+            else {
                 setCvFile(null)
                 toast({
                     variant: "destructive",
                     title: "File size is too large!"
                 });
-                
+
             }
         }
     }, [cvFile])
@@ -157,13 +158,13 @@ const ApplyPage = () => {
                 toast({
                     variant: "destructive",
                     title: "An error occurred while uploading the file!",
-                    description: "Make sure you haven't applied before."
+                    description: "Make sure you haven't applied before and you are not using recruiter account."
                 });
             }
-            
+
 
         }
-        else{
+        else {
             toast({
                 variant: "destructive",
                 title: "You have to attach CV!",
@@ -178,6 +179,9 @@ const ApplyPage = () => {
             <Navbar />
             <div className='flex flex-col items-center'>
                 {storeOffer.offer && <div className='flex flex-col mt-8 bg-my-card p-8 rounded-xl border-[1px] w-[60rem] items-center'>
+                    <div className='flex flex-row items-start w-full mb-2'>
+                        <Button type='button' className='flex flex-row gap-x-1' onClick={() => navigate(`/offer/${storeOffer.offer.id}`)}><IoMdArrowRoundBack />Job offer</Button>
+                    </div>
                     <div className='flex flex-col'>
                         <p>You are applying for a position</p>
                         <p className='text-3xl font-bold'>{storeOffer.offer.name}</p>
@@ -225,12 +229,12 @@ const ApplyPage = () => {
                             </div>
 
                             <div className='flex flex-col w-[20rem]'>
-                                <div className='flex flex-row mt-1 mb-2 items-center gap-x-2 text-gray-300'>
+                                {contractsStringFromOffer(storeOffer.offer) && <div className='flex flex-row mt-1 mb-2 items-center gap-x-2 text-gray-300'>
                                     <div className='p-4 bg-slate-800 rounded-2xl  border-[1px] border-blue-500'>
                                         <TiDocumentText className='text-xl text-white' />
                                     </div>
                                     <span>{contractsStringFromOffer(storeOffer.offer)}</span>
-                                </div>
+                                </div>}
 
                                 <div className='flex flex-row mt-1 mb-2 items-center gap-x-3 text-gray-300'>
                                     <div className='p-4 bg-slate-800 rounded-2xl  border-[1px] border-blue-500'>
@@ -265,7 +269,7 @@ const ApplyPage = () => {
                                 if (fileList && fileList.length > 0) {
                                     setCvFile(fileList[0])
                                 }
-                            }}/>
+                            }} />
                         </div>
                     </div>
                     <div className='w-full flex flex-col gap-y-10'>

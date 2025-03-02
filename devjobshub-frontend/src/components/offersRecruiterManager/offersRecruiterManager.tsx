@@ -155,7 +155,7 @@ const OffersRecruiterManager = () => {
 
         </div>
 
-        {offerStore.offersFromRecruiter && <Pagination className='mt-3'>
+        {(offerStore.offersFromRecruiter?.totalElements > 0) && <Pagination className='mt-3'>
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious className='cursor-pointer select-none' onClick={() => {
