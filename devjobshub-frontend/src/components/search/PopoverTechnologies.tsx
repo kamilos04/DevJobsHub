@@ -38,7 +38,10 @@ const PopoverTechnologies = ({ technologies = {}, setTechnologies = {} }: any) =
                     {technologyStore.technologies?.content?.map((element: Technology) => {
                         const exists = technologies.some((tech: Technology) => tech.id === element.id);
                         if (!exists) {
-                            return (<Button className='flex-1' variant="outline" key={element.id} onClick={() => setTechnologies([...technologies, element])}>{element.name}</Button>)
+                            return (<Button className='flex-1' variant="outline" key={element.id} onClick={() => {
+                                setTechnologies([...technologies, element])
+                                setText("")
+                            }}>{element.name}</Button>)
                         }
                     })}
                 </div>

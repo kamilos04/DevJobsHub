@@ -41,16 +41,22 @@ import { jobLevels, operatingModes, specializations } from '@/constants'
 
 const SearchPage = () => {
 
-  // const [request, setRequest] = React.useState<any>()
   const [technologies, setTechnologies] = React.useState<Array<Technology>>([])
+  const technologiesRef = React.useRef<Technology[]>([])
   const dispatch = useDispatch<any>()
   const storeOffer = useSelector((store: any) => store.offer)
   const storeTechnology = useSelector((store: any) => store.technology)
   const [localizationText, setLocalizationText] = React.useState<string>("")
   const [localizations, setLocalizations] = React.useState<Array<string>>([])
+  const localizationsRef = React.useRef<string[]>([])
   const [pageNumber, setPageNumber] = React.useState<number>(0)
+  const pageRef = React.useRef<number>(0)
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams();
+  const [sortBy, setSortBy] = React.useState<string>("dateTimeOfCreation")
+  const sortByRef = React.useRef<string>("dateTimeOfCreation")
+  const [sortDirecrtion, setSortDirection] = React.useState<string>("asc")
+  const sortDirecrtionRef = React.useRef<string>("asc")
 
 
 
@@ -69,7 +75,7 @@ const SearchPage = () => {
 
   // const formValues = watchSearch();
 
-  const handleSubmitSearch = (pn: Number) => {
+  const handleSubmitSearch = () => {
     const searchValues = watchSearch();
     const specializationsString = specializations.filter(element => searchValues[element]).join(",")
     const operatingModesString = operatingModes.filter(element => searchValues[element]).join(",")
@@ -89,16 +95,16 @@ const SearchPage = () => {
     if (text) {
       params += `text=${text}&`
     }
-    if (technologies.length !== 0) {
-      params += `technologies=${technologies.map(t => t.id).join(",")}&`
+    if (technologiesRef.current.length !== 0) {
+      params += `technologies=${technologiesRef.current.map(t => t.id).join(",")}&`
     }
-    if (localizations.length !== 0) {
-      params += `localizations=${localizations.map(l => l).join(",")}&`
+    if (localizationsRef.current.length !== 0) {
+      params += `localizations=${localizationsRef.current.map(l => l).join(",")}&`
     }
     params += "numberOfElements=10&"
-    params += `pageNumber=${pn}&`
-    params += `sortBy=${searchValues.sortBy}&`
-    params += `sortingDirection=${searchValues.sortingDirection}&`
+    params += `pageNumber=${pageRef.current}&`
+    params += `sortBy=${sortByRef.current}&`
+    params += `sortingDirection=${sortDirecrtionRef.current}&`
     dispatch(searchOffers(params))
   }
 
@@ -133,10 +139,11 @@ const SearchPage = () => {
     }
     // paramsURL.set("pageNumber", pageNumber.toString()) 
     paramsURL.set("pageNumber", "0")
-    paramsURL.set("sortBy", data.sortBy || "dateTimeOfCreation")
-    paramsURL.set("sortingDirection", data.sortingDirection || "asc")
+    paramsURL.set("sortBy", sortBy || "dateTimeOfCreation")
+    paramsURL.set("sortingDirection", sortDirecrtion || "asc")
     setSearchParams(paramsURL)
   }
+
 
 
 
@@ -144,8 +151,8 @@ const SearchPage = () => {
   useEffect(() => {
     if (searchParams.get("sortBy") === null || searchParams.get("sortingDirection") === null || searchParams.get("pageNumber") === null) {
       handleSubmit(handleCreateNewUrl)()
+      return
     }
-
 
     if (searchParams.get("text")) {
       setValueSearch("text", searchParams.get("text"))
@@ -154,33 +161,32 @@ const SearchPage = () => {
       setValueSearch("text", "")
     }
 
-    if (searchParams.get("sortBy")) {
-      setValueSearch("sortBy", searchParams.get("sortBy"))
-    }
-    // else {
-    //   setValueSearch("sortBy", "dateTimeOfCreation")
-    // }
 
+
+    if (searchParams.get("sortBy")) {
+      setSortBy(searchParams.get("sortBy") || "asc")
+      sortByRef.current = searchParams.get("sortBy") || "asc"
+    }
 
     if (searchParams.get("sortingDirection")) {
-      setValueSearch("sortingDirection", searchParams.get("sortingDirection"))
+      setSortDirection(searchParams.get("sortingDirection") || "dateTimeOfCreation")
+      sortDirecrtionRef.current = searchParams.get("sortingDirection") || "dateTimeOfCreation"
     }
-    // else {
-    //   setValueSearch("sortingDirection", "asc")
-    // }
+
 
     if (searchParams.get("pageNumber")) {
       setPageNumber(Number(searchParams.get("pageNumber")))
+      pageRef.current = Number(searchParams.get("pageNumber"))
     }
-    // else {
-    //   setPageNumber(0)
-    // }
+
 
     if (searchParams.get("localizations")) {
       setLocalizations(searchParams.get("localizations")?.split(",") || [])
+      localizationsRef.current = searchParams.get("localizations")?.split(",") || []
     }
     else {
       setLocalizations([])
+      localizationsRef.current = []
     }
 
     const specializationsList = searchParams.get("specializations")?.split(",") || []
@@ -220,7 +226,8 @@ const SearchPage = () => {
     }
     else {
       setTechnologies([])
-      handleSubmitSearch(Number(searchParams.get("pageNumber")))
+      technologiesRef.current = []
+      handleSubmitSearch()
     }
 
 
@@ -232,14 +239,22 @@ const SearchPage = () => {
   useEffect(() => {
     if (storeTechnology.success === "getTechnologiesByIds") {
       setTechnologies(storeTechnology.technologiesByIds)
-      handleSubmitSearch(Number(searchParams.get("pageNumber")))
+      technologiesRef.current = storeTechnology.technologiesByIds
+      handleSubmitSearch()
     }
   }, [storeTechnology.success])
 
 
-  // useEffect(() => {
-  //   handleSubmit(handleCreateNewUrl)()
-  // }, [pageNumber])
+
+
+const setPageStateAndSearchParams = (value: number) => {
+  setPageNumber(value)
+  setSearchParams((prevParams) => {
+    const newParams = new URLSearchParams(prevParams);
+    newParams.set("pageNumber", String(value));
+    return newParams;
+  });
+}
 
   return (
     <div className='flex flex-col'>
@@ -281,10 +296,9 @@ const SearchPage = () => {
                 { registerAs: "MANAGER", label: "Manager" },
                 { registerAs: "CLEVEL", label: "C-level" },
               ]} />
-              <Button type='submit' className='h-12 ml-6 rounded-2xl'><div className='flex flex-row items-center space-x-2' onClick={handleSubmit(handleCreateNewUrl)}><FaSearch /> <span className='text-sm'>Search</span></div></Button>
+              <Button type='submit' className='h-12 ml-6 rounded-2xl' onClick={handleSubmit(handleCreateNewUrl)}><div className='flex flex-row items-center space-x-2' ><FaSearch /> <span className='text-sm'>Search</span></div></Button>
             </div>
 
-            {/* {storeOffer.searchOffers?.content?.map((element: any) => <span>{element.id}</span>)} */}
           </div>
           <div className='flex flex-row w-full mt-8'>
             <div className='bg-my-card flex flex-col rounded-xl border-[1px] w-80 p-5 h-min'>
@@ -328,49 +342,44 @@ const SearchPage = () => {
             </div>
             <div className='ml-4 flex-col w-full'>
               <div className='flex flex-row space-x-4 items-center'>
-                <Controller
-                  name="sortBy"
-                  control={controlSearch}
-                  // defaultValue={"dateTimeOfCreation"}
+                <Select value={sortBy} onValueChange={(value: string) => {
+                  setSortBy(value)
+                  setSearchParams((prevParams) => {
+                    const newParams = new URLSearchParams(prevParams);
+                    newParams.set("sortBy", value)
+                    return newParams;
+                  });
+                }}>
+                  <SelectTrigger className="w-auto">
+                    <span>Sort by: {sortBy === "dateTimeOfCreation" && "Creation date"}{sortBy === "expirationDate" && "Expiration date"}{sortBy === "name" && "Offer title"}</span>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="dateTimeOfCreation">Creation date</SelectItem>
+                      <SelectItem value="expirationDate">Expiration date</SelectItem>
+                      <SelectItem value="name">Offer title</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
 
-                  render={({ field }) => (
-                    <>
-                      <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="w-auto">
-                          <span>Sort by: {field.value === "dateTimeOfCreation" && "Creation date"}{field.value === "expirationDate" && "Expiration date"}{field.value === "name" && "Offer title"}</span>
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value="dateTimeOfCreation">Creation date</SelectItem>
-                            <SelectItem value="expirationDate">Expiration date</SelectItem>
-                            <SelectItem value="name">Offer title</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </>
-                  )}
-                />
-                <Controller
-                  name="sortingDirection"
-                  control={controlSearch}
-                  // defaultValue={"asc"}
-
-                  render={({ field }) => (
-                    <>
-                      <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="w-auto">
-                          Sorting direction: {field.value === "asc" ? "Ascending" : "Descending"}
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value="asc">Ascending</SelectItem>
-                            <SelectItem value="dsc">Descending</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </>
-                  )}
-                />
+                <Select value={sortDirecrtion} onValueChange={(value: string) => {
+                  setSortDirection(value)
+                  setSearchParams((prevParams) => {
+                    const newParams = new URLSearchParams(prevParams);
+                    newParams.set("sortingDirection", value)
+                    return newParams;
+                  });
+                }}>
+                  <SelectTrigger className="w-auto">
+                    Sorting direction: {sortDirecrtion === "asc" ? "Ascending" : "Descending"}
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="asc">Ascending</SelectItem>
+                      <SelectItem value="dsc">Descending</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 {storeOffer.searchOffers && <span>{storeOffer.searchOffers?.totalElements} offers found</span>}
 
 
@@ -392,10 +401,8 @@ const SearchPage = () => {
               <PaginationItem>
                 <PaginationPrevious className='cursor-pointer select-none' onClick={() => {
                   if (pageNumber - 1 >= 0) {
-                    // setPageNumber(pageNumber - 1)
-                    const par = new URLSearchParams(searchParams)
-                    par.set("pageNumber", `${pageNumber - 1}`)
-                    setSearchParams(par)
+
+                    setPageStateAndSearchParams(pageNumber - 1)
                   }
 
                 }} />
@@ -406,10 +413,8 @@ const SearchPage = () => {
                     <PaginationItem key={i} >
                       <PaginationLink className='cursor-pointer select-none'
                         onClick={() => {
-                          // setPageNumber(i)
-                          const par = new URLSearchParams(searchParams)
-                          par.set("pageNumber", `${i}`)
-                          setSearchParams(par)
+
+                          setPageStateAndSearchParams(i)
                         }}
 
                         isActive={pageNumber === i ? true : false}
@@ -418,16 +423,10 @@ const SearchPage = () => {
                 }
               }
               )}
-              {/* <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem> */}
               <PaginationItem>
                 <PaginationNext className='cursor-pointer select-none' onClick={() => {
                   if (pageNumber + 1 < storeOffer.searchOffers?.totalPages) {
-                    // setPageNumber(pageNumber + 1)
-                    const par = new URLSearchParams(searchParams)
-                    par.set("pageNumber", `${pageNumber + 1}`)
-                    setSearchParams(par)
+                    setPageStateAndSearchParams(pageNumber + 1)
                   }
                 }} />
               </PaginationItem>
