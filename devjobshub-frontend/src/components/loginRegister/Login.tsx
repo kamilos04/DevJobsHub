@@ -35,6 +35,8 @@ import { useToast } from '@/hooks/use-toast'
 import { LoginRequest } from '@/types/loginRequest'
 import Navbar from '../navbar/Navbar'
 import { setFailNull, setSuccessNull } from '@/state/profile/profileSlice'
+import { useLocation, useNavigate } from 'react-router'
+import { useProfile } from '../profile/useProfile'
 
 
 
@@ -45,7 +47,9 @@ const Login = () => {
     const profile = useSelector((store: any) => store.profile)
     const { toast } = useToast()
     const dispatch = useDispatch<any>()
-
+    const navigate = useNavigate()
+    const location = useLocation()
+    const { getProfile, profileStore } = useProfile(false, false)
 
     const onLoginSubmit = (data: any) => {
         let reqData: LoginRequest = {
@@ -80,7 +84,24 @@ const Login = () => {
     };
 
 
+    useEffect(() => {
+        dispatch(setSuccessNull())
+        getProfile()
+    }, [location.pathname])
 
+    useEffect(() => {
+        if(profileStore.success === "fetchProfile"){
+            dispatch(setSuccessNull())
+            navigate("/search?pageNumber=0&sortBy=dateTimeOfCreation&sortingDirection=asc")
+            
+        }
+    }, [profileStore.success])
+
+    useEffect(() => {
+        if(profile.success === "login" || profile.success === "register"){
+            navigate("/search?pageNumber=0&sortBy=dateTimeOfCreation&sortingDirection=asc")
+        }
+    }, [profile.success])
 
 
     useEffect(() => {
@@ -137,6 +158,7 @@ const Login = () => {
         surname: yup.string().required('Surname is required'),
         registerEmail: yup.string().email('Invalid email').required('Email is required'),
         registerPassword: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+        registerPasswordRepeat: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required').oneOf([yup.ref('registerPassword')], 'Passwords must match')
     });
 
     const {
@@ -240,6 +262,11 @@ const Login = () => {
                                         <Label htmlFor="registerPassword">New password</Label>
                                         <Input id="registerPassword" type="password" {...registerForm('registerPassword')}/>
                                         <p className="text-red-500 text-sm font-normal">{registerErrors.registerPassword?.message}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label htmlFor="registerPassword">Repeat new password</Label>
+                                        <Input id="registerPassword" type="password" {...registerForm('registerPasswordRepeat')}/>
+                                        <p className="text-red-500 text-sm font-normal">{registerErrors.registerPasswordRepeat?.message}</p>
                                     </div>
                                 </CardContent></div>
                             <CardFooter>
