@@ -70,6 +70,31 @@ export const searchOffers = createAsyncThunk(
     }
 )
 
+export const searchOffersSideBar = createAsyncThunk(
+    "offer/searchOffersSideBar",
+    async (params: string, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+
+            if (jwt) {
+                const { data } = await axios.get(`${API_URL}/api/offer/search?${params}`, {
+                    headers: {
+                        Authorization: `Bearer ${jwt}`
+                    }
+                })
+                return data
+            }
+            else {
+                const { data } = await axios.get(`${API_URL}/api/offer/search?${params}`)
+                return data
+            }
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
 export const getOfferById = createAsyncThunk(
     "offer/getOfferById",
     async (id: number, { rejectWithValue }) => {

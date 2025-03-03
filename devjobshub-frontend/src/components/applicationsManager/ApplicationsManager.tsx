@@ -43,6 +43,7 @@ import {
     PaginationNext,
     PaginationPrevious,
   } from "@/components/ui/pagination"
+import { setFailNull } from '@/state/application/applicationSlice';
 
 export const ApplicationsManager = () => {
     const { offerId } = useParams();
@@ -83,12 +84,20 @@ export const ApplicationsManager = () => {
     }, [applicationStore.success])
 
 
+    useEffect(() => {
+        if(applicationStore.fail === "getApplicationsFromOffer"){
+            dispatch(setFailNull())
+            navigate("/search?pageNumber=0&sortBy=dateTimeOfCreation&sortingDirection=asc")
+        }
+    }, [applicationStore.fail])
+
+
 
     return (
         <div className='flex flex-col'>
             <Navbar />
             <div className='flex flex-col items-center'>
-                {storeOffer.offer && <div className='flex flex-col mt-8 bg-my-card p-8 rounded-xl border-[1px] w-[60rem] items-center'>
+                {(storeOffer.offer && profileStore.profile?.isFirm) && <div className='flex flex-col mt-8 bg-my-card p-8 rounded-xl border-[1px] w-[60rem] items-center'>
                     <div className='flex flex-row items-start w-full mb-2'>
                         <Button className='flex flex-row gap-x-1' onClick={() => navigate("/recruiter/manager")}><IoMdArrowRoundBack />Offers manager</Button>
                     </div>

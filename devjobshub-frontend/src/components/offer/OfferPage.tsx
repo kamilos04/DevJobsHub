@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import Navbar from '../navbar/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOfferById, likeOfferById, removeLikeOfferById, searchOffers } from '@/state/offer/action';
+import { getOfferById, likeOfferById, removeLikeOfferById, searchOffers, searchOffersSideBar } from '@/state/offer/action';
 import { MdOutlineWorkOutline } from "react-icons/md";
 import { TiDocumentText } from "react-icons/ti";
 import { RiStairsLine } from "react-icons/ri";
@@ -62,7 +62,7 @@ const OfferPage = () => {
             params += `pageNumber=0&`
             params += `sortBy=expirationDate&`
             params += `sortingDirection=asc&`
-            dispatch(searchOffers(params))
+            dispatch(searchOffersSideBar(params))
         }
     }, [storeOffer.success])
 
@@ -81,7 +81,7 @@ const OfferPage = () => {
                     <div className='flex flex-col gap-y-8'>
                         <div className='bg-my-card flex flex-col p-8 rounded-xl border-[1px] w-[50rem]'>
                             <div className='flex flex-row justify-between'>
-                                <div className='flex flex-row gap-x-4 mb-2'>
+                                <div className='flex flex-row gap-x-4 mb-2 items-center'>
                                     {storeOffer.offer.imageUrl && <img src={`https://devjobshub.s3.eu-central-1.amazonaws.com/${storeOffer.offer.imageUrl}`} alt="company logo" className='h-20 aspect-square rounded-xl' />}
                                     <div>
                                         <h1 className='text-2xl font-bold text-blue-400'>{storeOffer.offer?.name}</h1>
@@ -286,7 +286,7 @@ const OfferPage = () => {
                         <div className='flex flex-col gap-y-2'>
                             <p className='text-xl font-bold'>Check other offers:</p>
                             <div className='flex flex-col gap-y-5'>
-                                {storeOffer.searchOffers?.content.map((element: Offer) => {
+                                {storeOffer.searchOffersSideBar?.content.map((element: Offer) => {
                                     if (element.id !== storeOffer.offer.id) {
                                         return (<SmallOfferCard key={element.id} offer={element} />)
                                     }

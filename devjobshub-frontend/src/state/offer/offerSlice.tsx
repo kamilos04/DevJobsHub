@@ -1,7 +1,7 @@
 import { Technology } from "@/types/technology";
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { createOffer as createOffer, deleteOfferById, getLikedOffers, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, searchOffers, updateOffer } from "./action";
+import { createOffer as createOffer, deleteOfferById, getLikedOffers, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, searchOffers, searchOffersSideBar, updateOffer } from "./action";
 import { Offer } from "@/types/offer";
 
 interface PageResponseOffers {
@@ -20,7 +20,8 @@ interface InitialState {
     searchOffers: PageResponseOffers | undefined | null,
     offer: Offer | null,
     offersFromRecruiter: PageResponseOffers | null,
-    likedOffers: PageResponseOffers | null
+    likedOffers: PageResponseOffers | null,
+    searchOffersSideBar: PageResponseOffers | null
 }
 
 const initialState = {
@@ -31,7 +32,8 @@ const initialState = {
     searchOffers: null,
     offer: null,
     offersFromRecruiter: null,
-    likedOffers: null
+    likedOffers: null,
+    searchOffersSideBar: null
 } satisfies InitialState as InitialState
 
 const offerSlice = createSlice({
@@ -100,6 +102,28 @@ const offerSlice = createSlice({
                     state.error = action.payload
                 state.searchOffers = null
             })
+
+
+
+            .addCase(searchOffersSideBar.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+                state.searchOffersSideBar = null
+            })
+            .addCase(searchOffersSideBar.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "searchOffersSideBar"
+                state.searchOffersSideBar = action.payload
+            })
+            .addCase(searchOffersSideBar.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "searchOffersSideBar",
+                    state.error = action.payload
+                state.searchOffersSideBar = null
+            })
+
 
 
             .addCase(getOfferById.pending, (state, action) => {
