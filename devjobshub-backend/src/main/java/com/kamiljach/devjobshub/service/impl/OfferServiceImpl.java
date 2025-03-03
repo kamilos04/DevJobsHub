@@ -185,6 +185,13 @@ public class OfferServiceImpl implements OfferService {
             else{
                 offerDto.setIsLiked(false);
             }
+
+            if(offer.getRecruiters().contains(user)){
+                offerDto.setIsRecruiter(true);
+            }
+            else{
+                offerDto.setIsRecruiter(false);
+            }
         }
         return offerDto;
     }
