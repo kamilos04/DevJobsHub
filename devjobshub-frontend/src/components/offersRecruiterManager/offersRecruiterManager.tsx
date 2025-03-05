@@ -144,7 +144,7 @@ const OffersRecruiterManager = () => {
 
               </div>
               <div className='mt-4 flex flex-col gap-y-6'>
-                {offerStore.offersFromRecruiter?.content.map((element: Offer) => <OfferCardManager key={element.id} offer={element} />)}
+                {offerStore.offersFromRecruiter?.content.map((element: Offer) => <OfferCardManager key={element.id} offer={element} dispatchRequest={dispatchRequest}/>)}
                 {offerStore.offersFromRecruiter?.totalElements === 0 && <span className='text-gray-300 text-2xl'>{"You don't manage any offers yet"}</span>}
               </div>
 

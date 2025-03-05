@@ -6,6 +6,7 @@ import FavouriteOffers from '@/components/favouriteOffers/FavouriteOffers'
 import Login from '@/components/loginRegister/Login'
 import OfferPage from '@/components/offer/OfferPage'
 import OffersRecruiterManager from '@/components/offersRecruiterManager/offersRecruiterManager'
+import BlankPage from '@/components/search/BlankPage'
 import SearchPage from '@/components/search/SearchPage'
 import React from 'react'
 import { Route, Routes } from 'react-router'
@@ -14,6 +15,7 @@ const MainRoute = () => {
   return (
     <div>
         <Routes>
+            <Route path="/" element={<BlankPage/>}/>
             <Route path='/login' element={<Login/>}/>
             <Route path='/recruiter/create-offer' element={<CreateOffer/>}/>
             <Route path='/search' element={<SearchPage/>}/>

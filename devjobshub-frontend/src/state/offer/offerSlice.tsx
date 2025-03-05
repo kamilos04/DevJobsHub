@@ -1,7 +1,7 @@
 import { Technology } from "@/types/technology";
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { createOffer as createOffer, deleteOfferById, getLikedOffers, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, searchOffers, searchOffersSideBar, updateOffer } from "./action";
+import { addRecruiter, createOffer as createOffer, deleteOfferById, getLikedOffers, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, removeRecruiter, searchOffers, searchOffersSideBar, updateOffer } from "./action";
 import { Offer } from "@/types/offer";
 
 interface PageResponseOffers {
@@ -185,7 +185,7 @@ const offerSlice = createSlice({
                 state.fail = null
                 state.success = null
                 state.error = null
-                state.offersFromRecruiter = null
+                // state.offersFromRecruiter = null
             })
             .addCase(getOffersFromRecruiter.fulfilled, (state, action) => {
                 state.isLoading = false,
@@ -197,6 +197,7 @@ const offerSlice = createSlice({
                 state.isLoading = false,
                     state.fail = "getOffersFromRecruiter",
                     state.error = action.payload
+                    state.offersFromRecruiter = null
             })
 
 
@@ -237,6 +238,48 @@ const offerSlice = createSlice({
                 state.error = action.payload
                 state.likedOffers = null
             })
+
+
+            .addCase(addRecruiter.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+
+            })
+            .addCase(addRecruiter.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.success = "addRecruiter"
+
+            })
+            .addCase(addRecruiter.rejected, (state, action) => {
+                state.isLoading = false
+                state.fail = "addRecruiter"
+                state.error = action.payload
+            })
+
+
+            .addCase(removeRecruiter.pending, (state, action) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+
+            })
+            .addCase(removeRecruiter.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.success = "removeRecruiter"
+
+            })
+            .addCase(removeRecruiter.rejected, (state, action) => {
+                state.isLoading = false
+                state.fail = "removeRecruiter"
+                state.error = action.payload
+            })
+
+
+
+
 
     }
 })

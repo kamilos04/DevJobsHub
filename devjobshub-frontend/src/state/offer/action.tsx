@@ -221,3 +221,41 @@ export const getLikedOffers = createAsyncThunk(
 )
 
 
+
+export const addRecruiter = createAsyncThunk(
+    "offer/addRecruiter",
+    async ({offerId, userEmail}: {offerId: number, userEmail: string}, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.post(`${API_URL}/api/offer/add-recruiter?offerId=${offerId}&userEmail=${userEmail}`, null, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+export const removeRecruiter = createAsyncThunk(
+    "offer/removeRecruiter",
+    async ({offerId, userEmail}: {offerId: number, userEmail: string}, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.post(`${API_URL}/api/offer/remove-recruiter?offerId=${offerId}&userEmail=${userEmail}`, null, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+

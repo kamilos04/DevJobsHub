@@ -58,7 +58,7 @@ const SelectTechnologiesDialog = ({ technologies, setTechnologies, text }: { tec
                                 })}
                             </div>
                         </div>
-                        <span className='text-sm mt-1 cursor-pointer' onClick={() => setOpenCreateTechnologyDialog(true)} >Can't find the technology? Create a new one.</span>
+                        <Button type='button' variant={"link"} className='text-sm mt-1 cursor-pointer w-min p-0 text-white' onClick={() => setOpenCreateTechnologyDialog(true)} >Can't find the technology? Create a new one.</Button>
                         <CreateTechnologyDialog open={openCreateTechnologyDialog} setOpen={setOpenCreateTechnologyDialog}/>
                         
 

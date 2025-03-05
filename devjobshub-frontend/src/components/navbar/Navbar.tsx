@@ -28,6 +28,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { ChangePasswordRequest } from '@/types/changePasswordRequest';
 import { useToast } from '@/hooks/use-toast';
+import { MAIN_URL } from '@/config/mainConfig';
 
 const Navbar = () => {
     const navigate = useNavigate()
@@ -36,6 +37,7 @@ const Navbar = () => {
     const {toast} = useToast()
 
     useEffect(() => {
+        console.log("profil wziety")
         dispatch(fetchProfile())
     }, [])
 
@@ -45,6 +47,7 @@ const Navbar = () => {
         dispatch(setProfileNull())
         dispatch(setSuccessNull())
         dispatch(setFailNull())
+        navigate(MAIN_URL)
     }
 
     const changePasswordSchema = yup.object().shape({
@@ -92,7 +95,7 @@ const Navbar = () => {
 
     return (
         <div className='flex flex-row h-[4rem] bg-my-background border-b-2 border-s-stone-900 items-center pl-6 pr-6 justify-between'>
-            <div className='cursor-pointer' onClick={() => navigate("/search?pageNumber=0&sortBy=dateTimeOfCreation&sortingDirection=asc")}>
+            <div className='cursor-pointer' onClick={() => navigate(MAIN_URL)}>
                 <span className='fontLogo text-[1.5rem] select-none'><span className='text-blue-500'>Dev</span><span className='text-gray-400'>Jobs</span><span className='text-gray-500'>Hub</span></span>
 
             </div>
@@ -150,7 +153,7 @@ const Navbar = () => {
                             <div className='flex flex-col'>
                                 <p className='text-lg font-bold'>Hello!</p>
                                 <p className='text-base'>Log in to your account!</p>
-                                <Button type='button' className='flex flex-row gap-x-1 w-28 mt-2' variant={'secondary'} onClick={() => navigate("/login")}>Log in</Button>
+                                <Button type='button' className='flex flex-row gap-x-1 w-28 mt-4' variant={'secondary'} onClick={() => navigate("/login")}>Log in</Button>
                             </div>}
                     </PopoverContent>
                 </Popover>

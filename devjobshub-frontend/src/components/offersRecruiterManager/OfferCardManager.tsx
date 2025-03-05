@@ -25,8 +25,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import ManageRecruitersDialog from './manageRecruitersDialog';
 
-const OfferCardManager = ({ offer }: { offer: Offer }) => {
+const OfferCardManager = ({ offer, dispatchRequest }: { offer: Offer, dispatchRequest: any }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch<any>()
   const [isLiked, setIsLiked] = React.useState<boolean>(false)
@@ -94,6 +95,9 @@ const OfferCardManager = ({ offer }: { offer: Offer }) => {
         </div>
 
         <div className='flex flex-row gap-x-2'>
+          <div className='flex flex-col gap-y-2'>
+            <ManageRecruitersDialog offer={offer} dispatchRequest={dispatchRequest}/>
+          </div>
           <div className='flex flex-col gap-y-2'>
             <Button variant={'outline'} onClick={() => navigate(`/recruiter/applications/${offer.id}`)}>See applications</Button>
             <Button variant={'outline'} onClick={() => navigate(`/recruiter/update-offer/${offer.id}`)}>Update</Button>
