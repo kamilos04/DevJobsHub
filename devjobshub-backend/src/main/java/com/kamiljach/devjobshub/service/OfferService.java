@@ -22,9 +22,9 @@ public interface OfferService {
 
     public void removeLikeOffer(Long id, String jwt) throws OfferNotFoundByIdException, OfferIsNotLikedByUserException, NoPermissionException;
 
-    public void removeRecruiterFromOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException, NoPermissionException;
+    public void removeRecruiterFromOffer(Long offerId, String recruiterEmail, String jwt) throws OfferNotFoundByIdException, UserIsNotRecruiterException, NoPermissionException, UserNotFoundByEmailException;
 
-    public void addRecruiterToOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException;
+    public void addRecruiterToOffer(Long offerId, String recruiterEmail, String jwt) throws OfferNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException, UserNotFoundByEmailException;
 
     public PageResponse<OfferDto> getLikedOffersFromJwt(Integer numberOfElements, Integer pageNumber, String jwt) throws UserNotFoundByJwtException;
 

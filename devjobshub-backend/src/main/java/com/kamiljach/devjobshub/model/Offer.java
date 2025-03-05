@@ -202,4 +202,10 @@ public class Offer {
         newOfferDto.setNiceToHaveTechnologies(this.getNiceToHaveTechnologies().stream().map(element -> element.mapToTechnologyDtoShallow()).collect(Collectors.toList()));
         return newOfferDto;
     }
+
+    public OfferDto mapToOfferDtoShallow_Recruiter() {
+        OfferDto newOfferDto = this.mapToOfferDtoShallow();
+        newOfferDto.setRecruiters(this.getRecruiters().stream().map(element -> element.mapToUserDtoShallow_Recruiter()).collect(Collectors.toList()));
+        return newOfferDto;
+    }
 }

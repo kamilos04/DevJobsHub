@@ -97,18 +97,18 @@ public class OfferController {
 
     @PostMapping("/offer/add-recruiter")
     public ResponseEntity<MessageResponse> addRecruiter(@RequestParam("offerId") Long offerId,
-                                                        @RequestParam("userId") Long userId,
-                                                        @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException, UserNotFoundByJwtException {
-        offerService.addRecruiterToOffer(offerId, userId, jwt);
+                                                        @RequestParam("userEmail") String userEmail,
+                                                        @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException, UserNotFoundByJwtException, UserNotFoundByEmailException {
+        offerService.addRecruiterToOffer(offerId, userEmail, jwt);
         MessageResponse messageResponse = new MessageResponse("Recruiter has been added to the offer");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
     @PostMapping("/offer/remove-recruiter")
     public ResponseEntity<MessageResponse> removeRecruiter(@RequestParam("offerId") Long offerId,
-                                                           @RequestParam("userId") Long userId,
-                                                           @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException, UserNotFoundByJwtException, NoPermissionException {
-        offerService.removeRecruiterFromOffer(offerId, userId, jwt);
+                                                           @RequestParam("userEmail") String userEmail,
+                                                           @RequestHeader("Authorization") String jwt) throws OfferNotFoundByIdException, UserIsNotRecruiterException, UserNotFoundByJwtException, NoPermissionException, UserNotFoundByEmailException {
+        offerService.removeRecruiterFromOffer(offerId, userEmail, jwt);
         MessageResponse messageResponse = new MessageResponse("Recruiter has been removed from the offer");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }

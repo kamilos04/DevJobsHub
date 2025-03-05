@@ -498,9 +498,9 @@ public class OfferServiceImplTests {
 
 
     @Test
-    public void OfferService_addRecruiterToOffer_Success() throws NoPermissionException, UserIsAlreadyRecruiterException, OfferNotFoundByIdException, UserNotFoundByIdException {
+    public void OfferService_addRecruiterToOffer_Success() throws NoPermissionException, UserIsAlreadyRecruiterException, OfferNotFoundByIdException, UserNotFoundByIdException, UserNotFoundByEmailException {
         Long validOfferId = 1L;
-        Long validRecruiterId = 2L;
+        String validRecruiterEmail = "validEmail";
         String validJwt = "some jwt";
         User userA = mock(User.class);
         User recruiterA = mock(User.class);
@@ -508,14 +508,14 @@ public class OfferServiceImplTests {
         List<User> listUsers = mock(List.class);
 
         when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
-        when(userRepository.findById(validRecruiterId)).thenReturn(Optional.of(recruiterA));
+        when(userRepository.findByEmail(validRecruiterEmail)).thenReturn(Optional.of(recruiterA));
         when(userService.findUserByJwt(validJwt)).thenReturn(userA);
         doNothing().when(offerServiceSpy).validatePermissionAddRecruiterToOffer(userA, offerA);
 
         when(offerA.getRecruiters()).thenReturn(listUsers);
         when(listUsers.contains(recruiterA)).thenReturn(false);
 
-        offerServiceSpy.addRecruiterToOffer(validOfferId, validRecruiterId, validJwt);
+        offerServiceSpy.addRecruiterToOffer(validOfferId, validRecruiterEmail, validJwt);
 
         verify(offerA).addRecruiter(recruiterA);
         verify(userRepository).save(recruiterA);
@@ -527,14 +527,15 @@ public class OfferServiceImplTests {
     @Test
     public void OfferService_addRecruiterToOffer_ThrowsOfferNotFoundByIdException() throws NoPermissionException, UserIsAlreadyRecruiterException, OfferNotFoundByIdException, UserNotFoundByIdException {
         Long invalidOfferId = 1L;
-        Long validRecruiterId = 2L;
+        String validRecruiterEmail = "validEmail";
+
         String validJwt = "some jwt";
         Offer offerA = mock(Offer.class);
 
         when(offerRepository.findById(invalidOfferId)).thenReturn(Optional.empty());
 
 
-        assertThrows(OfferNotFoundByIdException.class, () -> offerServiceSpy.addRecruiterToOffer(invalidOfferId, validRecruiterId, validJwt));
+        assertThrows(OfferNotFoundByIdException.class, () -> offerServiceSpy.addRecruiterToOffer(invalidOfferId, validRecruiterEmail, validJwt));
 
         verify(offerA, never()).addRecruiter(any());
         verify(userRepository, never()).save(any());
@@ -543,19 +544,19 @@ public class OfferServiceImplTests {
     }
 
     @Test
-    public void OfferService_addRecruiterToOffer_ThrowsUserNotFoundByIdException() throws NoPermissionException, UserIsAlreadyRecruiterException, OfferNotFoundByIdException, UserNotFoundByIdException {
+    public void OfferService_addRecruiterToOffer_ThrowsUserNotFoundByEmailException() throws NoPermissionException, UserIsAlreadyRecruiterException, OfferNotFoundByIdException, UserNotFoundByIdException {
         Long validOfferId = 1L;
-        Long invalidRecruiterId = 2L;
+        String invalidRecruiterEmail = "validEmail";
         String validJwt = "some jwt";
         User recruiterA = mock(User.class);
         Offer offerA = mock(Offer.class);
 
 
         when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
-        when(userRepository.findById(invalidRecruiterId)).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(invalidRecruiterEmail)).thenReturn(Optional.empty());
 
 
-        assertThrows(UserNotFoundByIdException.class, () -> offerServiceSpy.addRecruiterToOffer(validOfferId, invalidRecruiterId, validJwt));
+        assertThrows(UserNotFoundByEmailException.class, () -> offerServiceSpy.addRecruiterToOffer(validOfferId, invalidRecruiterEmail, validJwt));
 
         verify(offerA, never()).addRecruiter(any());
         verify(userRepository, never()).save(any());
@@ -567,7 +568,7 @@ public class OfferServiceImplTests {
     @Test
     public void OfferService_addRecruiterToOffer_ThrowsUserIsAlreadyRecruiterException() throws NoPermissionException, UserIsAlreadyRecruiterException, OfferNotFoundByIdException, UserNotFoundByIdException {
         Long validOfferId = 1L;
-        Long validRecruiterId = 2L;
+        String validRecruiterEmail = "validEmail";
         String validJwt = "some jwt";
         User userA = mock(User.class);
         User recruiterA = mock(User.class);
@@ -575,14 +576,14 @@ public class OfferServiceImplTests {
         List<User> listUsers = mock(List.class);
 
         when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
-        when(userRepository.findById(validRecruiterId)).thenReturn(Optional.of(recruiterA));
+        when(userRepository.findByEmail(validRecruiterEmail)).thenReturn(Optional.of(recruiterA));
         when(userService.findUserByJwt(validJwt)).thenReturn(userA);
         doNothing().when(offerServiceSpy).validatePermissionAddRecruiterToOffer(userA, offerA);
 
         when(offerA.getRecruiters()).thenReturn(listUsers);
         when(listUsers.contains(recruiterA)).thenReturn(true);
 
-        assertThrows(UserIsAlreadyRecruiterException.class, () -> offerServiceSpy.addRecruiterToOffer(validOfferId, validRecruiterId, validJwt));
+        assertThrows(UserIsAlreadyRecruiterException.class, () -> offerServiceSpy.addRecruiterToOffer(validOfferId, validRecruiterEmail, validJwt));
 
         verify(offerA, never()).addRecruiter(any());
         verify(userRepository, never()).save(any());
@@ -594,18 +595,18 @@ public class OfferServiceImplTests {
     @Test
     public void OfferService_addRecruiterToOffer_ThrowsNoPermissionException() throws NoPermissionException, UserIsAlreadyRecruiterException, OfferNotFoundByIdException, UserNotFoundByIdException {
         Long validOfferId = 1L;
-        Long validRecruiterId = 2L;
+        String validRecruiterEmail = "validEmail";
         String validJwt = "some jwt";
         User userA = mock(User.class);
         User recruiterA = mock(User.class);
         Offer offerA = mock(Offer.class);
 
         when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
-        when(userRepository.findById(validRecruiterId)).thenReturn(Optional.of(recruiterA));
+        when(userRepository.findByEmail(validRecruiterEmail)).thenReturn(Optional.of(recruiterA));
         when(userService.findUserByJwt(validJwt)).thenReturn(userA);
         doThrow(NoPermissionException.class).when(offerServiceSpy).validatePermissionAddRecruiterToOffer(userA, offerA);
 
-        assertThrows(NoPermissionException.class, () -> offerServiceSpy.addRecruiterToOffer(validOfferId, validRecruiterId, validJwt));
+        assertThrows(NoPermissionException.class, () -> offerServiceSpy.addRecruiterToOffer(validOfferId, validRecruiterEmail, validJwt));
 
         verify(offerA, never()).addRecruiter(any());
         verify(userRepository, never()).save(any());
@@ -613,12 +614,11 @@ public class OfferServiceImplTests {
 
     }
 
-    ////fsfsdfsdfsdf
 
     @Test
-    public void OfferService_removeRecruiterFromOffer_Success() throws NoPermissionException, UserIsNotRecruiterException, OfferNotFoundByIdException, UserNotFoundByIdException {
+    public void OfferService_removeRecruiterFromOffer_Success() throws NoPermissionException, UserIsNotRecruiterException, OfferNotFoundByIdException, UserNotFoundByIdException, UserNotFoundByEmailException {
         Long validOfferId = 1L;
-        Long validRecruiterId = 2L;
+        String validRecruiterEmail = "validEmail";
         String validJwt = "some jwt";
         User userA = mock(User.class);
         User recruiterA = mock(User.class);
@@ -626,14 +626,14 @@ public class OfferServiceImplTests {
         List<User> listUsers = mock(List.class);
 
         when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
-        when(userRepository.findById(validRecruiterId)).thenReturn(Optional.of(recruiterA));
+        when(userRepository.findByEmail(validRecruiterEmail)).thenReturn(Optional.of(recruiterA));
         when(userService.findUserByJwt(validJwt)).thenReturn(userA);
         doNothing().when(offerServiceSpy).validatePermissionRemoveRecruiterFromOffer(userA, offerA, recruiterA);
 
         when(offerA.getRecruiters()).thenReturn(listUsers);
         when(listUsers.contains(recruiterA)).thenReturn(true);
 
-        offerServiceSpy.removeRecruiterFromOffer(validOfferId, validRecruiterId, validJwt);
+        offerServiceSpy.removeRecruiterFromOffer(validOfferId, validRecruiterEmail, validJwt);
 
         verify(offerA).removeRecruiter(recruiterA);
         verify(userRepository).save(recruiterA);
@@ -645,14 +645,14 @@ public class OfferServiceImplTests {
     @Test
     public void OfferService_removeRecruiterFromOffer_ThrowsOfferNotFoundByIdException() throws NoPermissionException, OfferNotFoundByIdException, UserNotFoundByIdException {
         Long invalidOfferId = 1L;
-        Long validRecruiterId = 2L;
+        String validRecruiterEmail = "validEmail";
         String validJwt = "some jwt";
         Offer offerA = mock(Offer.class);
 
         when(offerRepository.findById(invalidOfferId)).thenReturn(Optional.empty());
 
 
-        assertThrows(OfferNotFoundByIdException.class, () -> offerServiceSpy.removeRecruiterFromOffer(invalidOfferId, validRecruiterId, validJwt));
+        assertThrows(OfferNotFoundByIdException.class, () -> offerServiceSpy.removeRecruiterFromOffer(invalidOfferId, validRecruiterEmail, validJwt));
 
         verify(offerA, never()).removeRecruiter(any());
         verify(userRepository, never()).save(any());
@@ -661,19 +661,19 @@ public class OfferServiceImplTests {
     }
 
     @Test
-    public void OfferService_removeRecruiterFromOffer_ThrowsUserNotFoundByIdException() throws NoPermissionException, OfferNotFoundByIdException, UserNotFoundByIdException {
+    public void OfferService_removeRecruiterFromOffer_ThrowsUserNotFoundByEmailException() throws NoPermissionException, OfferNotFoundByIdException, UserNotFoundByIdException {
         Long validOfferId = 1L;
-        Long invalidRecruiterId = 2L;
+        String invalidRecruiterEmail = "validEmail";
         String validJwt = "some jwt";
         User recruiterA = mock(User.class);
         Offer offerA = mock(Offer.class);
 
 
         when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
-        when(userRepository.findById(invalidRecruiterId)).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(invalidRecruiterEmail)).thenReturn(Optional.empty());
 
 
-        assertThrows(UserNotFoundByIdException.class, () -> offerServiceSpy.removeRecruiterFromOffer(validOfferId, invalidRecruiterId, validJwt));
+        assertThrows(UserNotFoundByEmailException.class, () -> offerServiceSpy.removeRecruiterFromOffer(validOfferId, invalidRecruiterEmail, validJwt));
 
         verify(offerA, never()).removeRecruiter(any());
         verify(userRepository, never()).save(any());
@@ -685,7 +685,7 @@ public class OfferServiceImplTests {
     @Test
     public void OfferService_removeRecruiterFromOffer_ThrowsUserIsNotRecruiterException() throws NoPermissionException {
         Long validOfferId = 1L;
-        Long validRecruiterId = 2L;
+        String validRecruiterEmail = "validEmail";
         String validJwt = "some jwt";
         User userA = mock(User.class);
         User recruiterA = mock(User.class);
@@ -693,14 +693,14 @@ public class OfferServiceImplTests {
         List<User> listUsers = mock(List.class);
 
         when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
-        when(userRepository.findById(validRecruiterId)).thenReturn(Optional.of(recruiterA));
+        when(userRepository.findByEmail(validRecruiterEmail)).thenReturn(Optional.of(recruiterA));
         when(userService.findUserByJwt(validJwt)).thenReturn(userA);
         doNothing().when(offerServiceSpy).validatePermissionRemoveRecruiterFromOffer(userA, offerA, recruiterA);
 
         when(offerA.getRecruiters()).thenReturn(listUsers);
         when(listUsers.contains(recruiterA)).thenReturn(false);
 
-        assertThrows(UserIsNotRecruiterException.class, () -> offerServiceSpy.removeRecruiterFromOffer(validOfferId, validRecruiterId, validJwt));
+        assertThrows(UserIsNotRecruiterException.class, () -> offerServiceSpy.removeRecruiterFromOffer(validOfferId, validRecruiterEmail, validJwt));
 
         verify(offerA, never()).removeRecruiter(any());
         verify(userRepository, never()).save(any());
@@ -712,18 +712,18 @@ public class OfferServiceImplTests {
     @Test
     public void OfferService_removeRecruiterFromOffer_ThrowsNoPermissionException() throws NoPermissionException, OfferNotFoundByIdException, UserNotFoundByIdException {
         Long validOfferId = 1L;
-        Long validRecruiterId = 2L;
+        String validRecruiterEmail = "validEmail";
         String validJwt = "some jwt";
         User userA = mock(User.class);
         User recruiterA = mock(User.class);
         Offer offerA = mock(Offer.class);
 
         when(offerRepository.findById(validOfferId)).thenReturn(Optional.of(offerA));
-        when(userRepository.findById(validRecruiterId)).thenReturn(Optional.of(recruiterA));
+        when(userRepository.findByEmail(validRecruiterEmail)).thenReturn(Optional.of(recruiterA));
         when(userService.findUserByJwt(validJwt)).thenReturn(userA);
         doThrow(NoPermissionException.class).when(offerServiceSpy).validatePermissionRemoveRecruiterFromOffer(userA, offerA, recruiterA);
 
-        assertThrows(NoPermissionException.class, () -> offerServiceSpy.removeRecruiterFromOffer(validOfferId, validRecruiterId, validJwt));
+        assertThrows(NoPermissionException.class, () -> offerServiceSpy.removeRecruiterFromOffer(validOfferId, validRecruiterEmail, validJwt));
 
         verify(offerA, never()).removeRecruiter(any());
         verify(userRepository, never()).save(any());
