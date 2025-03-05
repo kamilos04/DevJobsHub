@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button"
 import { Offer } from '@/types/offer';
 import SmallOfferCard from './SmallOfferCard';
 import { contractsStringFromOffer, getExpirationDate } from '@/utils/utils';
+import { MAIN_URL } from '@/config/mainConfig';
 
 const OfferPage = () => {
     const { id } = useParams();
@@ -65,6 +66,12 @@ const OfferPage = () => {
             dispatch(searchOffersSideBar(params))
         }
     }, [storeOffer.success])
+
+    useEffect(() => {
+        if (storeOffer.fail === "getOfferById") {
+            navigate(MAIN_URL)
+        }
+    }, [storeOffer.fail])
 
     useEffect(() => {
         if (storeOffer.offer && storeOffer.offer?.isLiked !== null) {

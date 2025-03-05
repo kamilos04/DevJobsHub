@@ -43,7 +43,8 @@ import {
     PaginationNext,
     PaginationPrevious,
   } from "@/components/ui/pagination"
-import { setFailNull } from '@/state/application/applicationSlice';
+import { setFailNull, setSuccessNull } from '@/state/application/applicationSlice';
+import { MAIN_URL } from '@/config/mainConfig';
 
 export const ApplicationsManager = () => {
     const { offerId } = useParams();
@@ -79,6 +80,7 @@ export const ApplicationsManager = () => {
 
     useEffect(() => {
         if (applicationStore.success === "setApplicationStatus") {
+            dispatch(setSuccessNull())
             dispatchRequest()
         }
     }, [applicationStore.success])
@@ -87,7 +89,7 @@ export const ApplicationsManager = () => {
     useEffect(() => {
         if(applicationStore.fail === "getApplicationsFromOffer"){
             dispatch(setFailNull())
-            navigate("/search?pageNumber=0&sortBy=dateTimeOfCreation&sortingDirection=asc")
+            navigate(MAIN_URL)
         }
     }, [applicationStore.fail])
 
@@ -102,7 +104,6 @@ export const ApplicationsManager = () => {
                         <Button className='flex flex-row gap-x-1' onClick={() => navigate("/recruiter/manager")}><IoMdArrowRoundBack />Offers manager</Button>
                     </div>
                     <div className='flex flex-col'>
-                        {/* <p>You are applying for a position</p> */}
                         <p className='text-3xl font-bold'>{storeOffer.offer.name}</p>
                         <div className='flex flex-row mt-1 mb-2 items-center gap-x-1 text-gray-300'>
                             <MdOutlineWorkOutline className='text-2xl' />

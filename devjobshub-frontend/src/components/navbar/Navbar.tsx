@@ -37,7 +37,6 @@ const Navbar = () => {
     const {toast} = useToast()
 
     useEffect(() => {
-        console.log("profil wziety")
         dispatch(fetchProfile())
     }, [])
 
@@ -130,13 +129,13 @@ const Navbar = () => {
                                         <form onSubmit={handleSubmit(onChangePasswordSubmit)}>
                                             <div className="grid gap-4 py-4">
                                             <div className="space-y-1">
-                                                <Label htmlFor="registerPassword">New password</Label>
-                                                <Input id="registerPassword" type="password" {...registerForm('password')} />
+                                                <Label htmlFor="password">New password</Label>
+                                                <Input id="password" type="password" {...registerForm('password')} />
                                                 <p className="text-red-500 text-sm font-normal">{formErrors.password?.message}</p>
                                             </div>
                                             <div className="space-y-1">
-                                                <Label htmlFor="registerPassword">Repeat new password</Label>
-                                                <Input id="registerPassword" type="password" {...registerForm('passwordRepeat')} />
+                                                <Label htmlFor="passwordRepeat">Repeat new password</Label>
+                                                <Input id="passwordRepeat" type="password" {...registerForm('passwordRepeat')} />
                                                 <p className="text-red-500 text-sm font-normal">{formErrors.passwordRepeat?.message}</p>
                                             </div>
                                         </div>
