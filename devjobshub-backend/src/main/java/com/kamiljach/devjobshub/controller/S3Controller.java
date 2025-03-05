@@ -24,7 +24,7 @@ public class S3Controller {
     }
 
     @GetMapping("/presigned-cv/{offerId}")
-    public ResponseEntity<PresignedUrlResponse> getPresignedUrlForCV(@PathVariable("offerId") Long offerId, @RequestParam("fileExtension") String fileExtension, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, UserAlreadyAppliedForThisOfferException {
+    public ResponseEntity<PresignedUrlResponse> getPresignedUrlForCV(@PathVariable("offerId") Long offerId, @RequestParam("fileExtension") String fileExtension, @RequestHeader("Authorization")String jwt) throws OfferNotFoundByIdException, UserAlreadyAppliedForThisOfferException, FirmAccountCanNotDoThatException {
         return new ResponseEntity<PresignedUrlResponse>(s3Service.getPresignedUrlForCV(offerId, fileExtension, jwt), HttpStatus.OK);
     }
 

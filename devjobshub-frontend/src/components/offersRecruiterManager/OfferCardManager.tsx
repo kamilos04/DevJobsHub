@@ -25,8 +25,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import ManageRecruitersDialog from './manageRecruitersDialog';
 
-const OfferCardManager = ({ offer }: { offer: Offer }) => {
+const OfferCardManager = ({ offer, dispatchRequest }: { offer: Offer, dispatchRequest: any }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch<any>()
   const [isLiked, setIsLiked] = React.useState<boolean>(false)
@@ -54,7 +55,7 @@ const OfferCardManager = ({ offer }: { offer: Offer }) => {
 
 
   return (
-    <div className='flex flex-col bg-my-card rounded-md border-[1px] pl-4 pr-4 pt-3 pb-3 w-full'>
+    <div className='flex flex-col bg-my-card rounded-md border-[1px] pl-3 pr-3 pt-3 pb-3 w-full'>
       <div className='flex flex-row justify-between'>
         <div className='flex flex-row gap-x-3'>
           {offer.imageUrl && <img src={`https://devjobshub.s3.eu-central-1.amazonaws.com/${offer.imageUrl}`} alt="company logo" className='h-20 aspect-square rounded-xl' />}
@@ -94,6 +95,9 @@ const OfferCardManager = ({ offer }: { offer: Offer }) => {
         </div>
 
         <div className='flex flex-row gap-x-2'>
+          <div className='flex flex-col gap-y-2'>
+            <ManageRecruitersDialog offer={offer} dispatchRequest={dispatchRequest}/>
+          </div>
           <div className='flex flex-col gap-y-2'>
             <Button variant={'outline'} onClick={() => navigate(`/recruiter/applications/${offer.id}`)}>See applications</Button>
             <Button variant={'outline'} onClick={() => navigate(`/recruiter/update-offer/${offer.id}`)}>Update</Button>

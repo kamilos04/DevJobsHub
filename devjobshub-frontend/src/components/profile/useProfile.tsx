@@ -1,3 +1,4 @@
+import { MAIN_URL } from '@/config/mainConfig'
 import { fetchProfile } from '@/state/profile/action'
 import { profile } from 'node:console'
 import React, { useEffect } from 'react'
@@ -13,20 +14,11 @@ export const useProfile = (loginNeeded: boolean, recruiterNeeded: boolean) => {
         dispatch(fetchProfile())
     }
 
-    useEffect(() => {
-        if(profileStore.success === "fetchProfile" && recruiterNeeded === true){
-            if(profileStore.profile.isFirm === false){
-                navigate("/search")
-            }
-            
-        }
-    }, [profileStore.success])
-
 
     useEffect(() => {
         if(profileStore.profile && recruiterNeeded === true){
             if(profileStore.profile.isFirm === false){
-                navigate("/search")
+                navigate(MAIN_URL)
             }
         }
     }, [profileStore.profile])

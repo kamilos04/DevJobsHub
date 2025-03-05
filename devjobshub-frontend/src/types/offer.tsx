@@ -2,6 +2,7 @@ import { MultipleChoiceQuestion } from "./multipleChoiceQuestion";
 import { Question } from "./question";
 import { RadioQuestion } from "./radioQuestion";
 import { Technology } from "./technology";
+import { User } from "./user";
 
 export interface Offer {
     id: number
@@ -37,7 +38,8 @@ export interface Offer {
     questions: Question[];
     radioQuestions: RadioQuestion[];
     multipleChoiceQuestions: MultipleChoiceQuestion[];
-    recruiters?: any | undefined
-    isLiked: boolean | null,
+    recruiters: User[] | null
+    isLiked: boolean | null
     imageUrl: string | null
+    isRecruiter: string | null
 }

@@ -120,10 +120,11 @@ public class S3ServiceImpl implements S3Service {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public PresignedUrlResponse getPresignedUrlForCV(Long offerId, String fileExtension, String jwt) throws OfferNotFoundByIdException, UserAlreadyAppliedForThisOfferException {
+    public PresignedUrlResponse getPresignedUrlForCV(Long offerId, String fileExtension, String jwt) throws OfferNotFoundByIdException, UserAlreadyAppliedForThisOfferException, FirmAccountCanNotDoThatException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
 
         User user = userService.findUserByJwt(jwt);
+        utilityService.isFirmFalseOrThrowException(user);
         applicationService.ifUserAlreadyAppliedForOfferThrowException(user, offer);
 
         String key = String.format("cv/%d-%d.%s", offer.getId(), user.getId(), fileExtension);

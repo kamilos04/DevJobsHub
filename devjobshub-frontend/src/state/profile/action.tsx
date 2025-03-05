@@ -1,4 +1,5 @@
 import { API_URL } from "@/config/api";
+import { ChangePasswordRequest } from "@/types/changePasswordRequest";
 import { LoginRequest } from "@/types/loginRequest";
 import { RegisterRequest } from "@/types/registerRequest";
 import { createAsyncThunk } from "@reduxjs/toolkit";
@@ -24,8 +25,10 @@ export const fetchProfile = createAsyncThunk(
             return data
         }
         catch (error: any) {
+            localStorage.removeItem("jwt")
             return rejectWithValue(error.response.data.message)
-        }}
+        }
+    }
 )
 
 
@@ -52,6 +55,27 @@ export const login = createAsyncThunk(
             const { data } = await axios.post(`${API_URL}/auth/login`, reqData)
 
             localStorage.setItem("jwt", data.token)
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+
+
+export const changePassword = createAsyncThunk(
+    "profile/changePassword",
+    async (reqData: ChangePasswordRequest, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.post(`${API_URL}/auth/change-password`, reqData, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+
             return data
         }
         catch (error: any) {

@@ -88,4 +88,6 @@ public class OfferDto {
 
     private String imageUrl;
 
+    private Boolean isRecruiter;
+
 }

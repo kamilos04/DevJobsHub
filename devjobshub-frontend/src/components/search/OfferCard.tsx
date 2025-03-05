@@ -99,7 +99,8 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
               <Badge variant={'secondary'} className='text-sm border-[1px] border-blue-500'><span>{offer.minSalaryUZ} - {offer.maxSalaryUZ} zł (order contract)</span> </Badge>
             </div>}
           </div>
-          <MdFavoriteBorder className={`text-2xl cursor-pointer ${isLiked && "text-pink-700"}`} onClick={handleLikeClick} />
+          <button className='p-1 h-min' onClick={handleLikeClick}><MdFavoriteBorder className={`text-2xl cursor-pointer ${isLiked && "text-pink-700"}`}  /></button>
+          
 
         </div>
 

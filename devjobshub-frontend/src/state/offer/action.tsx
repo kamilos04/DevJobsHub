@@ -70,6 +70,31 @@ export const searchOffers = createAsyncThunk(
     }
 )
 
+export const searchOffersSideBar = createAsyncThunk(
+    "offer/searchOffersSideBar",
+    async (params: string, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+
+            if (jwt) {
+                const { data } = await axios.get(`${API_URL}/api/offer/search?${params}`, {
+                    headers: {
+                        Authorization: `Bearer ${jwt}`
+                    }
+                })
+                return data
+            }
+            else {
+                const { data } = await axios.get(`${API_URL}/api/offer/search?${params}`)
+                return data
+            }
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
 export const getOfferById = createAsyncThunk(
     "offer/getOfferById",
     async (id: number, { rejectWithValue }) => {
@@ -168,6 +193,64 @@ export const deleteOfferById = createAsyncThunk(
 
 
 
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+
+
+export const getLikedOffers = createAsyncThunk(
+    "offer/getLikedOffers",
+    async ({params }: { params: string }, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.get(`${API_URL}/api/offer/liked?${params}`, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+
+
+export const addRecruiter = createAsyncThunk(
+    "offer/addRecruiter",
+    async ({offerId, userEmail}: {offerId: number, userEmail: string}, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.post(`${API_URL}/api/offer/add-recruiter?offerId=${offerId}&userEmail=${userEmail}`, null, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+export const removeRecruiter = createAsyncThunk(
+    "offer/removeRecruiter",
+    async ({offerId, userEmail}: {offerId: number, userEmail: string}, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.post(`${API_URL}/api/offer/remove-recruiter?offerId=${offerId}&userEmail=${userEmail}`, null, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
         }
         catch (error: any) {
             return rejectWithValue(error.response.data.message)

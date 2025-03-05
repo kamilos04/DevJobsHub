@@ -69,7 +69,15 @@ const UpdateOffer = () => {
             dispatch(setSuccessNull())
             setUpdateButtonDisabled(false)
         }
+        else if (offerStore.success === "getOfferById"){
+            if(offerStore.offer.isRecruiter === false){
+                navigate("/search?pageNumber=0&sortBy=dateTimeOfCreation&sortingDirection=asc")
+            }
+        }
     }, [offerStore.success])
+
+
+    
 
 
     useEffect(() => {
@@ -470,7 +478,7 @@ const UpdateOffer = () => {
     return (
         <div className='flex flex-col'>
             <Navbar />
-            {offerStore.offer && <div className='flex flex-col items-center'>
+            {offerStore.offer?.isRecruiter && <div className='flex flex-col items-center'>
 
                 <form onSubmit={handleCreateOffer(onCreateOfferSubmit)}>
                     <div className='border-[1px] w-min mt-5 rounded-lg p-8'>

@@ -87,6 +87,16 @@ public class User {
         return userDto;
     }
 
+    public UserDto mapToUserDtoShallow_Recruiter(){
+        UserDto userDto1 = new UserDto();
+        userDto1.setId(this.getId());
+        userDto1.setName(this.getName());
+        userDto1.setSurname(this.getSurname());
+        userDto1.setEmail(this.getEmail());
+        userDto1.setIsFirm(this.getIsFirm());
+        return userDto1;
+    }
+
     public UserDto mapToUserDto(){
         UserDto userDto = UserMapper.INSTANCE.userToUserDto(this);
 

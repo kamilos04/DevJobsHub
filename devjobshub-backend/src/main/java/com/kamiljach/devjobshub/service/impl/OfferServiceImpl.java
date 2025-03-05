@@ -185,6 +185,13 @@ public class OfferServiceImpl implements OfferService {
             else{
                 offerDto.setIsLiked(false);
             }
+
+            if(offer.getRecruiters().contains(user)){
+                offerDto.setIsRecruiter(true);
+            }
+            else{
+                offerDto.setIsRecruiter(false);
+            }
         }
         return offerDto;
     }
@@ -263,9 +270,9 @@ public class OfferServiceImpl implements OfferService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void addRecruiterToOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException {
+    public void addRecruiterToOffer(Long offerId, String recruiterEmail, String jwt) throws OfferNotFoundByIdException, UserIsAlreadyRecruiterException, NoPermissionException, UserNotFoundByEmailException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
-        User recruiter = userRepository.findById(recruiterId).orElseThrow(UserNotFoundByIdException::new);
+        User recruiter = userRepository.findByEmail(recruiterEmail).orElseThrow(UserNotFoundByEmailException::new);
         User user = userService.findUserByJwt(jwt);
 
         validatePermissionAddRecruiterToOffer(user, offer);
@@ -278,9 +285,9 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void removeRecruiterFromOffer(Long offerId, Long recruiterId, String jwt) throws OfferNotFoundByIdException, UserNotFoundByIdException, UserIsNotRecruiterException, NoPermissionException {
+    public void removeRecruiterFromOffer(Long offerId, String recruiterEmail, String jwt) throws OfferNotFoundByIdException, UserIsNotRecruiterException, NoPermissionException, UserNotFoundByEmailException {
         Offer offer = offerRepository.findById(offerId).orElseThrow(OfferNotFoundByIdException::new);
-        User recruiter = userRepository.findById(recruiterId).orElseThrow(UserNotFoundByIdException::new);
+        User recruiter = userRepository.findByEmail(recruiterEmail).orElseThrow(UserNotFoundByEmailException::new);
         User user = userService.findUserByJwt(jwt);
 
         validatePermissionRemoveRecruiterFromOffer(user, offer, recruiter);
@@ -331,7 +338,7 @@ public class OfferServiceImpl implements OfferService {
         ArrayList<Offer> offers = new ArrayList<>(offersPage.getContent());
 
         ArrayList<OfferDto> offersDto = new ArrayList<>();
-        offers.forEach(element -> {offersDto.add(element.mapToOfferDtoShallow());});
+        offers.forEach(element -> {offersDto.add(element.mapToOfferDtoShallow_Recruiter());});
 
         return new PageResponse<>(offersDto, offersPage);
     }

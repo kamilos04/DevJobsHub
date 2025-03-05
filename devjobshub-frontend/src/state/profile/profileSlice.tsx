@@ -1,6 +1,6 @@
 import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchProfile, register, login } from "./action";
+import { fetchProfile, register, login, changePassword } from "./action";
 
 interface InitialState {
     isLoading: boolean,
@@ -26,6 +26,9 @@ const profileSlice = createSlice({
         },
         setFailNull(state) {
             state.fail=null
+        },
+        setProfileNull(state) {
+            state.profile=null
         }
     },
     extraReducers: (builder) => {
@@ -66,6 +69,23 @@ const profileSlice = createSlice({
         })
 
 
+        .addCase(changePassword.pending, (state, action) => {
+            state.isLoading = true
+            state.fail = null
+            state.success = null
+            state.error = null
+        })
+        .addCase(changePassword.fulfilled, (state, action) => {
+            state.isLoading = false,
+            state.success = "changePassword"
+        })
+        .addCase(changePassword.rejected, (state, action) => {
+            state.isLoading = false,
+            state.fail = "changePassword",
+            state.error = action.payload
+        })
+
+
         .addCase(login.pending, (state, action) => {
             state.isLoading = true
             state.fail = null
@@ -86,4 +106,4 @@ const profileSlice = createSlice({
 
 
 export default profileSlice.reducer
-export const {setSuccessNull, setFailNull} = profileSlice.actions
+export const {setSuccessNull, setFailNull, setProfileNull} = profileSlice.actions
