@@ -185,7 +185,7 @@ const Login = () => {
             <Navbar />
 
             <div className='h-full flex flex-col items-center justify-center bg-my-background'>
-                <Tabs defaultValue="login" className="w-[25rem]">
+                <Tabs defaultValue="login" className="w-screen md:w-[25rem]">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="login">Sign in</TabsTrigger>
                         <TabsTrigger value="register">Register</TabsTrigger>

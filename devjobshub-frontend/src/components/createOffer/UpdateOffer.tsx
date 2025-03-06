@@ -32,6 +32,7 @@ import { setFailNull, setSuccessNull } from '@/state/offer/offerSlice'
 import { IoMdArrowRoundBack } from 'react-icons/io'
 import { getPresignedUrlForCompanyImage, uploadFileWithPresignedUrl } from '@/state/files/action'
 import { resetFilesStore, setFailNull as setFailNullFiles, setSuccessNull as setSuccessNullFiles } from '@/state/files/filesSlice';
+import { MAIN_URL } from '@/config/mainConfig'
 
 
 const UpdateOffer = () => {
@@ -90,6 +91,10 @@ const UpdateOffer = () => {
 
             dispatch(setFailNull())
             setUpdateButtonDisabled(false)
+        }
+        else if(offerStore.fail === "getOfferById"){
+            dispatch(setFailNull())
+            navigate(MAIN_URL)
         }
     }, [offerStore.fail])
 

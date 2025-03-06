@@ -64,7 +64,8 @@ public class SecurityConfig {
                 cfg.setAllowedOrigins(Arrays.asList(
                         "http://localhost:5173",
                         "http://157.158.191.53:5173",
-                        "http://192.168.1.13:5173"
+                        "http://192.168.1.13:5173",
+                        "http://192.168.137.1:5173"
                 ));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);

@@ -45,6 +45,7 @@ import {
   } from "@/components/ui/pagination"
 import { setFailNull, setSuccessNull } from '@/state/application/applicationSlice';
 import { MAIN_URL } from '@/config/mainConfig';
+import { setFailNull as setFailOfferNull } from '@/state/offer/offerSlice';
 
 export const ApplicationsManager = () => {
     const { offerId } = useParams();
@@ -69,9 +70,16 @@ export const ApplicationsManager = () => {
             if (tab !== "ALL") {
                 params += `&status=${tab}`
             }
-            dispatch(getApplicationsFromOffer({ id: storeOffer.offer.id, params: params }))
+            dispatch(getApplicationsFromOffer({ id: Number(offerId), params: params }))
         }
     }
+
+    useEffect(() =>{
+        if(storeOffer.fail === "getOfferById"){
+            dispatch(setFailOfferNull())
+            navigate(MAIN_URL)
+        }
+    }, [storeOffer.fail])
 
 
     useEffect(() => {
