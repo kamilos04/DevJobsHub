@@ -1,4 +1,4 @@
-import { differenceInCalendarDays, differenceInDays, differenceInHours, differenceInSeconds, parse } from "date-fns";
+import { differenceInCalendarDays, differenceInHours, differenceInSeconds, parse } from "date-fns";
 
 export const formatExpirationDate = (date: Date, time: string): string => {
     const day = String(date.getDate()).padStart(2, "0");

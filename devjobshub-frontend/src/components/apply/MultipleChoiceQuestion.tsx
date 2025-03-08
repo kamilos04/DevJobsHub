@@ -1,6 +1,5 @@
 import { MultipleChoiceQuestionAndAnswer } from '@/types/multipleChoiceQuestionAndAnswer'
 import { Checkbox } from "@/components/ui/checkbox"
-import React from 'react'
 import { QuestionAndAnswerWithType } from '@/types/questionAndAnswerWithType'
 
 const MultipleChoiceQuestion = ({ question, setQuestionsList }: { question: MultipleChoiceQuestionAndAnswer, setQuestionsList: any }) => {

@@ -3,7 +3,6 @@ import Navbar from '../navbar/Navbar'
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
     PaginationItem,
     PaginationLink,
     PaginationNext,
@@ -14,7 +13,7 @@ import {
 
 import { Offer } from '@/types/offer'
 
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { useProfile } from '../profile/useProfile'
 import { getLikedOffers } from '@/state/offer/action'
@@ -25,9 +24,8 @@ const FavouriteOffers = () => {
     const [page, setPage] = React.useState<number>(0)
     const location = useLocation()
     const dispatch = useDispatch<any>()
-    const navigate = useNavigate()
     const offerStore = useSelector((store: any) => (store.offer))
-    const { getProfile, profileStore } = useProfile(true, false)
+    const { getProfile } = useProfile(true, false)
 
 
 

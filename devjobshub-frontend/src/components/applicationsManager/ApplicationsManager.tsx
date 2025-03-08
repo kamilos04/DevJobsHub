@@ -14,18 +14,7 @@ import { contractsStringFromOffer, getExpirationDate } from '@/utils/utils';
 import { useProfile } from '../profile/useProfile';
 import { getOfferById } from '@/state/offer/action';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
     Tabs,
-    TabsContent,
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
@@ -37,7 +26,6 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
     PaginationItem,
     PaginationLink,
     PaginationNext,

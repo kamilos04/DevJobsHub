@@ -3,15 +3,11 @@ import React, { useEffect } from 'react'
 import { MdOutlineWorkOutline } from "react-icons/md";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaRegBuilding } from "react-icons/fa";
-import { Technology } from '@/types/technology';
-import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
-import { MdFavoriteBorder } from "react-icons/md";
 import { RiStairsLine } from "react-icons/ri";
-import { off } from 'process';
 import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
-import { deleteOfferById, likeOfferById, removeLikeOfferById } from '@/state/offer/action';
+import { deleteOfferById } from '@/state/offer/action';
 import { Button } from '../ui/button';
 import { MdOutlineDateRange } from "react-icons/md";
 import {
@@ -25,12 +21,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import ManageRecruitersDialog from './manageRecruitersDialog';
+import ManageRecruitersDialog from './ManageRecruitersDialog';
 
 const OfferCardManager = ({ offer, dispatchRequest }: { offer: Offer, dispatchRequest: any }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch<any>()
-  const [isLiked, setIsLiked] = React.useState<boolean>(false)
+  const [, setIsLiked] = React.useState<boolean>(false)
   const levels = [
     { value: "TRAINEE", label: "Trainee / Intern" },
     { value: "JUNIOR", label: "Junior" },

@@ -1,7 +1,6 @@
 import { MAIN_URL } from '@/config/mainConfig'
 import { fetchProfile } from '@/state/profile/action'
-import { profile } from 'node:console'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
 

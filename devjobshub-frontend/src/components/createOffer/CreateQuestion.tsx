@@ -5,16 +5,12 @@ import {
     SelectContent,
     SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { Button } from '../ui/button'
-import { Question } from '@/types/question'
-import { RadioQuestion } from '@/types/radioQuestion'
-import { MultipleChoiceQuestion } from '@/types/multipleChoiceQuestion'
 import { QuestionWithType } from '@/types/questionWithType'
 
 const CreateQuestion = (props: any) => {

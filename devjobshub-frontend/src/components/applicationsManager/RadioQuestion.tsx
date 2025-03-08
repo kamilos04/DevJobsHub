@@ -1,5 +1,4 @@
 import { RadioQuestionAndAnswer } from '@/types/radioQuestionAndAnswer'
-import React from 'react'
 
 export const RadioQuestion = ({question}: {question: RadioQuestionAndAnswer}) => {
   return (

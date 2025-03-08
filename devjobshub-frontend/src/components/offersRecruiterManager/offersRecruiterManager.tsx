@@ -3,7 +3,6 @@ import Navbar from '../navbar/Navbar'
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -11,18 +10,14 @@ import {
 } from "@/components/ui/pagination"
 
 
-import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select"
 import { Offer } from '@/types/offer'
-import { Controller } from 'react-hook-form'
 import { Button } from '../ui/button'
 import { Checkbox } from "@/components/ui/checkbox"
 import { useLocation, useNavigate } from 'react-router'

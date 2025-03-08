@@ -37,7 +37,6 @@ export const getTechnologiesByIds = createAsyncThunk(
     "technology/getTechnologiesByIds",
     async (ids: string, { rejectWithValue }) => {
         try {
-            const jwt = localStorage.getItem("jwt")
             const { data } = await axios.get(`${API_URL}/api/technology/by-ids?ids=${ids}`)
             return data
         }

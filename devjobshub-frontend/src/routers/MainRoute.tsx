@@ -8,7 +8,6 @@ import OfferPage from '@/components/offer/OfferPage'
 import OffersRecruiterManager from '@/components/offersRecruiterManager/offersRecruiterManager'
 import BlankPage from '@/components/search/BlankPage'
 import SearchPage from '@/components/search/SearchPage'
-import React from 'react'
 import { Route, Routes } from 'react-router'
 
 const MainRoute = () => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Navbar from '../navbar/Navbar'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -74,6 +74,7 @@ const CreateOffer = () => {
             });
 
             dispatch(setFailNull())
+            setCreateButtonDisabled(false)
         }
     }, [offerStore.fail])
 
@@ -183,7 +184,6 @@ const CreateOffer = () => {
     const {
         register: registerCreateOffer,
         handleSubmit: handleCreateOffer,
-        setValue: setValueCreateOffer,
         control: controlCreateOffer,
         formState: { errors: createOfferErrors },
         watch: watchForm

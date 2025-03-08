@@ -1,5 +1,4 @@
 import { QuestionAndAnswer } from '@/types/questionAndAnswer'
-import React from 'react'
 
 export const OpenQuestion = ({question}: {question: QuestionAndAnswer}) => {
   return (

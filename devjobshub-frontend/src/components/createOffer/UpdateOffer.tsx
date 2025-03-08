@@ -23,7 +23,7 @@ import { convertQuestionsFromOfferToQuestionWithTypeList, convertQuestionsListTo
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch, useSelector } from 'react-redux'
-import { createOffer, getOfferById, updateOffer } from '@/state/offer/action'
+import { getOfferById, updateOffer } from '@/state/offer/action'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { useProfile } from '../profile/useProfile'
 import { Offer } from '@/types/offer'
@@ -31,7 +31,7 @@ import { useToast } from '@/hooks/use-toast'
 import { setFailNull, setSuccessNull } from '@/state/offer/offerSlice'
 import { IoMdArrowRoundBack } from 'react-icons/io'
 import { getPresignedUrlForCompanyImage, uploadFileWithPresignedUrl } from '@/state/files/action'
-import { resetFilesStore, setFailNull as setFailNullFiles, setSuccessNull as setSuccessNullFiles } from '@/state/files/filesSlice';
+import { setFailNull as setFailNullFiles, setSuccessNull as setSuccessNullFiles } from '@/state/files/filesSlice';
 import { MAIN_URL } from '@/config/mainConfig'
 
 

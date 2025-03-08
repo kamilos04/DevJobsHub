@@ -1,13 +1,12 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import {
-    Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Application } from '@/types/application'
 import { QuestionAndAnswerWithType } from '@/types/questionAndAnswerWithType'
-import { addMultipleChoiceQuestionsToQuestionsList, addMultipleChoiceQuestionsWithAnswerToQuestionsList, addOpenQuestionsToQuestionsList, addOpenQuestionsWithAnswerToQuestionsList, addRadioQuestionsToQuestionsList, addRadioQuestionsWithAnswerToQuestionsList } from '@/utils/questionsUtils'
+import { addMultipleChoiceQuestionsWithAnswerToQuestionsList, addOpenQuestionsWithAnswerToQuestionsList, addRadioQuestionsWithAnswerToQuestionsList } from '@/utils/questionsUtils'
 import { OpenQuestion } from './OpenQuestion'
 import { QuestionAndAnswer } from '@/types/questionAndAnswer'
 import { RadioQuestion } from './RadioQuestion'

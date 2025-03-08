@@ -1,5 +1,4 @@
 import { MultipleChoiceQuestionAndAnswer } from '@/types/multipleChoiceQuestionAndAnswer'
-import React from 'react'
 
 export const MultipleChoiceQuestion = ({question}: {question: MultipleChoiceQuestionAndAnswer}) => {
   return (

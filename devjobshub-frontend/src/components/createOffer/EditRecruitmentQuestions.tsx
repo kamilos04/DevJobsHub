@@ -1,17 +1,6 @@
-import React, { useEffect, useState } from 'react'
 import { Separator } from '../ui/separator'
 import CreateQuestion from './CreateQuestion'
 
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 
 import {
   Accordion,
@@ -27,7 +16,7 @@ const EditRecruitmentQuestions = (props: any) => {
 
   const handleRemoveClick = (index: number) => {
     props.setQuestionsList((prevQuestions: Array<QuestionWithType>) => {
-      return prevQuestions.filter((question: QuestionWithType, i: number) => i !== index);
+      return prevQuestions.filter((_question: QuestionWithType, i: number) => i !== index);
     });
   }
 

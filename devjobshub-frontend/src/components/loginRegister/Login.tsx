@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -20,14 +20,12 @@ import {
     Select,
     SelectContent,
     SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
+    SelectItem, SelectTrigger,
+    SelectValue
 } from "@/components/ui/select"
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { RegisterRequest } from '@/types/registerRequest'
 import { useDispatch, useSelector } from 'react-redux'
 import { login, register } from '@/state/profile/action'

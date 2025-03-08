@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import Navbar from '../navbar/Navbar'
 import { useNavigate } from 'react-router'
 

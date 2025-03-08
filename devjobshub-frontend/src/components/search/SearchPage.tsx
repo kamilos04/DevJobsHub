@@ -6,26 +6,22 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select"
 import PopoverCheckboxes from './PopoverCheckboxes'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Button } from '../ui/button'
 import { FaSearch } from "react-icons/fa";
-import { useDispatch, useSelector, useStore } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { searchOffers } from '@/state/offer/action'
 import { Technology } from '@/types/technology'
 import PopoverTechnologies from './PopoverTechnologies'
-import { SelectItemText } from '@radix-ui/react-select'
 import { Badge } from "@/components/ui/badge"
 import { Label } from '../ui/label'
 import { Separator } from "@/components/ui/separator"
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -33,9 +29,8 @@ import {
 } from "@/components/ui/pagination"
 import OfferCard from './OfferCard'
 import { Offer } from '@/types/offer'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 import { getTechnologiesByIds } from '@/state/technology/action'
-import { text } from 'stream/consumers'
 import { jobLevels, operatingModes, specializations } from '@/constants'
 
 
@@ -51,7 +46,6 @@ const SearchPage = () => {
   const localizationsRef = React.useRef<string[]>([])
   const [pageNumber, setPageNumber] = React.useState<number>(0)
   const pageRef = React.useRef<number>(0)
-  const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams();
   const [sortBy, setSortBy] = React.useState<string>("dateTimeOfCreation")
   const sortByRef = React.useRef<string>("dateTimeOfCreation")
@@ -64,7 +58,6 @@ const SearchPage = () => {
     register: registerSearch,
     handleSubmit: handleSubmit,
     control: controlSearch,
-    formState: { errors: searchErrors },
     setValue: setValueSearch,
     watch: watchSearch
   } = useForm({
@@ -313,7 +306,7 @@ const setPageStateAndSearchParams = (value: number) => {
               <Separator className='mt-4 mb-4' />
               <Label className=''>Locations: </Label>
               <div className='flex flex-row items-start flex-wrap mt-2 w-full gap-x-2 gap-y-2 mb-2'>
-                {localizations.map((element: string, index: number) => <Badge key={element} className='cursor-pointer text-sm bg-gray-400' onClick={() => setLocalizations(localizations.filter((item: string, i: number) => i !== index))}>{element}</Badge>)}
+                {localizations.map((element: string, index: number) => <Badge key={element} className='cursor-pointer text-sm bg-gray-400' onClick={() => setLocalizations(localizations.filter((_item: string, i: number) => i !== index))}>{element}</Badge>)}
                 {localizations.length === 0 && <span className='text-sm text-gray-400'>No locations selected</span>}
               </div>
 

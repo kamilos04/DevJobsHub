@@ -1,5 +1,4 @@
 import { Technology } from "@/types/technology";
-import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
 import { createTechnology, getTechnologiesByIds, searchTechnologies } from "./action";
 
@@ -41,7 +40,7 @@ const technologySlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder.addCase(searchTechnologies.pending, (state, action) => {
+        builder.addCase(searchTechnologies.pending, (state) => {
             state.isLoading = true
             state.fail = null
             state.success = null
@@ -60,13 +59,13 @@ const technologySlice = createSlice({
             })
 
 
-            .addCase(createTechnology.pending, (state, action) => {
+            .addCase(createTechnology.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
                 state.error = null
             })
-            .addCase(createTechnology.fulfilled, (state, action) => {
+            .addCase(createTechnology.fulfilled, (state) => {
                 state.isLoading = false,
                     state.success = "createTechnology"
             })
@@ -77,7 +76,7 @@ const technologySlice = createSlice({
             })
 
 
-            .addCase(getTechnologiesByIds.pending, (state, action) => {
+            .addCase(getTechnologiesByIds.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null

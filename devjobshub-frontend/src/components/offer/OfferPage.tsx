@@ -1,21 +1,20 @@
 import React, { useEffect } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import Navbar from '../navbar/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOfferById, likeOfferById, removeLikeOfferById, searchOffers, searchOffersSideBar } from '@/state/offer/action';
+import { getOfferById, likeOfferById, removeLikeOfferById, searchOffersSideBar } from '@/state/offer/action';
 import { MdOutlineWorkOutline } from "react-icons/md";
 import { TiDocumentText } from "react-icons/ti";
 import { RiStairsLine } from "react-icons/ri";
-import { jobLevelsAndLabels, operatingModes, operatingModesAndLabels, specializationsAndLabels } from '@/constants';
+import { jobLevelsAndLabels, operatingModesAndLabels, specializationsAndLabels } from '@/constants';
 import { FaRegBuilding } from "react-icons/fa";
 import { BsPersonWorkspace } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
-import { FaMoneyBill1Wave } from "react-icons/fa6";
 import { Separator } from '../ui/separator';
 import { Technology } from '@/types/technology';
 import { Badge } from '../ui/badge';
 import { MdOutlineDateRange } from "react-icons/md";
-import { calcDaysToExpirationDateFromString, calcSecondsToExpirationDateFromString } from '@/utils/dateUtils';
+import { calcSecondsToExpirationDateFromString } from '@/utils/dateUtils';
 import { GiPlainCircle } from "react-icons/gi";
 import { MdFavoriteBorder } from "react-icons/md";
 import { GrSend } from "react-icons/gr";

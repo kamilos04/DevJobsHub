@@ -32,7 +32,7 @@ const profileSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchProfile.pending, (state, action) => {
+        builder.addCase(fetchProfile.pending, (state) => {
             state.isLoading = true
             state.fail = null
             state.success = null
@@ -52,13 +52,13 @@ const profileSlice = createSlice({
 
 
 
-        .addCase(register.pending, (state, action) => {
+        .addCase(register.pending, (state) => {
             state.isLoading = true
             state.fail = null
             state.success = null
             state.error = null
         })
-        .addCase(register.fulfilled, (state, action) => {
+        .addCase(register.fulfilled, (state) => {
             state.isLoading = false,
             state.success = "register"
         })
@@ -69,13 +69,13 @@ const profileSlice = createSlice({
         })
 
 
-        .addCase(changePassword.pending, (state, action) => {
+        .addCase(changePassword.pending, (state) => {
             state.isLoading = true
             state.fail = null
             state.success = null
             state.error = null
         })
-        .addCase(changePassword.fulfilled, (state, action) => {
+        .addCase(changePassword.fulfilled, (state) => {
             state.isLoading = false,
             state.success = "changePassword"
         })
@@ -86,13 +86,13 @@ const profileSlice = createSlice({
         })
 
 
-        .addCase(login.pending, (state, action) => {
+        .addCase(login.pending, (state) => {
             state.isLoading = true
             state.fail = null
             state.success = null
             state.error = null
         })
-        .addCase(login.fulfilled, (state, action) => {
+        .addCase(login.fulfilled, (state) => {
             state.isLoading = false,
             state.success = "login"
         })

@@ -1,5 +1,5 @@
 import { changePassword, fetchProfile } from '@/state/profile/action';
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { CgProfile } from "react-icons/cg";
 import { MdFavoriteBorder } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
@@ -57,7 +57,6 @@ const Navbar = () => {
     const {
         register: registerForm,
         handleSubmit: handleSubmit,
-        setValue: setValueForm,
         formState: { errors: formErrors },
         reset: resetForm
     } = useForm({
