@@ -36,7 +36,7 @@ import { MAIN_URL } from '@/config/mainConfig'
 
 
 const UpdateOffer = () => {
-    const { getProfile, profileStore } = useProfile(true, true)
+    const { getProfile, profileStore } = useProfile(true, true, true)
     const dispatch = useDispatch<any>()
     const offerStore = useSelector((store: any) => (store.offer))
     const { offerId } = useParams()
@@ -70,15 +70,15 @@ const UpdateOffer = () => {
             dispatch(setSuccessNull())
             setUpdateButtonDisabled(false)
         }
-        else if (offerStore.success === "getOfferById"){
-            if(offerStore.offer.isRecruiter === false){
+        else if (offerStore.success === "getOfferById") {
+            if (offerStore.offer.isRecruiter === false) {
                 navigate("/search?pageNumber=0&sortBy=dateTimeOfCreation&sortingDirection=asc")
             }
         }
     }, [offerStore.success])
 
 
-    
+
 
 
     useEffect(() => {
@@ -92,7 +92,7 @@ const UpdateOffer = () => {
             dispatch(setFailNull())
             setUpdateButtonDisabled(false)
         }
-        else if(offerStore.fail === "getOfferById"){
+        else if (offerStore.fail === "getOfferById") {
             dispatch(setFailNull())
             navigate(MAIN_URL)
         }
@@ -105,7 +105,7 @@ const UpdateOffer = () => {
                 if (jobOffer.imageUrl) {
                     setIsAlreadyImage(true)
                 }
-                else{
+                else {
                     setIsAlreadyImage(false)
                 }
 
@@ -312,21 +312,21 @@ const UpdateOffer = () => {
 
 
     useEffect(() => {
-            if (cvFile) {
-                setIsAlreadyImage(false)
-                if (cvFile.size < 1024 * 1024 * 5) {
-                    dispatch(getPresignedUrlForCompanyImage({ fileExtension: cvFile.name.split(".").pop() || "" }))
-                }
-                else {
-                    setCvFile(null)
-                    toast({
-                        variant: "destructive",
-                        title: "File size is too large!"
-                    });
-    
-                }
+        if (cvFile) {
+            setIsAlreadyImage(false)
+            if (cvFile.size < 1024 * 1024 * 5) {
+                dispatch(getPresignedUrlForCompanyImage({ fileExtension: cvFile.name.split(".").pop() || "" }))
             }
-        }, [cvFile])
+            else {
+                setCvFile(null)
+                toast({
+                    variant: "destructive",
+                    title: "File size is too large!"
+                });
+
+            }
+        }
+    }, [cvFile])
 
 
     const onCreateOfferSubmit = (data: any) => {
@@ -444,19 +444,19 @@ const UpdateOffer = () => {
 
 
     useEffect(() => {
-            if (filesStore.success === "uploadFileWithPresignedUrl") {
-                dispatch(updateOffer({ reqData: req, id: Number(offerId) }))
-                dispatch(setSuccessNullFiles())
-            }
-            else if (filesStore.fail === "uploadFileWithPresignedUrl") {
-                toast({
-                    variant: "destructive",
-                    title: "An error occurred while uploading the file!",
-                });
-                setUpdateButtonDisabled(false)
-                dispatch(setFailNullFiles())
-            }
-        }, [filesStore.success, filesStore.fail])
+        if (filesStore.success === "uploadFileWithPresignedUrl") {
+            dispatch(updateOffer({ reqData: req, id: Number(offerId) }))
+            dispatch(setSuccessNullFiles())
+        }
+        else if (filesStore.fail === "uploadFileWithPresignedUrl") {
+            toast({
+                variant: "destructive",
+                title: "An error occurred while uploading the file!",
+            });
+            setUpdateButtonDisabled(false)
+            dispatch(setFailNullFiles())
+        }
+    }, [filesStore.success, filesStore.fail])
 
 
 
@@ -487,9 +487,17 @@ const UpdateOffer = () => {
 
                 <form onSubmit={handleCreateOffer(onCreateOfferSubmit)}>
                     <div className='border-[1px] w-min mt-5 rounded-lg p-8'>
-                        <div className='flex flex-row items-start w-full mb-2'>
+                        {/* <div className='flex flex-row items-start w-full mb-2'>
                             <Button type='button' className='flex flex-row gap-x-1' onClick={() => navigate("/recruiter/manager")}><IoMdArrowRoundBack />Offers manager</Button>
-                        </div>
+                        </div> */}
+
+                        {profileStore.profile?.isAdmin ?
+                            <div className='flex flex-row items-start w-full mb-2'>
+                                <Button type='button' className='flex flex-row gap-x-1' onClick={() => navigate("/admin/offers")}><IoMdArrowRoundBack />Offers manager</Button>
+                            </div>
+                            : <div className='flex flex-row items-start w-full mb-2'>
+                                <Button type='button' className='flex flex-row gap-x-1' onClick={() => navigate("/recruiter/manager")}><IoMdArrowRoundBack />Offers manager</Button>
+                            </div>}
                         <div className='flex flex-row justify-center mb-3'>
                             <h1 className='text-2xl font-bold'>Offer ID: {offerStore.offer.id}</h1>
                         </div>

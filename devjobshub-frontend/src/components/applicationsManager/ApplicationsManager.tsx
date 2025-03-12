@@ -30,7 +30,7 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
-  } from "@/components/ui/pagination"
+} from "@/components/ui/pagination"
 import { setFailNull, setSuccessNull } from '@/state/application/applicationSlice';
 import { MAIN_URL } from '@/config/mainConfig';
 import { setFailNull as setFailOfferNull } from '@/state/offer/offerSlice';
@@ -39,7 +39,7 @@ export const ApplicationsManager = () => {
     const { offerId } = useParams();
     const dispatch = useDispatch<any>()
     const storeOffer = useSelector((store: any) => store.offer)
-    const { getProfile, profileStore } = useProfile(true, true)
+    const { getProfile, profileStore } = useProfile(true, true, true)
     const location = useLocation()
     const [tab, setTab] = React.useState<string>("ALL")
     const [page, setPage] = React.useState<number>(0)
@@ -62,8 +62,8 @@ export const ApplicationsManager = () => {
         }
     }
 
-    useEffect(() =>{
-        if(storeOffer.fail === "getOfferById"){
+    useEffect(() => {
+        if (storeOffer.fail === "getOfferById") {
             dispatch(setFailOfferNull())
             navigate(MAIN_URL)
         }
@@ -83,7 +83,7 @@ export const ApplicationsManager = () => {
 
 
     useEffect(() => {
-        if(applicationStore.fail === "getApplicationsFromOffer"){
+        if (applicationStore.fail === "getApplicationsFromOffer") {
             dispatch(setFailNull())
             navigate(MAIN_URL)
         }
@@ -95,10 +95,15 @@ export const ApplicationsManager = () => {
         <div className='flex flex-col'>
             <Navbar />
             <div className='flex flex-col items-center'>
-                {(storeOffer.offer && profileStore.profile?.isFirm) && <div className='flex flex-col mt-8 bg-my-card p-8 rounded-xl border-[1px] w-[60rem] items-center'>
-                    <div className='flex flex-row items-start w-full mb-2'>
-                        <Button className='flex flex-row gap-x-1' onClick={() => navigate("/recruiter/manager")}><IoMdArrowRoundBack />Offers manager</Button>
-                    </div>
+                {(storeOffer.offer && (profileStore.profile?.isFirm || profileStore.profile?.isAdmin)) && <div className='flex flex-col mt-8 bg-my-card p-8 rounded-xl border-[1px] w-[60rem] items-center'>
+                    {profileStore.profile?.isAdmin ?
+                        <div className='flex flex-row items-start w-full mb-2'>
+                            <Button className='flex flex-row gap-x-1' onClick={() => navigate("/admin/offers")}><IoMdArrowRoundBack />Offers manager</Button>
+                        </div>
+                        : <div className='flex flex-row items-start w-full mb-2'>
+                            <Button className='flex flex-row gap-x-1' onClick={() => navigate("/recruiter/manager")}><IoMdArrowRoundBack />Offers manager</Button>
+                        </div>}
+
                     <div className='flex flex-col'>
                         <p className='text-3xl font-bold'>{storeOffer.offer.name}</p>
                         <div className='flex flex-row mt-1 mb-2 items-center gap-x-1 text-gray-300'>
@@ -178,7 +183,8 @@ export const ApplicationsManager = () => {
                         </div>
                     </div>
                     <div className='w-full flex flex-row justify-center mt-16 mb-4'>
-                        <Tabs defaultValue="account" className="w-[40rem]" value={tab} onValueChange={(value: string) => {setPage(0)
+                        <Tabs defaultValue="account" className="w-[40rem]" value={tab} onValueChange={(value: string) => {
+                            setPage(0)
                             setTab(value)
                         }}>
                             <TabsList className="grid w-full grid-cols-4">
@@ -191,7 +197,7 @@ export const ApplicationsManager = () => {
                     </div>
                     <div className='flex flex-col w-full'>
                         <Accordion type="single" collapsible className="w-full">
-                            {applicationStore.applications?.content.map((element: Application) => <ApplicationAccordion key={element.id} application={element} offer={storeOffer.offer}/>)}
+                            {applicationStore.applications?.content.map((element: Application) => <ApplicationAccordion key={element.id} application={element} offer={storeOffer.offer} />)}
                             {applicationStore.applications?.totalElements === 0 && <div className='text-gray-300 text-xl mt-6'>{"There are no applications yet."}</div>}
                         </Accordion>
                     </div>

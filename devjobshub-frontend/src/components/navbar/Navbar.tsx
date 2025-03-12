@@ -101,6 +101,9 @@ const Navbar = () => {
                 {(profileStore.profile && profileStore.profile.isFirm === true) && <div className='flex flex-row items-center'>
                     <button className='p-2 hover:text-blue-300' onClick={() => navigate("/recruiter/manager")}>Recruiter panel</button>
                 </div>}
+                {(profileStore.profile && profileStore.profile.isAdmin === true) && <div className='flex flex-row items-center'>
+                    <button className='p-2 hover:text-blue-300' onClick={() => navigate("/admin/offers")}>Offers manager - admin</button>
+                </div>}
                 <button onClick={() => navigate("/favourite")} className='hover:text-blue-300'>
                     <MdFavoriteBorder className='text-[2rem] ' />
                 </button>

@@ -35,7 +35,7 @@ import { resetFilesStore, setFailNull as setFailNullFiles, setSuccessNull as set
 const CreateOffer = () => {
     const dispatch = useDispatch<any>()
     const offerStore = useSelector((store: any) => (store.offer))
-    const { getProfile, profileStore } = useProfile(true, true)
+    const { getProfile, profileStore } = useProfile(true, true, false)
     const { toast } = useToast()
     const navigate = useNavigate()
     const location = useLocation()

@@ -38,7 +38,7 @@ const OffersRecruiterManager = () => {
   const location = useLocation()
   const dispatch = useDispatch<any>()
   const navigate = useNavigate()
-  const { getProfile, profileStore } = useProfile(true, true)
+  const { getProfile, profileStore } = useProfile(true, true, false)
   const offerStore = useSelector((store: any) => (store.offer))
   const { toast } = useToast()
 

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addRecruiter, createOffer as createOffer, deleteOfferById, getLikedOffers, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, removeRecruiter, searchOffers, searchOffersSideBar, updateOffer } from "./action";
+import { addRecruiter, createOffer as createOffer, deleteOfferById, getLikedOffers, getOfferById, getOffersAdmin, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, removeRecruiter, searchOffers, searchOffersSideBar, updateOffer } from "./action";
 import { Offer } from "@/types/offer";
 
 interface PageResponseOffers {
@@ -194,6 +194,28 @@ const offerSlice = createSlice({
             .addCase(getOffersFromRecruiter.rejected, (state, action) => {
                 state.isLoading = false,
                     state.fail = "getOffersFromRecruiter",
+                    state.error = action.payload
+                    state.offersFromRecruiter = null
+            })
+
+
+
+            .addCase(getOffersAdmin.pending, (state) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+                // state.offersFromRecruiter = null
+            })
+            .addCase(getOffersAdmin.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "getOffersAdmin",
+                    state.offersFromRecruiter = action.payload
+
+            })
+            .addCase(getOffersAdmin.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "getOffersAdmin",
                     state.error = action.payload
                     state.offersFromRecruiter = null
             })

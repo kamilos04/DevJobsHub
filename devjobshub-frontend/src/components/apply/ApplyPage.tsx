@@ -40,7 +40,7 @@ const ApplyPage = () => {
     const filesStore = useSelector((store: any) => (store.files))
     const [questionsList, setQuestionsList] = React.useState<Array<QuestionAndAnswerWithType>>([])
     const { toast } = useToast()
-    const { getProfile } = useProfile(true, false)
+    const { getProfile } = useProfile(true, false, false)
     const [cvFile, setCvFile] = React.useState<File | null>(null)
     const location = useLocation()
     const navigate = useNavigate()

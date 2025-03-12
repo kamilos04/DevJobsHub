@@ -47,7 +47,7 @@ const Login = () => {
     const dispatch = useDispatch<any>()
     const navigate = useNavigate()
     const location = useLocation()
-    const { getProfile, profileStore } = useProfile(false, false)
+    const { getProfile, profileStore } = useProfile(false, false, false)
 
     const onLoginSubmit = (data: any) => {
         let reqData: LoginRequest = {

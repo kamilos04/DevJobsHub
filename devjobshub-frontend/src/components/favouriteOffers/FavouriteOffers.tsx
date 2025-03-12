@@ -25,7 +25,7 @@ const FavouriteOffers = () => {
     const location = useLocation()
     const dispatch = useDispatch<any>()
     const offerStore = useSelector((store: any) => (store.offer))
-    const { getProfile } = useProfile(true, false)
+    const { getProfile } = useProfile(true, false, false)
 
 
 
