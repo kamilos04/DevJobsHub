@@ -186,7 +186,7 @@ public class OfferServiceImpl implements OfferService {
                 offerDto.setIsLiked(false);
             }
 
-            if(offer.getRecruiters().contains(user)){
+            if(offer.getRecruiters().contains(user) || user.getIsAdmin()){
                 offerDto.setIsRecruiter(true);
             }
             else{
@@ -385,6 +385,9 @@ public class OfferServiceImpl implements OfferService {
 
 
     public void validatePermissionAddRecruiterToOffer(User user, Offer offer) throws NoPermissionException {
+        if (user.getIsAdmin()){
+            return;
+        }
         if (offer.getRecruiters().contains(user)){
             return;
         }
@@ -392,6 +395,9 @@ public class OfferServiceImpl implements OfferService {
     }
 
     public void validatePermissionRemoveRecruiterFromOffer(User user, Offer offer, User recruiter) throws NoPermissionException {
+        if (user.getIsAdmin()){
+            return;
+        }
         if (offer.getRecruiters().contains(user)){
             if(!user.equals(recruiter)){
                 return;
