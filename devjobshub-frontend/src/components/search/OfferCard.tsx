@@ -31,7 +31,8 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
 
   const handleLikeClick = (event: any) => {
     event.stopPropagation()
-    if (isLiked === false) {
+    if(offer.isLiked !== null){
+      if (isLiked === false) {
       dispatch(likeOfferById(offer?.id))
       setIsLiked(true)
     }
@@ -39,6 +40,11 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
       dispatch(removeLikeOfferById(offer?.id))
       setIsLiked(false)
     }
+    }
+    else{
+      navigate("/login")
+    }
+    
   }
 
 
