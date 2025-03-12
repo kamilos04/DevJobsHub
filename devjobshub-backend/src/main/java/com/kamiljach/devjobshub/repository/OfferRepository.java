@@ -50,4 +50,11 @@ public interface OfferRepository extends JpaRepository<Offer, Long> {
             "(:isActive = TRUE AND o.expirationDate > :currentDateTime)" +
             " OR (:isActive = FALSE AND o.expirationDate <= :currentDateTime))))")
     Page<Offer> getOffersFromRecruiter(@Param("recruiterId") Long recruiterId, @Param("isActive") Boolean isActive, @Param("currentDateTime") LocalDateTime currentDateTime, Pageable pageable);
+
+
+    @Query("SELECT DISTINCT o FROM Offer o " +
+            "WHERE ((:isActive IS NULL OR (" +
+            "(:isActive = TRUE AND o.expirationDate > :currentDateTime)" +
+            " OR (:isActive = FALSE AND o.expirationDate <= :currentDateTime))))")
+    Page<Offer> getOffers(@Param("isActive") Boolean isActive, @Param("currentDateTime") LocalDateTime currentDateTime, Pageable pageable);
 }
