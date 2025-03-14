@@ -48,7 +48,7 @@ const FavouriteOffers = () => {
         <div className='flex flex-col'>
             <Navbar />
             <div className='flex flex-col items-center mb-8'>
-                <div className='mt-8 p-4 w-[70rem] flex flex-col items-center rounded-2xl'>
+                <div className='mt-8 p-4 xs:w-[30rem] md:w-[40rem] xl:w-[50rem] 2xl:w-[65rem] 3xl:w-[70rem] flex flex-col items-center rounded-2xl'>
                     <h1 className='text-2xl font-bold'>Favourite offers {offerStore.likedOffers && <span>{`(${offerStore.likedOffers.totalElements})`}</span>}</h1>
                     <div className='flex flex-row w-full gap-x-4'>
                         <div className='flex flex-col w-full'>

@@ -91,7 +91,7 @@ const OffersRecruiterManager = () => {
     <div className='flex flex-col'>
       <Navbar />
       <div className='flex flex-col items-center mb-8'>
-        <div className='mt-8 p-4 w-[90rem] flex flex-col items-center rounded-2xl'>
+        <div className='mt-8 p-4 2xl:w-[80rem] 3xl:w-[90rem] flex flex-col items-center rounded-2xl'>
           <div className='flex flex-row w-full gap-x-4'>
             <div className=' bg-my-card flex flex-col p-4 rounded-xl border-[1px] w-80 gap-y-4 h-min'>
               <p className='text-xl font-bold'>Job offers manager</p>

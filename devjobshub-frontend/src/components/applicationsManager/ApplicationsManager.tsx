@@ -95,7 +95,8 @@ export const ApplicationsManager = () => {
         <div className='flex flex-col'>
             <Navbar />
             <div className='flex flex-col items-center'>
-                {(storeOffer.offer && (profileStore.profile?.isFirm || profileStore.profile?.isAdmin)) && <div className='flex flex-col mt-8 bg-my-card p-8 rounded-xl border-[1px] w-[60rem] items-center'>
+                {(storeOffer.offer && (profileStore.profile?.isFirm || profileStore.profile?.isAdmin)) && 
+                <div className='flex flex-col mt-8 bg-my-card p-8 rounded-xl border-[1px] md:w-[40rem] xl:w-[50rem] 3xl:w-[60rem] items-center'>
                     {profileStore.profile?.isAdmin ?
                         <div className='flex flex-row items-start w-full mb-2'>
                             <Button className='flex flex-row gap-x-1' onClick={() => navigate("/admin/offers")}><IoMdArrowRoundBack />Offers manager</Button>

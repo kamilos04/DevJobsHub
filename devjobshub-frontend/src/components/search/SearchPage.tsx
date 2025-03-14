@@ -253,8 +253,7 @@ const setPageStateAndSearchParams = (value: number) => {
     <div className='flex flex-col'>
       <Navbar />
       <div className='flex flex-col items-center'>
-        {/* <form onSubmit={handleSearch(handleSubmitSearch)}> */}
-        <div className='mt-8 p-4 w-[90rem] flex flex-col items-center rounded-2xl'>
+        <div className='mt-8 p-4 w-[40rem] md:w-[50rem] xl:w-[63rem] 2xl:w-[75rem] 3xl:w-[90rem] flex flex-col items-center rounded-2xl'>
           <div className='bg-my-card flex flex-col p-4 rounded-xl border-[1px] w-full'>
             <div className='flex flex-row justify-start mb-2'>
               <h1 className='text-2xl mb-1 font-bold'>What kind of job are you looking for?</h1>

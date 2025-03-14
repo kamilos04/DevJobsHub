@@ -179,10 +179,10 @@ const Login = () => {
 
 
     return (
-        <div className='flex flex-col h-screen'>
+        <div className='flex flex-col'>
             <Navbar />
 
-            <div className='h-full flex flex-col items-center justify-center bg-my-background'>
+            <div className='h-full flex flex-col items-center mt-[3rem]  bg-my-background'>
                 <Tabs defaultValue="login" className="w-screen md:w-[25rem]">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="login">Sign in</TabsTrigger>

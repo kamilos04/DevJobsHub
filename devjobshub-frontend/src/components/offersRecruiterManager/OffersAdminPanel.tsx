@@ -18,12 +18,11 @@ import {
   SelectTrigger,
 } from "@/components/ui/select"
 import { Offer } from '@/types/offer'
-import { Button } from '../ui/button'
 import { Checkbox } from "@/components/ui/checkbox"
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation} from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { useProfile } from '../profile/useProfile'
-import { getOffersAdmin, getOffersFromRecruiter } from '@/state/offer/action'
+import { getOffersAdmin } from '@/state/offer/action'
 import OfferCardManager from './OfferCardManager'
 import { setFailNull, setSuccessNull } from '@/state/offer/offerSlice'
 import { useToast } from '@/hooks/use-toast'
@@ -36,7 +35,6 @@ const OffersAdminPanel = () => {
     const [page, setPage] = React.useState<number>(0)
     const location = useLocation()
     const dispatch = useDispatch<any>()
-    const navigate = useNavigate()
     const { getProfile, profileStore } = useProfile(true, true, true)
     const offerStore = useSelector((store: any) => (store.offer))
     const { toast } = useToast()
@@ -91,7 +89,7 @@ const OffersAdminPanel = () => {
         <div className='flex flex-col'>
           <Navbar />
           <div className='flex flex-col items-center mb-8'>
-            <div className='mt-8 p-4 w-[90rem] flex flex-col items-center rounded-2xl'>
+            <div className='mt-8 p-4 xl:w-[70rem] 2xl:w-[80rem] 3xl:w-[90rem] flex flex-col items-center rounded-2xl'>
               <div className='flex flex-row w-full gap-x-4'>
                 <div className='flex flex-col w-full'>
                   <div className='flex flex-row gap-x-6 items-center w-full'>

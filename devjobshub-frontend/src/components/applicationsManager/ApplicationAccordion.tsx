@@ -94,7 +94,7 @@ export const ApplicationAccordion = ({ application, offer }: { application: Appl
                     </div>
                 </AccordionTrigger>
                 <AccordionContent>
-                    <div className='flex flex-row justify-between'>
+                    <div className='flex flex-col justify-between gap-y-2'>
                         <div className='flex flex-col gap-y-6'>
                             {questionsList.map((element: QuestionAndAnswerWithType) => {
                                 if (element.type === "question") {
@@ -108,12 +108,12 @@ export const ApplicationAccordion = ({ application, offer }: { application: Appl
                                 }
                             })}
                         </div>
-                        <div className='flex flex-col gap-y-2 justify-end'>
-                            <Button variant={'default'} className='bg-green-600' onClick={() => handleClickDownloadCV()}>Download CV</Button>
+                        <div className='flex flex-row gap-x-2 justify-end'>
+                            
                             {application.status !== "FAVOURITE" && <Button variant={'default'} onClick={() => handleChangeStatus("FAVOURITE")}>Move to favourites</Button>}
                             {application.status !== "REJECTED" && <Button variant={'default'} onClick={() => handleChangeStatus("REJECTED")}>Move to rejected</Button>}
                             {application.status !== "NO_STATUS" && <Button variant={'default'} onClick={() => handleChangeStatus("NO_STATUS")}>Remove status</Button>}
-
+                            <Button variant={'default'} className='bg-green-600' onClick={() => handleClickDownloadCV()}>Download CV</Button>
                         </div>
                     </div>
 
