@@ -242,7 +242,7 @@ const OfferPage = () => {
                             {storeOffer.offer?.requirements.length !== 0 && <div className='flex flex-col gap-y-2'>
                                 <p className='text-xl font-bold'>Our requirements</p>
                                 {storeOffer.offer?.requirements.map((element: string, index: number) => <div className='flex flex-row items-center gap-x-4' key={index}>
-                                    <GiPlainCircle className='text-xs' />
+                                <div><GiPlainCircle className='w-3 h-3' /></div>
                                     <span className='text-gray-300'>{element}</span>
                                 </div>)}
                             </div>}
@@ -250,7 +250,7 @@ const OfferPage = () => {
                             {storeOffer.offer?.responsibilities.length !== 0 && <div className='flex flex-col gap-y-2'>
                                 <p className='text-xl font-bold'>Responsibilities</p>
                                 {storeOffer.offer?.responsibilities.map((element: string, index: number) => <div className='flex flex-row items-center gap-x-4' key={index}>
-                                    <GiPlainCircle className='text-xs' />
+                                    <div><GiPlainCircle className='w-3 h-3' /></div>
                                     <span className='text-gray-300'>{element}</span>
                                 </div>)}
                             </div>}
@@ -258,7 +258,7 @@ const OfferPage = () => {
                             {storeOffer.offer?.niceToHave.length !== 0 && <div className='flex flex-col gap-y-2'>
                                 <p className='text-xl font-bold'>Nice to have</p>
                                 {storeOffer.offer?.niceToHave.map((element: string, index: number) => <div className='flex flex-row items-center gap-x-4' key={index}>
-                                    <GiPlainCircle className='text-xs' />
+                                <div><GiPlainCircle className='w-3 h-3' /></div>
                                     <span className='text-gray-300'>{element}</span>
                                 </div>)}
                             </div>}
@@ -266,7 +266,7 @@ const OfferPage = () => {
                             {storeOffer.offer?.whatWeOffer.length !== 0 && <div className='flex flex-col gap-y-2'>
                                 <p className='text-xl font-bold'>We offer you:</p>
                                 {storeOffer.offer?.whatWeOffer.map((element: string, index: number) => <div className='flex flex-row items-center gap-x-4' key={index}>
-                                    <GiPlainCircle className='text-xs' />
+                                <div><GiPlainCircle className='w-3 h-3' /></div>
                                     <span className='text-gray-300'>{element}</span>
                                 </div>)}
                             </div>}

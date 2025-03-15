@@ -126,7 +126,7 @@ const ApplyPage = () => {
 
     useEffect(() => {
         if (filesStore.success === "uploadFileWithPresignedUrl") {
-            let request = emptyApplyRequest
+            let request = {...emptyApplyRequest}
             request.cvUrl = filesStore.presignedUrlCv.key
             request.questionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "question").map((el: QuestionAndAnswerWithType) => el.question as QuestionAndAnswer)
             request.radioQuestionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "radioQuestion").map((el: QuestionAndAnswerWithType) => el.question as RadioQuestionAndAnswer)

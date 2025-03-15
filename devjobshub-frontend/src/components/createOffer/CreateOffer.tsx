@@ -52,6 +52,7 @@ const CreateOffer = () => {
 
 
 
+
     useEffect(() => {
         if (offerStore.success === "createOffer") {
             toast({
@@ -204,7 +205,7 @@ const CreateOffer = () => {
 
 
     const onCreateOfferSubmit = (data: any) => {
-        const request = emptyCreateOfferRequest
+        const request = {...emptyCreateOfferRequest}
         request.name = data.name
         request.firmName = data.firmName
         request.jobLevel = data.jobLevel
@@ -230,8 +231,6 @@ const CreateOffer = () => {
                 request.imageUrl = filesStore.presignedUrlForCompanyImage.key
             }
         }
-
-
 
         if (data.isUoP === true) {
             if (data.showSalaryUoP === true) {
@@ -281,8 +280,6 @@ const CreateOffer = () => {
             }
         }
 
-        console.log(request)
-        // dispatch(createOffer(request))
         setReq(request)
         if (cvFile) {
             if (filesStore.presignedUrlForCompanyImage) {

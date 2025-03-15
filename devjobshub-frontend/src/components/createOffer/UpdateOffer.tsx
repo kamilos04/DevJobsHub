@@ -330,7 +330,7 @@ const UpdateOffer = () => {
 
 
     const onCreateOfferSubmit = (data: any) => {
-        const request = emptyCreateOfferRequest
+        const request = {...emptyCreateOfferRequest}
 
         if (isAlreadyImage === false) {
             if (cvFile) {
@@ -379,8 +379,18 @@ const UpdateOffer = () => {
             }
             else {
                 request.isSalaryMonthlyUoP = false
+                request.minSalaryUoP = null
+                request.maxSalaryUoP = null
             }
         }
+        else{
+            request.isSalaryMonthlyUoP = null
+            request.minSalaryUoP = null
+            request.maxSalaryUoP = null
+        }
+
+
+
 
         if (data.isB2B === true) {
             if (data.showSalaryB2B === true) {
@@ -395,8 +405,16 @@ const UpdateOffer = () => {
             }
             else {
                 request.isSalaryMonthlyB2B = false
+                request.minSalaryB2B = null
+                request.maxSalaryB2B = null
             }
         }
+        else{
+            request.isSalaryMonthlyB2B = null
+            request.minSalaryB2B = null
+            request.maxSalaryB2B = null
+        }
+
 
         if (data.isUZ === true) {
             if (data.showSalaryUZ === true) {
@@ -411,12 +429,15 @@ const UpdateOffer = () => {
             }
             else {
                 request.isSalaryMonthlyUZ = false
+                request.minSalaryUZ = null
+                request.maxSalaryUZ = null
             }
         }
-
-        // setReq(request)
-        // dispatch(updateOffer({ reqData: request, id: Number(offerId) }))
-        // console.log(request)
+        else{
+            request.isSalaryMonthlyUZ = null
+            request.minSalaryUZ = null
+            request.maxSalaryUZ = null
+        }
 
 
         setReq(request)
