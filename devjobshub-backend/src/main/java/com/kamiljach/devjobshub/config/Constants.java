@@ -1,11 +1,12 @@
 package com.kamiljach.devjobshub.config;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Constants {
-    public static String secretKey = "shildgopsohpgqwbjkqwrqhjkfdsjkfjkewf";
     public static long expirationTime = 3600000;
 
     public static String header = "Authorization";

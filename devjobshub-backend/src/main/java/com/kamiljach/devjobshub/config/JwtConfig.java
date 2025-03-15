@@ -8,6 +8,7 @@ import com.kamiljach.devjobshub.service.JwtService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.naming.AuthenticationException;
@@ -19,8 +20,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class JwtConfig {
 
-
-    private String secretKey = Constants.secretKey;
     private long expirationTime = Constants.expirationTime;
 
     private final String TOKEN_HEADER = Constants.header;
@@ -33,7 +32,7 @@ public class JwtConfig {
     private JwtService jwtService;
 
 
-    public JwtConfig(JwtService jwtService) {
+    public JwtConfig(@Value("${secret-key}") String secretKey, JwtService jwtService) {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
         this.jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
         this.jwtService = jwtService;
