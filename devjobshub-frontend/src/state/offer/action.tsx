@@ -1,6 +1,5 @@
 import { API_URL } from "@/config/api";
 import { CreateOfferRequest } from "@/types/createOfferRequest";
-import { CreateTechnologyRequest } from "@/types/createTechnologyRequest";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -165,6 +164,25 @@ export const getOffersFromRecruiter = createAsyncThunk(
         try {
             const jwt = localStorage.getItem("jwt")
             const { data } = await axios.get(`${API_URL}/api/offer/from-recruiter/${id}?${params}`, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            })
+            return data
+        }
+        catch (error: any) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+
+export const getOffersAdmin = createAsyncThunk(
+    "offer/getOffersAdmin",
+    async ({params }: { params: string }, { rejectWithValue }) => {
+        try {
+            const jwt = localStorage.getItem("jwt")
+            const { data } = await axios.get(`${API_URL}/api/offer/admin?${params}`, {
                 headers: {
                     Authorization: `Bearer ${jwt}`
                 }

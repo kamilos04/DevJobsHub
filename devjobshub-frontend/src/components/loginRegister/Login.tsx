@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -20,14 +20,12 @@ import {
     Select,
     SelectContent,
     SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
+    SelectItem, SelectTrigger,
+    SelectValue
 } from "@/components/ui/select"
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { RegisterRequest } from '@/types/registerRequest'
 import { useDispatch, useSelector } from 'react-redux'
 import { login, register } from '@/state/profile/action'
@@ -49,7 +47,7 @@ const Login = () => {
     const dispatch = useDispatch<any>()
     const navigate = useNavigate()
     const location = useLocation()
-    const { getProfile, profileStore } = useProfile(false, false)
+    const { getProfile, profileStore } = useProfile(false, false, false)
 
     const onLoginSubmit = (data: any) => {
         let reqData: LoginRequest = {
@@ -181,11 +179,11 @@ const Login = () => {
 
 
     return (
-        <div className='flex flex-col h-screen'>
+        <div className='flex flex-col'>
             <Navbar />
 
-            <div className='h-full flex flex-col items-center justify-center bg-my-background'>
-                <Tabs defaultValue="login" className="w-[25rem]">
+            <div className='h-full flex flex-col items-center mt-[3rem]  bg-my-background'>
+                <Tabs defaultValue="login" className="w-screen md:w-[25rem]">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="login">Sign in</TabsTrigger>
                         <TabsTrigger value="register">Register</TabsTrigger>

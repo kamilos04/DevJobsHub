@@ -1,4 +1,3 @@
-import React from 'react'
 import { Controller } from 'react-hook-form'
 import { Label } from '../ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'

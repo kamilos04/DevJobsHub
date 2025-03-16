@@ -1,7 +1,5 @@
 import { API_URL } from "@/config/api";
 import { ApplyRequest } from "@/types/applyRequest";
-import { CreateOfferRequest } from "@/types/createOfferRequest";
-import { CreateTechnologyRequest } from "@/types/createTechnologyRequest";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 

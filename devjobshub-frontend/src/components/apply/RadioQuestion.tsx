@@ -1,9 +1,4 @@
-import React from 'react'
-import { Input } from "@/components/ui/input"
-import { Question } from '@/types/question'
-import { QuestionAndAnswer } from '@/types/questionAndAnswer'
 import { RadioQuestionAndAnswer } from '@/types/radioQuestionAndAnswer'
-import { MultipleChoiceQuestionAndAnswer } from '@/types/multipleChoiceQuestionAndAnswer'
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { QuestionAndAnswerWithType } from '@/types/questionAndAnswerWithType'

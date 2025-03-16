@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Navbar from '../navbar/Navbar'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -35,7 +35,7 @@ import { resetFilesStore, setFailNull as setFailNullFiles, setSuccessNull as set
 const CreateOffer = () => {
     const dispatch = useDispatch<any>()
     const offerStore = useSelector((store: any) => (store.offer))
-    const { getProfile, profileStore } = useProfile(true, true)
+    const { getProfile, profileStore } = useProfile(true, true, false)
     const { toast } = useToast()
     const navigate = useNavigate()
     const location = useLocation()
@@ -49,6 +49,7 @@ const CreateOffer = () => {
         dispatch(resetFilesStore())
         getProfile()
     }, [location.pathname])
+
 
 
 
@@ -74,6 +75,7 @@ const CreateOffer = () => {
             });
 
             dispatch(setFailNull())
+            setCreateButtonDisabled(false)
         }
     }, [offerStore.fail])
 
@@ -183,7 +185,6 @@ const CreateOffer = () => {
     const {
         register: registerCreateOffer,
         handleSubmit: handleCreateOffer,
-        setValue: setValueCreateOffer,
         control: controlCreateOffer,
         formState: { errors: createOfferErrors },
         watch: watchForm
@@ -204,7 +205,7 @@ const CreateOffer = () => {
 
 
     const onCreateOfferSubmit = (data: any) => {
-        const request = emptyCreateOfferRequest
+        const request = {...emptyCreateOfferRequest}
         request.name = data.name
         request.firmName = data.firmName
         request.jobLevel = data.jobLevel
@@ -230,8 +231,6 @@ const CreateOffer = () => {
                 request.imageUrl = filesStore.presignedUrlForCompanyImage.key
             }
         }
-
-
 
         if (data.isUoP === true) {
             if (data.showSalaryUoP === true) {
@@ -281,8 +280,6 @@ const CreateOffer = () => {
             }
         }
 
-        console.log(request)
-        // dispatch(createOffer(request))
         setReq(request)
         if (cvFile) {
             if (filesStore.presignedUrlForCompanyImage) {

@@ -3,7 +3,6 @@ import Navbar from '../navbar/Navbar'
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
     PaginationItem,
     PaginationLink,
     PaginationNext,
@@ -14,7 +13,7 @@ import {
 
 import { Offer } from '@/types/offer'
 
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { useProfile } from '../profile/useProfile'
 import { getLikedOffers } from '@/state/offer/action'
@@ -25,9 +24,8 @@ const FavouriteOffers = () => {
     const [page, setPage] = React.useState<number>(0)
     const location = useLocation()
     const dispatch = useDispatch<any>()
-    const navigate = useNavigate()
     const offerStore = useSelector((store: any) => (store.offer))
-    const { getProfile, profileStore } = useProfile(true, false)
+    const { getProfile } = useProfile(true, false, false)
 
 
 
@@ -50,7 +48,7 @@ const FavouriteOffers = () => {
         <div className='flex flex-col'>
             <Navbar />
             <div className='flex flex-col items-center mb-8'>
-                <div className='mt-8 p-4 w-[70rem] flex flex-col items-center rounded-2xl'>
+                <div className='mt-8 p-4 xs:w-[30rem] md:w-[40rem] xl:w-[50rem] 2xl:w-[65rem] 3xl:w-[70rem] flex flex-col items-center rounded-2xl'>
                     <h1 className='text-2xl font-bold'>Favourite offers {offerStore.likedOffers && <span>{`(${offerStore.likedOffers.totalElements})`}</span>}</h1>
                     <div className='flex flex-row w-full gap-x-4'>
                         <div className='flex flex-col w-full'>

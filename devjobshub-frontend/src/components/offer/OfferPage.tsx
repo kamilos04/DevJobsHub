@@ -1,21 +1,20 @@
 import React, { useEffect } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import Navbar from '../navbar/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOfferById, likeOfferById, removeLikeOfferById, searchOffers, searchOffersSideBar } from '@/state/offer/action';
+import { getOfferById, likeOfferById, removeLikeOfferById, searchOffersSideBar } from '@/state/offer/action';
 import { MdOutlineWorkOutline } from "react-icons/md";
 import { TiDocumentText } from "react-icons/ti";
 import { RiStairsLine } from "react-icons/ri";
-import { jobLevelsAndLabels, operatingModes, operatingModesAndLabels, specializationsAndLabels } from '@/constants';
+import { jobLevelsAndLabels, operatingModesAndLabels, specializationsAndLabels } from '@/constants';
 import { FaRegBuilding } from "react-icons/fa";
 import { BsPersonWorkspace } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
-import { FaMoneyBill1Wave } from "react-icons/fa6";
 import { Separator } from '../ui/separator';
 import { Technology } from '@/types/technology';
 import { Badge } from '../ui/badge';
 import { MdOutlineDateRange } from "react-icons/md";
-import { calcDaysToExpirationDateFromString, calcSecondsToExpirationDateFromString } from '@/utils/dateUtils';
+import { calcSecondsToExpirationDateFromString } from '@/utils/dateUtils';
 import { GiPlainCircle } from "react-icons/gi";
 import { MdFavoriteBorder } from "react-icons/md";
 import { GrSend } from "react-icons/gr";
@@ -85,8 +84,8 @@ const OfferPage = () => {
             <Navbar />
             <div className='flex flex-col items-center'>
                 {storeOffer.offer && <div className='mt-8 p-4 flex flex-row rounded-2xl gap-x-8'>
-                    <div className='flex flex-col gap-y-8'>
-                        <div className='bg-my-card flex flex-col p-8 rounded-xl border-[1px] w-[50rem]'>
+                    <div className='flex flex-col gap-y-8 sm:w-[25rem] lg:w-[35rem] xl:w-[40rem] 2xl:w-[47rem] 3xl:w-[50rem]'>
+                        <div className='bg-my-card flex flex-col p-8 rounded-xl border-[1px] '>
                             <div className='flex flex-row justify-between'>
                                 <div className='flex flex-row gap-x-4 mb-2 items-center'>
                                     {storeOffer.offer.imageUrl && <img src={`https://devjobshub.s3.eu-central-1.amazonaws.com/${storeOffer.offer.imageUrl}`} alt="company logo" className='h-20 aspect-square rounded-xl' />}
@@ -98,7 +97,6 @@ const OfferPage = () => {
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <MdFavoriteBorder className={`text-3xl cursor-pointer ${isLiked && "text-pink-700"}`} onClick={() => handleLikeClick()} />
                             </div>
@@ -206,7 +204,7 @@ const OfferPage = () => {
 
 
                         </div>
-                        {(isTechnologySectionNeeded() || storeOffer.offer?.aboutProject || storeOffer.offer?.responsibilitiesText) && <div className='bg-my-card flex flex-col p-8 rounded-xl border-[1px] w-[50rem] gap-y-10'>
+                        {(isTechnologySectionNeeded() || storeOffer.offer?.aboutProject || storeOffer.offer?.responsibilitiesText) && <div className='bg-my-card flex flex-col p-8 rounded-xl border-[1px] gap-y-10'>
                             {isTechnologySectionNeeded() && <div className=''>
                                 <p className='text-xl font-bold'>Technologies</p>
                                 <div className='flex flex-row'>
@@ -240,11 +238,11 @@ const OfferPage = () => {
 
                         </div>}
 
-                        {(storeOffer.offer?.requirements.length !== 0 || storeOffer.offer?.responsibilities.length !== 0 || storeOffer.offer?.niceToHave.length !== 0 || storeOffer.offer?.whatWeOffer.length !== 0) && <div className='bg-my-card flex flex-col p-8 rounded-xl border-[1px] w-[50rem] gap-y-10'>
+                        {(storeOffer.offer?.requirements.length !== 0 || storeOffer.offer?.responsibilities.length !== 0 || storeOffer.offer?.niceToHave.length !== 0 || storeOffer.offer?.whatWeOffer.length !== 0) && <div className='bg-my-card flex flex-col p-8 rounded-xl border-[1px] gap-y-10'>
                             {storeOffer.offer?.requirements.length !== 0 && <div className='flex flex-col gap-y-2'>
                                 <p className='text-xl font-bold'>Our requirements</p>
                                 {storeOffer.offer?.requirements.map((element: string, index: number) => <div className='flex flex-row items-center gap-x-4' key={index}>
-                                    <GiPlainCircle className='text-xs' />
+                                <div><GiPlainCircle className='w-3 h-3' /></div>
                                     <span className='text-gray-300'>{element}</span>
                                 </div>)}
                             </div>}
@@ -252,7 +250,7 @@ const OfferPage = () => {
                             {storeOffer.offer?.responsibilities.length !== 0 && <div className='flex flex-col gap-y-2'>
                                 <p className='text-xl font-bold'>Responsibilities</p>
                                 {storeOffer.offer?.responsibilities.map((element: string, index: number) => <div className='flex flex-row items-center gap-x-4' key={index}>
-                                    <GiPlainCircle className='text-xs' />
+                                    <div><GiPlainCircle className='w-3 h-3' /></div>
                                     <span className='text-gray-300'>{element}</span>
                                 </div>)}
                             </div>}
@@ -260,7 +258,7 @@ const OfferPage = () => {
                             {storeOffer.offer?.niceToHave.length !== 0 && <div className='flex flex-col gap-y-2'>
                                 <p className='text-xl font-bold'>Nice to have</p>
                                 {storeOffer.offer?.niceToHave.map((element: string, index: number) => <div className='flex flex-row items-center gap-x-4' key={index}>
-                                    <GiPlainCircle className='text-xs' />
+                                <div><GiPlainCircle className='w-3 h-3' /></div>
                                     <span className='text-gray-300'>{element}</span>
                                 </div>)}
                             </div>}
@@ -268,7 +266,7 @@ const OfferPage = () => {
                             {storeOffer.offer?.whatWeOffer.length !== 0 && <div className='flex flex-col gap-y-2'>
                                 <p className='text-xl font-bold'>We offer you:</p>
                                 {storeOffer.offer?.whatWeOffer.map((element: string, index: number) => <div className='flex flex-row items-center gap-x-4' key={index}>
-                                    <GiPlainCircle className='text-xs' />
+                                <div><GiPlainCircle className='w-3 h-3' /></div>
                                     <span className='text-gray-300'>{element}</span>
                                 </div>)}
                             </div>}
@@ -290,8 +288,8 @@ const OfferPage = () => {
                             <p className='text-sm text-gray-500'>By clicking apply you consent to the processing of your personal data.</p>
 
                         </div>
-                        <div className='flex flex-col gap-y-2'>
-                            <p className='text-xl font-bold'>Check other offers:</p>
+                        {storeOffer.searchOffersSideBar?.totalElements>1 && <div className='flex flex-col gap-y-2'>
+                            <p className='text-xl font-bold'>Check out similar offers:</p>
                             <div className='flex flex-col gap-y-5'>
                                 {storeOffer.searchOffersSideBar?.content.map((element: Offer) => {
                                     if (element.id !== storeOffer.offer.id) {
@@ -300,7 +298,7 @@ const OfferPage = () => {
                                     return (null)
                                 })}
                             </div>
-                        </div>
+                        </div>}
 
 
                     </div>

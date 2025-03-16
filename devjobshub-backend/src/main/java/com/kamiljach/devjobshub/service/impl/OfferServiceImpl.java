@@ -186,7 +186,7 @@ public class OfferServiceImpl implements OfferService {
                 offerDto.setIsLiked(false);
             }
 
-            if(offer.getRecruiters().contains(user)){
+            if(offer.getRecruiters().contains(user) || user.getIsAdmin()){
                 offerDto.setIsRecruiter(true);
             }
             else{
@@ -343,6 +343,25 @@ public class OfferServiceImpl implements OfferService {
         return new PageResponse<>(offersDto, offersPage);
     }
 
+    public PageResponse<OfferDto> getOffers_Admin(Boolean isActive, Integer numberOfElements, Integer pageNumber, String sortBy, String sortDirection, String jwt) throws NoPermissionException {
+        User user = userService.findUserByJwt(jwt);
+        validatePermissionGetOffers_Admin(user);
+
+        Pageable pageable;
+        if(sortDirection.equals("asc")) pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by(sortBy).ascending());
+        else pageable = PageRequest.of(pageNumber, numberOfElements, Sort.by(sortBy).descending());
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        Page<Offer> offersPage = offerRepository.getOffers(isActive, currentDateTime, pageable);
+        ArrayList<Offer> offers = new ArrayList<>(offersPage.getContent());
+
+        ArrayList<OfferDto> offersDto = new ArrayList<>();
+        offers.forEach(element -> {offersDto.add(element.mapToOfferDtoShallow_Recruiter());});
+
+        return new PageResponse<>(offersDto, offersPage);
+    }
+
 
     public void validatePermissionUpdateOffer(User user, Offer offer) throws NoPermissionException {
         if (user.getIsAdmin()){
@@ -366,6 +385,9 @@ public class OfferServiceImpl implements OfferService {
 
 
     public void validatePermissionAddRecruiterToOffer(User user, Offer offer) throws NoPermissionException {
+        if (user.getIsAdmin()){
+            return;
+        }
         if (offer.getRecruiters().contains(user)){
             return;
         }
@@ -373,6 +395,9 @@ public class OfferServiceImpl implements OfferService {
     }
 
     public void validatePermissionRemoveRecruiterFromOffer(User user, Offer offer, User recruiter) throws NoPermissionException {
+        if (user.getIsAdmin()){
+            return;
+        }
         if (offer.getRecruiters().contains(user)){
             if(!user.equals(recruiter)){
                 return;
@@ -391,4 +416,12 @@ public class OfferServiceImpl implements OfferService {
         }
         throw new NoPermissionException();
     }
+
+    public void validatePermissionGetOffers_Admin(User user) throws NoPermissionException {
+        if(user.getIsAdmin()){
+            return;
+        }
+        throw new NoPermissionException();
+    }
+
 }

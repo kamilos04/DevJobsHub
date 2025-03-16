@@ -40,13 +40,13 @@ const applicationSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder.addCase(applyForOfferById.pending, (state, action) => {
+        builder.addCase(applyForOfferById.pending, (state) => {
             state.isLoading = true
             state.fail = null
             state.success = null
             state.error = null
         })
-            .addCase(applyForOfferById.fulfilled, (state, action) => {
+            .addCase(applyForOfferById.fulfilled, (state) => {
                 state.isLoading = false,
                     state.success = "applyForOfferById"
             })
@@ -58,7 +58,7 @@ const applicationSlice = createSlice({
 
 
 
-            .addCase(getApplicationsFromOffer.pending, (state, action) => {
+            .addCase(getApplicationsFromOffer.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
@@ -77,13 +77,13 @@ const applicationSlice = createSlice({
             })
 
             
-            .addCase(setApplicationStatus.pending, (state, action) => {
+            .addCase(setApplicationStatus.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
                 state.error = null
             })
-            .addCase(setApplicationStatus.fulfilled, (state, action) => {
+            .addCase(setApplicationStatus.fulfilled, (state) => {
                 state.isLoading = false,
                     state.success = "setApplicationStatus"
             })

@@ -145,6 +145,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
     public void validatePermissionChangeApplicationStatus(User user, Application application) throws NoPermissionException {
+        if(user.getIsAdmin()){
+            return;
+        }
         Offer offer = application.getOffer();
         if (offer.getRecruiters().contains(user)){
             return;

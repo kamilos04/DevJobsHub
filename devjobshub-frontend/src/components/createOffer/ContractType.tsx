@@ -1,4 +1,3 @@
-import React from 'react'
 import { Checkbox } from '../ui/checkbox'
 import { Separator } from '../ui/separator'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'

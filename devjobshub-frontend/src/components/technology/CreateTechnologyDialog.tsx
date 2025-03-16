@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -7,11 +7,8 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { DialogClose } from '@radix-ui/react-dialog'
 import { useDispatch, useSelector } from 'react-redux'
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'

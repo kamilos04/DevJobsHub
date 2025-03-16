@@ -3,7 +3,6 @@ import Navbar from '../navbar/Navbar'
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { getOfferById } from '@/state/offer/action';
-import { store } from '@/state/store';
 import { MdOutlineDateRange, MdOutlineWorkOutline } from 'react-icons/md';
 import { RiStairsLine } from 'react-icons/ri';
 import { jobLevelsAndLabels, operatingModesAndLabels, specializationsAndLabels } from '@/constants';
@@ -11,7 +10,6 @@ import { BsPersonWorkspace } from 'react-icons/bs';
 import { FaRegBuilding } from 'react-icons/fa';
 import { TiDocumentText } from 'react-icons/ti';
 import { IoLocationOutline } from 'react-icons/io5';
-import { calcDaysToExpirationDateFromString, calcSecondsToExpirationDateFromString } from '@/utils/dateUtils';
 import { contractsStringFromOffer, getExpirationDate } from '@/utils/utils';
 import { QuestionAndAnswerWithType } from '@/types/questionAndAnswerWithType';
 import { addMultipleChoiceQuestionsToQuestionsList, addOpenQuestionsToQuestionsList, addRadioQuestionsToQuestionsList } from '@/utils/questionsUtils';
@@ -30,7 +28,6 @@ import { setFailNull as setFailNullFiles, setSuccessNull as setSuccessNullFiles 
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { getPresignedUrlForCv, uploadFileWithPresignedUrl } from '@/state/files/action';
-import { FileStack } from 'lucide-react';
 import { setPresignedUrlCvNull } from '@/state/files/filesSlice';
 import { useProfile } from '../profile/useProfile';
 import { IoMdArrowRoundBack } from 'react-icons/io';
@@ -43,7 +40,7 @@ const ApplyPage = () => {
     const filesStore = useSelector((store: any) => (store.files))
     const [questionsList, setQuestionsList] = React.useState<Array<QuestionAndAnswerWithType>>([])
     const { toast } = useToast()
-    const { getProfile, profileStore } = useProfile(true, false)
+    const { getProfile } = useProfile(true, false, false)
     const [cvFile, setCvFile] = React.useState<File | null>(null)
     const location = useLocation()
     const navigate = useNavigate()
@@ -129,7 +126,7 @@ const ApplyPage = () => {
 
     useEffect(() => {
         if (filesStore.success === "uploadFileWithPresignedUrl") {
-            let request = emptyApplyRequest
+            let request = {...emptyApplyRequest}
             request.cvUrl = filesStore.presignedUrlCv.key
             request.questionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "question").map((el: QuestionAndAnswerWithType) => el.question as QuestionAndAnswer)
             request.radioQuestionsAndAnswers = questionsList.filter((element: QuestionAndAnswerWithType) => element.type === "radioQuestion").map((el: QuestionAndAnswerWithType) => el.question as RadioQuestionAndAnswer)

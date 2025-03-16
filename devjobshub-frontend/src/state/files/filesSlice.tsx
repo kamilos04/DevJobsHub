@@ -1,5 +1,3 @@
-import { Technology } from "@/types/technology";
-import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
 import { getPresignedUrlForCompanyImage, getPresignedUrlForCv, getPresignedUrlToDownloadCV, uploadFileWithPresignedUrl } from "./action";
 import { PresignedUrlResponse } from "@/types/presignedUrlResponse";
@@ -35,28 +33,34 @@ const filesSlice = createSlice({
         setFailNull(state) {
             state.fail = null
         },
-        setPresignedUrlCvNull(state){
+        setPresignedUrlCvNull(state) {
             state.presignedUrlCv = null
         },
-        setPresignedUrlCvToDownloadNull(state){
+        setPresignedUrlCvToDownloadNull(state) {
             state.presignedUrlCvToDownload = null
         },
-        setpresignedUrlForCompanyImageNull(state){
+        setpresignedUrlForCompanyImageNull(state) {
             state.presignedUrlForCompanyImage = null
         },
-        resetFilesStore(state){
-            state = initialState
+        resetFilesStore(state) {
+            state.isLoading = false
+            state.success = null
+            state.fail = null
+            state.error = null
+            state.presignedUrlCv = null
+            state.presignedUrlCvToDownload = null
+            state.presignedUrlForCompanyImage = null
         }
 
     },
     extraReducers: (builder) => {
-        builder.addCase(uploadFileWithPresignedUrl.pending, (state, action) => {
+        builder.addCase(uploadFileWithPresignedUrl.pending, (state) => {
             state.isLoading = true
             state.fail = null
             state.success = null
             state.error = null
         })
-            .addCase(uploadFileWithPresignedUrl.fulfilled, (state, action) => {
+            .addCase(uploadFileWithPresignedUrl.fulfilled, (state) => {
                 state.isLoading = false,
                     state.success = "uploadFileWithPresignedUrl"
             })
@@ -67,63 +71,63 @@ const filesSlice = createSlice({
             })
 
 
-            .addCase(getPresignedUrlForCv.pending, (state, action) => {
+            .addCase(getPresignedUrlForCv.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
                 state.error = null
                 state.presignedUrlCv = null
             })
-                .addCase(getPresignedUrlForCv.fulfilled, (state, action) => {
-                    state.isLoading = false,
-                        state.success = "getPresignedUrlForCv"
-                        state.presignedUrlCv = action.payload
-                })
-                .addCase(getPresignedUrlForCv.rejected, (state, action) => {
-                    state.isLoading = false,
-                        state.fail = "getPresignedUrlForCv",
-                        state.error = action.payload
-                })
+            .addCase(getPresignedUrlForCv.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "getPresignedUrlForCv"
+                state.presignedUrlCv = action.payload
+            })
+            .addCase(getPresignedUrlForCv.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "getPresignedUrlForCv",
+                    state.error = action.payload
+            })
 
 
 
-                .addCase(getPresignedUrlToDownloadCV.pending, (state, action) => {
-                    state.isLoading = true
-                    state.fail = null
-                    state.success = null
-                    state.error = null
-                    state.presignedUrlCvToDownload = null
-                })
-                    .addCase(getPresignedUrlToDownloadCV.fulfilled, (state, action) => {
-                        state.isLoading = false,
-                            state.success = "getPresignedUrlToDownloadCV"
-                            state.presignedUrlCvToDownload = action.payload
-                    })
-                    .addCase(getPresignedUrlToDownloadCV.rejected, (state, action) => {
-                        state.isLoading = false,
-                            state.fail = "getPresignedUrlToDownloadCV",
-                            state.error = action.payload
-                    })
+            .addCase(getPresignedUrlToDownloadCV.pending, (state) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+                state.presignedUrlCvToDownload = null
+            })
+            .addCase(getPresignedUrlToDownloadCV.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "getPresignedUrlToDownloadCV"
+                state.presignedUrlCvToDownload = action.payload
+            })
+            .addCase(getPresignedUrlToDownloadCV.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "getPresignedUrlToDownloadCV",
+                    state.error = action.payload
+            })
 
 
 
-                    .addCase(getPresignedUrlForCompanyImage.pending, (state, action) => {
-                        state.isLoading = true
-                        state.fail = null
-                        state.success = null
-                        state.error = null
-                        state.presignedUrlForCompanyImage = null
-                    })
-                        .addCase(getPresignedUrlForCompanyImage.fulfilled, (state, action) => {
-                            state.isLoading = false,
-                                state.success = "getPresignedUrlForCompanyImage"
-                                state.presignedUrlForCompanyImage = action.payload
-                        })
-                        .addCase(getPresignedUrlForCompanyImage.rejected, (state, action) => {
-                            state.isLoading = false,
-                                state.fail = "getPresignedUrlForCompanyImage",
-                                state.error = action.payload
-                        })
+            .addCase(getPresignedUrlForCompanyImage.pending, (state) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+                state.presignedUrlForCompanyImage = null
+            })
+            .addCase(getPresignedUrlForCompanyImage.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "getPresignedUrlForCompanyImage"
+                state.presignedUrlForCompanyImage = action.payload
+            })
+            .addCase(getPresignedUrlForCompanyImage.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "getPresignedUrlForCompanyImage",
+                    state.error = action.payload
+            })
 
     }
 })

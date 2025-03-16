@@ -1,5 +1,5 @@
 import { changePassword, fetchProfile } from '@/state/profile/action';
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { CgProfile } from "react-icons/cg";
 import { MdFavoriteBorder } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
@@ -57,7 +57,6 @@ const Navbar = () => {
     const {
         register: registerForm,
         handleSubmit: handleSubmit,
-        setValue: setValueForm,
         formState: { errors: formErrors },
         reset: resetForm
     } = useForm({
@@ -101,6 +100,9 @@ const Navbar = () => {
             <div className='flex flex-row gap-x-8 items-center'>
                 {(profileStore.profile && profileStore.profile.isFirm === true) && <div className='flex flex-row items-center'>
                     <button className='p-2 hover:text-blue-300' onClick={() => navigate("/recruiter/manager")}>Recruiter panel</button>
+                </div>}
+                {(profileStore.profile && profileStore.profile.isAdmin === true) && <div className='flex flex-row items-center'>
+                    <button className='p-2 hover:text-blue-300' onClick={() => navigate("/admin/offers")}>Offers manager - admin</button>
                 </div>}
                 <button onClick={() => navigate("/favourite")} className='hover:text-blue-300'>
                     <MdFavoriteBorder className='text-[2rem] ' />

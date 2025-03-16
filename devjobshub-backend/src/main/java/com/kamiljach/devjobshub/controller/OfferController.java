@@ -131,4 +131,16 @@ public class OfferController {
         return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 
+
+    @GetMapping("offer/admin")
+    public ResponseEntity<PageResponse<OfferDto>> getOffers_Admin(@RequestParam(value = "isActive", required = false) Boolean isActive,
+                                                                         @RequestParam("numberOfElements") Integer numberOfElements,
+                                                                         @RequestParam("pageNumber") Integer pageNumber,
+                                                                         @RequestParam("sortBy") String sortBy,
+                                                                         @RequestParam("sortDirection") String sortDirection,
+                                                                         @RequestHeader("Authorization") String jwt) throws UserNotFoundByIdException, UserNotFoundByJwtException, NoPermissionException {
+        PageResponse<OfferDto> pageResponse = offerService.getOffers_Admin(isActive, numberOfElements, pageNumber, sortBy, sortDirection, jwt);
+        return new ResponseEntity<>(pageResponse, HttpStatus.OK);
+    }
+
 }

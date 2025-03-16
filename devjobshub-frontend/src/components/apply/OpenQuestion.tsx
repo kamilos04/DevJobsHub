@@ -1,9 +1,5 @@
-import React from 'react'
 import { Input } from "@/components/ui/input"
-import { Question } from '@/types/question'
 import { QuestionAndAnswer } from '@/types/questionAndAnswer'
-import { RadioQuestionAndAnswer } from '@/types/radioQuestionAndAnswer'
-import { MultipleChoiceQuestionAndAnswer } from '@/types/multipleChoiceQuestionAndAnswer'
 import { QuestionAndAnswerWithType } from '@/types/questionAndAnswerWithType'
 
 const OpenQuestion = ({question, setQuestionsList}: {question: QuestionAndAnswer, setQuestionsList: any}) => {

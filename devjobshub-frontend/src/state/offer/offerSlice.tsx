@@ -1,7 +1,5 @@
-import { Technology } from "@/types/technology";
-import { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { addRecruiter, createOffer as createOffer, deleteOfferById, getLikedOffers, getOfferById, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, removeRecruiter, searchOffers, searchOffersSideBar, updateOffer } from "./action";
+import { addRecruiter, createOffer as createOffer, deleteOfferById, getLikedOffers, getOfferById, getOffersAdmin, getOffersFromRecruiter, likeOfferById, removeLikeOfferById, removeRecruiter, searchOffers, searchOffersSideBar, updateOffer } from "./action";
 import { Offer } from "@/types/offer";
 
 interface PageResponseOffers {
@@ -48,13 +46,13 @@ const offerSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder.addCase(createOffer.pending, (state, action) => {
+        builder.addCase(createOffer.pending, (state) => {
             state.isLoading = true
             state.fail = null
             state.success = null
             state.error = null
         })
-            .addCase(createOffer.fulfilled, (state, action) => {
+            .addCase(createOffer.fulfilled, (state) => {
                 state.isLoading = false,
                     state.success = "createOffer"
             })
@@ -65,13 +63,13 @@ const offerSlice = createSlice({
             })
 
 
-            .addCase(updateOffer.pending, (state, action) => {
+            .addCase(updateOffer.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
                 state.error = null
             })
-            .addCase(updateOffer.fulfilled, (state, action) => {
+            .addCase(updateOffer.fulfilled, (state) => {
                 state.isLoading = false,
                     state.success = "updateOffer"
             })
@@ -84,7 +82,7 @@ const offerSlice = createSlice({
 
 
 
-            .addCase(searchOffers.pending, (state, action) => {
+            .addCase(searchOffers.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
@@ -105,7 +103,7 @@ const offerSlice = createSlice({
 
 
 
-            .addCase(searchOffersSideBar.pending, (state, action) => {
+            .addCase(searchOffersSideBar.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
@@ -126,7 +124,7 @@ const offerSlice = createSlice({
 
 
 
-            .addCase(getOfferById.pending, (state, action) => {
+            .addCase(getOfferById.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
@@ -146,13 +144,13 @@ const offerSlice = createSlice({
             })
 
 
-            .addCase(likeOfferById.pending, (state, action) => {
+            .addCase(likeOfferById.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
                 state.error = null
             })
-            .addCase(likeOfferById.fulfilled, (state, action) => {
+            .addCase(likeOfferById.fulfilled, (state) => {
                 state.isLoading = false,
                     state.success = "likeOfferById"
             })
@@ -163,13 +161,13 @@ const offerSlice = createSlice({
             })
 
 
-            .addCase(removeLikeOfferById.pending, (state, action) => {
+            .addCase(removeLikeOfferById.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
                 state.error = null
             })
-            .addCase(removeLikeOfferById.fulfilled, (state, action) => {
+            .addCase(removeLikeOfferById.fulfilled, (state) => {
                 state.isLoading = false,
                     state.success = "removeLikeOfferById"
             })
@@ -180,7 +178,7 @@ const offerSlice = createSlice({
             })
 
 
-            .addCase(getOffersFromRecruiter.pending, (state, action) => {
+            .addCase(getOffersFromRecruiter.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
@@ -201,13 +199,35 @@ const offerSlice = createSlice({
             })
 
 
-            .addCase(deleteOfferById.pending, (state, action) => {
+
+            .addCase(getOffersAdmin.pending, (state) => {
+                state.isLoading = true
+                state.fail = null
+                state.success = null
+                state.error = null
+                // state.offersFromRecruiter = null
+            })
+            .addCase(getOffersAdmin.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.success = "getOffersAdmin",
+                    state.offersFromRecruiter = action.payload
+
+            })
+            .addCase(getOffersAdmin.rejected, (state, action) => {
+                state.isLoading = false,
+                    state.fail = "getOffersAdmin",
+                    state.error = action.payload
+                    state.offersFromRecruiter = null
+            })
+
+
+            .addCase(deleteOfferById.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
                 state.error = null
             })
-            .addCase(deleteOfferById.fulfilled, (state, action) => {
+            .addCase(deleteOfferById.fulfilled, (state) => {
                 state.isLoading = false,
                     state.success = "deleteOfferById"
             })
@@ -219,7 +239,7 @@ const offerSlice = createSlice({
 
 
 
-            .addCase(getLikedOffers.pending, (state, action) => {
+            .addCase(getLikedOffers.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
@@ -240,14 +260,14 @@ const offerSlice = createSlice({
             })
 
 
-            .addCase(addRecruiter.pending, (state, action) => {
+            .addCase(addRecruiter.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
                 state.error = null
 
             })
-            .addCase(addRecruiter.fulfilled, (state, action) => {
+            .addCase(addRecruiter.fulfilled, (state) => {
                 state.isLoading = false
                 state.success = "addRecruiter"
 
@@ -259,14 +279,14 @@ const offerSlice = createSlice({
             })
 
 
-            .addCase(removeRecruiter.pending, (state, action) => {
+            .addCase(removeRecruiter.pending, (state) => {
                 state.isLoading = true
                 state.fail = null
                 state.success = null
                 state.error = null
 
             })
-            .addCase(removeRecruiter.fulfilled, (state, action) => {
+            .addCase(removeRecruiter.fulfilled, (state) => {
                 state.isLoading = false
                 state.success = "removeRecruiter"
 

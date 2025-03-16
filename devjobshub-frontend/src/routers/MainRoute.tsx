@@ -5,10 +5,10 @@ import UpdateOffer from '@/components/createOffer/UpdateOffer'
 import FavouriteOffers from '@/components/favouriteOffers/FavouriteOffers'
 import Login from '@/components/loginRegister/Login'
 import OfferPage from '@/components/offer/OfferPage'
-import OffersRecruiterManager from '@/components/offersRecruiterManager/offersRecruiterManager'
+import OffersAdminPanel from '@/components/offersRecruiterManager/OffersAdminPanel'
+import OffersRecruiterManager from '@/components/offersRecruiterManager/OffersRecruiterManager'
 import BlankPage from '@/components/search/BlankPage'
 import SearchPage from '@/components/search/SearchPage'
-import React from 'react'
 import { Route, Routes } from 'react-router'
 
 const MainRoute = () => {
@@ -25,6 +25,7 @@ const MainRoute = () => {
             <Route path="/recruiter/manager" element={<OffersRecruiterManager/>}/>
             <Route path="/recruiter/applications/:offerId" element={<ApplicationsManager/>}/>
             <Route path="/recruiter/update-offer/:offerId" element={<UpdateOffer/>}/>
+            <Route path="/admin/offers" element={<OffersAdminPanel/>}/>
 
         </Routes>
     </div>

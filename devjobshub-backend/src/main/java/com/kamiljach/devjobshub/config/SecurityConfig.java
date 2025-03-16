@@ -62,9 +62,11 @@ public class SecurityConfig {
                 CorsConfiguration cfg = new CorsConfiguration();
 
                 cfg.setAllowedOrigins(Arrays.asList(
-                        "http://localhost:5173",
-                        "http://157.158.191.53:5173",
-                        "http://192.168.1.13:5173"
+                        "https://agreeable-desert-0c7189f03.6.azurestaticapps.net",
+                        "https://www.devjobshub.pl",
+                        "https://devjobshub.pl",
+                        "http://83.22.57.219:5173",
+                        "http://localhost:5173"
                 ));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);

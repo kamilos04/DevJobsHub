@@ -6,6 +6,15 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+	screens: {
+		'xs': "320px",
+		'sm': '481px',
+		'md': '601px',
+		'lg': '769px',
+		'xl': '1025px',
+		'2xl': '1281px',
+		'3xl': '1441px',
+	},
   	extend: {
   		borderRadius: {
   			lg: 'var(--radius)',

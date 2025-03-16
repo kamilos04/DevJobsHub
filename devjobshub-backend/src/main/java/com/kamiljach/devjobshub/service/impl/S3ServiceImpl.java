@@ -137,10 +137,9 @@ public class S3ServiceImpl implements S3Service {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public PresignedUrlResponse getPresignedUrlForFirmImage(String fileExtension, String jwt) throws NoFirmAccountCanNotDoThatException {
+    public PresignedUrlResponse getPresignedUrlForFirmImage(String fileExtension, String jwt) {
 
         User user = userService.findUserByJwt(jwt);
-        utilityService.isFirmOrThrowException(user);
 
         String key = String.format("firm-images/%d.%s", System.currentTimeMillis(), fileExtension);
 

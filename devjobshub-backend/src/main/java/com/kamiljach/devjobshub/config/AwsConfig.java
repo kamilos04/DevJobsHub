@@ -25,16 +25,6 @@ public class AwsConfig {
     public String bucketName;
 
 
-
-//    @Bean
-//    public S3Client s3Client() {
-//        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
-//        return S3Client.builder()
-//                .region(Region.of(region))
-//                .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
-//                .build();
-//    }
-
     @Bean
     public S3Presigner s3Presigner() {
         AwsBasicCredentials awsCreds = AwsBasicCredentials.create(

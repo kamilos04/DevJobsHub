@@ -3,7 +3,6 @@ import Navbar from '../navbar/Navbar'
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -11,18 +10,14 @@ import {
 } from "@/components/ui/pagination"
 
 
-import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select"
 import { Offer } from '@/types/offer'
-import { Controller } from 'react-hook-form'
 import { Button } from '../ui/button'
 import { Checkbox } from "@/components/ui/checkbox"
 import { useLocation, useNavigate } from 'react-router'
@@ -43,7 +38,7 @@ const OffersRecruiterManager = () => {
   const location = useLocation()
   const dispatch = useDispatch<any>()
   const navigate = useNavigate()
-  const { getProfile, profileStore } = useProfile(true, true)
+  const { getProfile, profileStore } = useProfile(true, true, false)
   const offerStore = useSelector((store: any) => (store.offer))
   const { toast } = useToast()
 
@@ -96,7 +91,7 @@ const OffersRecruiterManager = () => {
     <div className='flex flex-col'>
       <Navbar />
       <div className='flex flex-col items-center mb-8'>
-        <div className='mt-8 p-4 w-[90rem] flex flex-col items-center rounded-2xl'>
+        <div className='mt-8 p-4 2xl:w-[80rem] 3xl:w-[90rem] flex flex-col items-center rounded-2xl'>
           <div className='flex flex-row w-full gap-x-4'>
             <div className=' bg-my-card flex flex-col p-4 rounded-xl border-[1px] w-80 gap-y-4 h-min'>
               <p className='text-xl font-bold'>Job offers manager</p>

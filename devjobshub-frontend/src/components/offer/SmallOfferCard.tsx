@@ -8,7 +8,6 @@ import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
 import { MdFavoriteBorder } from "react-icons/md";
 import { RiStairsLine } from "react-icons/ri";
-import { off } from 'process';
 import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { likeOfferById, removeLikeOfferById } from '@/state/offer/action';
