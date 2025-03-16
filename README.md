@@ -5,6 +5,7 @@ DevJobsHub is an application that allows recruiters to post job offers and compr
 ## I encourage you to check out the application 💻
 <div align="center">
   <a href="https://www.devjobshub.pl/search?pageNumber=0&sortBy=dateTimeOfCreation&sortingDirection=asc" target="_blank">https://www.devjobshub.pl/</a>
+  <p>Currently there is only a desktop version</p>
 </div>
 
 ## Tech Stack 🚀
