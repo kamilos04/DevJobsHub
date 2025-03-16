@@ -1,58 +1,85 @@
-# DevJobsHub 🌐
+# DevJobsHub  💼📌 - screenshots are below
 
-DevJobsHub is a web application that allows companies to post job offers for programmers and for candidates to apply for those offers. The application also offers functionalities related to custom candidate surveys created by recruiters.
+DevJobsHub is an application that allows recruiters to post job offers and comprehensively manage them. The recruiter can create their own recruitment surveys for candidates and can add other recruiters to manage the job offer.
 
-## First screenshots (frontend is under development)
-<img src="screenshots/job offer.png" width="1100">
-<img src="screenshots/search.png" width="1100">
+## I encourage you to check out the application 💻
+<div align="center">
+  <a href="https://www.devjobshub.pl/search?pageNumber=0&sortBy=dateTimeOfCreation&sortingDirection=asc">https://www.devjobshub.pl/</a>
+</div>
 
 ## Tech Stack 🚀
+**Backend:** Java, Spring Boot, PostgreSQL, Hibernate
 
-**Backend:** Spring Boot, Java, PostgreSQL, Hibernate
+**Frontend:** TypeScript, React, Tailwind, Redux, HTML, CSS
 
-**Frontend:** React,  TypeScript, Tailwind, Redux, HTML, CSS
+**Files storage (CV and company logotypes):** Amazon S3
 
+**Deployment:** Azure Virtual Machine, Azure Database for PostgreSQL, Azure Static Web Apps
+<br>
+<br>
 
-## Backend - Short version of the description
-
-### 1. User Management 💻
-
-- **User registration:** Possibility to register new users (recruiters and candidates).
-- **Login:** User login using email address and password.
-- **Updating profile data:** Users can update their personal information.
-- **Change password:** Possibility to change user password.
-- **Downloading user profile:** Possibility to download user profile data such as name, surname, email, company information and administrator status.
-
-
-### 2. Job Offer Management 💼
+## Backend - significant features
+### 1. Job Offer Management 💼
 
 - **Creating job offers:** Recruiters can create new job offers by specifying:
+  - Recruitment survey (single-choice, multiple-choice and open questions)
+  - Company logotype (stored in Amazon S3)
   - Basic informations such as the title of the offer
   - Expiration date
   - Technological requirements
-  - Experience level
-  - Work mode (remote, hybrid, stationary)
+  - Job level
+  - Operating mode
   - Salary details
   - Project description
   - Duties description
   - Benefits description
   - Requirements, responsibilities in bullet points
-- **Job offer update:** Possibility to edit existing job offers.
-- **Deleting job offers:** Recruiters can remove job offers.
-- **Search for offers:** Possibility to search for offers with filtering by various criteria (e.g. location, level of experience, technology).
-- **Adding to favorites:** Users can add offers to their favorites.
-- **Removing from favorites:** Users can remove offers from their favorites.
+  - company address
+- **Getting a presigned URL from Amazon S3 for CV or company logo so the frontend can upload files**
+- **Recruiter can update job offer**
+- **Recruiter can delete job offer**
+- **Users can search for offers with filtering by various criteria (e.g. location, level of experience, technology)**
+- **Users can add and remove offers from their favourites**
 - **Managing recruiters assigned to offers:** After creating a job offer, a recruiter can add other recruiters to it so that they can manage the recruitment for the position.
+<br>
 
-### 3. Job Application Management 📝
+
+### 2. Job Application Management 📝
 
 - **Applying for offers:** Candidates can apply for job offers by attaching:
-    - URL to CV (CV will be stored in Amazon S3)
+    - CV (stored in Amazon S3)
     - Answers to candidate survey questions (open, single-choice, multiple-choice questions)
 - **Browse applications:** Recruiters can browse submitted applications.
-- **Managing favorite applications:** Recruiters can mark applications as favorites for easier management.
+- **Managing applications:** Recruiters can mark applications as favourites or rejected for easier management.
+<br>
+
+### 3. User Management 💻
+- **User registration**
+- **Login:** User login using email address and password
+- **Updating profile data:** Users can update their personal information
+- **Change password:** User can change password
+<br>
 
 ### 4. Authentication & Security 🔐
+- **JWT Authentication:** Users authenticate using JWT tokens
+<br>
 
-- **JWT Authentication:** User authentication using JWT tokens.
-- **Endpoint Security:** Securing endpoints requiring authentication.
+## Frontend - screenshots :camera: (currently there is only a desktop version)
+<img src="screenshots/1.png" width="1100">
+<img src="screenshots/2.png" width="1100">
+<img src="screenshots/3.png" width="1100">
+<img src="screenshots/4.png" width="1100">
+<img src="screenshots/5.png" width="1100">
+<img src="screenshots/6.png" width="1100">
+<img src="screenshots/7.png" width="1100">
+<img src="screenshots/8.png" width="1100">
+<img src="screenshots/9.png" width="1100">
+<img src="screenshots/10.png" width="1100">
+<img src="screenshots/11.png" width="1100">
+
+
+
+
+## Authors
+
+- [Kamil Jach](https://www.github.com/kamilos04)
