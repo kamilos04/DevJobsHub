@@ -289,7 +289,7 @@ const OfferPage = () => {
 
                         </div>
                         {storeOffer.searchOffersSideBar?.totalElements>1 && <div className='flex flex-col gap-y-2'>
-                            <p className='text-xl font-bold'>Check other offers:</p>
+                            <p className='text-xl font-bold'>Check out similar offers:</p>
                             <div className='flex flex-col gap-y-5'>
                                 {storeOffer.searchOffersSideBar?.content.map((element: Offer) => {
                                     if (element.id !== storeOffer.offer.id) {
