@@ -55,7 +55,7 @@ DevJobsHub is an application that allows recruiters to post job offers and compr
 <br>
 
 ### 3. User Management 💻
-- **User registration**
+- **User registration**: Two types of accounts - recruiter and regular user
 - **Login:** User login using email address and password
 - **Updating profile data:** Users can update their personal information
 - **Change password:** User can change password
