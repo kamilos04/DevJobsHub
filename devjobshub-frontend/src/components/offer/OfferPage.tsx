@@ -29,6 +29,7 @@ const OfferPage = () => {
     const dispatch = useDispatch<any>()
     const storeOffer = useSelector((store: any) => store.offer)
     const [isLiked, setIsLiked] = React.useState<boolean>(false)
+    const profileStore = useSelector((store: any) => store.profile)
     const navigate = useNavigate()
 
 
@@ -36,15 +37,22 @@ const OfferPage = () => {
         return ((storeOffer.offer?.requiredTechnologies.length !== 0) || (storeOffer.offer?.niceToHaveTechnologies.length !== 0))
     }
 
+
     const handleLikeClick = () => {
-        if (isLiked === false) {
-            dispatch(likeOfferById(storeOffer.offer?.id))
-            setIsLiked(true)
+        if (profileStore.profile !== null) {
+            if (isLiked === false) {
+                dispatch(likeOfferById(storeOffer.offer?.id))
+                setIsLiked(true)
+            }
+            else if (isLiked === true) {
+                dispatch(removeLikeOfferById(storeOffer.offer?.id))
+                setIsLiked(false)
+            }
         }
-        else if (isLiked === true) {
-            dispatch(removeLikeOfferById(storeOffer.offer?.id))
-            setIsLiked(false)
+        else{
+            navigate("/login")
         }
+
     }
 
     useEffect(() => {
@@ -242,7 +250,7 @@ const OfferPage = () => {
                             {storeOffer.offer?.requirements.length !== 0 && <div className='flex flex-col gap-y-2'>
                                 <p className='text-xl font-bold'>Our requirements</p>
                                 {storeOffer.offer?.requirements.map((element: string, index: number) => <div className='flex flex-row items-center gap-x-4' key={index}>
-                                <div><GiPlainCircle className='w-3 h-3' /></div>
+                                    <div><GiPlainCircle className='w-3 h-3' /></div>
                                     <span className='text-gray-300'>{element}</span>
                                 </div>)}
                             </div>}
@@ -258,7 +266,7 @@ const OfferPage = () => {
                             {storeOffer.offer?.niceToHave.length !== 0 && <div className='flex flex-col gap-y-2'>
                                 <p className='text-xl font-bold'>Nice to have</p>
                                 {storeOffer.offer?.niceToHave.map((element: string, index: number) => <div className='flex flex-row items-center gap-x-4' key={index}>
-                                <div><GiPlainCircle className='w-3 h-3' /></div>
+                                    <div><GiPlainCircle className='w-3 h-3' /></div>
                                     <span className='text-gray-300'>{element}</span>
                                 </div>)}
                             </div>}
@@ -266,7 +274,7 @@ const OfferPage = () => {
                             {storeOffer.offer?.whatWeOffer.length !== 0 && <div className='flex flex-col gap-y-2'>
                                 <p className='text-xl font-bold'>We offer you:</p>
                                 {storeOffer.offer?.whatWeOffer.map((element: string, index: number) => <div className='flex flex-row items-center gap-x-4' key={index}>
-                                <div><GiPlainCircle className='w-3 h-3' /></div>
+                                    <div><GiPlainCircle className='w-3 h-3' /></div>
                                     <span className='text-gray-300'>{element}</span>
                                 </div>)}
                             </div>}
@@ -288,7 +296,7 @@ const OfferPage = () => {
                             <p className='text-sm text-gray-500'>By clicking apply you consent to the processing of your personal data.</p>
 
                         </div>
-                        {storeOffer.searchOffersSideBar?.totalElements>1 && <div className='flex flex-col gap-y-2'>
+                        {storeOffer.searchOffersSideBar?.totalElements > 1 && <div className='flex flex-col gap-y-2'>
                             <p className='text-xl font-bold'>Check out similar offers:</p>
                             <div className='flex flex-col gap-y-5'>
                                 {storeOffer.searchOffersSideBar?.content.map((element: Offer) => {

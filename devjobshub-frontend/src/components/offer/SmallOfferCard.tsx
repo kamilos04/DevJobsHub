@@ -9,13 +9,14 @@ import { Separator } from '../ui/separator';
 import { MdFavoriteBorder } from "react-icons/md";
 import { RiStairsLine } from "react-icons/ri";
 import { useNavigate } from 'react-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { likeOfferById, removeLikeOfferById } from '@/state/offer/action';
 
 const SmallOfferCard = ({ offer }: { offer: Offer }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch<any>()
   const [isLiked, setIsLiked] = React.useState<boolean>(false)
+  const profileStore = useSelector((store: any) => store.profile)
   const levels = [
     { value: "TRAINEE", label: "Trainee / Intern" },
     { value: "JUNIOR", label: "Junior" },
@@ -24,29 +25,35 @@ const SmallOfferCard = ({ offer }: { offer: Offer }) => {
     { value: "MANAGER", label: "Manager" },
     { value: "CLEVEL", label: "C-level" }]
 
-    const jobLevelToLabel = (text: string) => {
-      const found = levels.find((element) => element.value === text);
-      return found ? found.label : "";
-    };
-
-    const handleLikeClick = (event: any) => {
-            event.stopPropagation()
-            if (isLiked === false) {
-                dispatch(likeOfferById(offer?.id))
-                setIsLiked(true)
-            }
-            else if (isLiked === true) {
-                dispatch(removeLikeOfferById(offer?.id))
-                setIsLiked(false)
-            }
-        }
+  const jobLevelToLabel = (text: string) => {
+    const found = levels.find((element) => element.value === text);
+    return found ? found.label : "";
+  };
 
 
-    useEffect(() => {
-      if(offer && offer.isLiked !== null) {
-          setIsLiked(offer.isLiked)
+  const handleLikeClick = (event: any) => {
+    event.stopPropagation()
+    if (profileStore.profile !== null) {
+      if (isLiked === false) {
+        dispatch(likeOfferById(offer?.id))
+        setIsLiked(true)
       }
-    }, [offer])
+      else if (isLiked === true) {
+        dispatch(removeLikeOfferById(offer?.id))
+        setIsLiked(false)
+      }
+    }
+    else {
+      navigate("/login")
+    }
+  }
+
+
+  useEffect(() => {
+    if (offer && offer.isLiked !== null) {
+      setIsLiked(offer.isLiked)
+    }
+  }, [offer])
 
 
   return (
@@ -83,8 +90,8 @@ const SmallOfferCard = ({ offer }: { offer: Offer }) => {
 
         </div>
         <div className='flex flex-row space-x-2'>
-          <MdFavoriteBorder className={`text-2xl cursor-pointer ${isLiked && "text-pink-700"}`} onClick={handleLikeClick}/>
-          
+          <MdFavoriteBorder className={`text-2xl cursor-pointer ${isLiked && "text-pink-700"}`} onClick={handleLikeClick} />
+
         </div>
 
       </div>

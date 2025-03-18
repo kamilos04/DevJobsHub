@@ -9,13 +9,14 @@ import { Separator } from '../ui/separator';
 import { MdFavoriteBorder } from "react-icons/md";
 import { RiStairsLine } from "react-icons/ri";
 import { useNavigate } from 'react-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import { likeOfferById, removeLikeOfferById } from '@/state/offer/action';
 
 const OfferCard = ({ offer }: { offer: Offer }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch<any>()
   const [isLiked, setIsLiked] = React.useState<boolean>(false)
+  const profileStore = useSelector((store: any) => store.profile)
   const levels = [
     { value: "TRAINEE", label: "Trainee / Intern" },
     { value: "JUNIOR", label: "Junior" },
@@ -31,7 +32,7 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
 
   const handleLikeClick = (event: any) => {
     event.stopPropagation()
-    if (offer.isLiked !== null) {
+    if (offer.isLiked !== null && profileStore.profile !== null) {
       if (isLiked === false) {
         dispatch(likeOfferById(offer?.id))
         setIsLiked(true)
