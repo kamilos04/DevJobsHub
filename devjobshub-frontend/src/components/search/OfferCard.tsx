@@ -9,7 +9,7 @@ import { Separator } from '../ui/separator';
 import { MdFavoriteBorder } from "react-icons/md";
 import { RiStairsLine } from "react-icons/ri";
 import { useNavigate } from 'react-router';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { likeOfferById, removeLikeOfferById } from '@/state/offer/action';
 
 const OfferCard = ({ offer }: { offer: Offer }) => {

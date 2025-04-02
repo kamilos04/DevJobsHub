@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -48,6 +48,7 @@ const Login = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { getProfile, profileStore } = useProfile(false, false, false)
+    const [activeTab, setActiveTab] = useState("login");
 
     const onLoginSubmit = (data: any) => {
         let reqData: LoginRequest = {
@@ -183,7 +184,7 @@ const Login = () => {
             <Navbar />
 
             <div className='h-full flex flex-col items-center mt-[3rem]  bg-my-background'>
-                <Tabs defaultValue="login" className="w-screen md:w-[25rem]">
+                <Tabs defaultValue="login" className="w-screen md:w-[25rem]" value={activeTab} onValueChange={setActiveTab}>
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="login">Sign in</TabsTrigger>
                         <TabsTrigger value="register">Register</TabsTrigger>
@@ -195,8 +196,8 @@ const Login = () => {
                                     <CardTitle>Sign in</CardTitle>
                                 </CardHeader>
                                 <div className='w-full'>
-                                    <CardContent className="space-y-4">
-                                        <div className="space-y-1">
+                                    <CardContent className="">
+                                        <div className="space-y-1 mb-4">
                                             <Label htmlFor="loginEmail">E-mail</Label>
                                             <Input id="loginEmail" placeholder='example@gmail.com' {...loginRegister('loginEmail')} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); } }} />
                                             <p className="text-red-500 text-sm font-normal">{loginErrors.loginEmail?.message}</p>
@@ -205,6 +206,9 @@ const Login = () => {
                                             <Label htmlFor="loginPassword">Password</Label>
                                             <Input id="loginPassword" type='password' {...loginRegister('loginPassword')} />
                                             <p className="text-red-500 text-sm font-normal">{loginErrors.loginPassword?.message}</p>
+                                        </div>
+                                        <div>
+                                            <Button type='button' variant={"link"} className='p-0' onClick={() => setActiveTab("register")}>Don't have an account? Sign up!</Button>
                                         </div>
                                     </CardContent>
                                 </div>
