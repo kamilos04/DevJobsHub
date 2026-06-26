@@ -1,12 +1,12 @@
-# DevJobsHub  💼📌 - screenshots are below
+# DevJobsHub  💼📌
 
 DevJobsHub is an application that allows recruiters to post job offers and comprehensively manage them. The recruiter can create their own recruitment surveys for candidates and can add other recruiters to manage the job offer.
 
-## I encourage you to check out the application 💻
-<div align="center">
+<!--## I encourage you to check out the application 💻
+ <div align="center">
   <a href="https://www.devjobshub.pl/search?pageNumber=0&sortBy=dateTimeOfCreation&sortingDirection=asc" target="_blank">https://www.devjobshub.pl/</a>
   <p>Currently there is only a desktop version</p>
-</div>
+</div> -->
 
 ## Tech Stack 🚀
 **Backend:** Java, Spring Boot, PostgreSQL, Hibernate
@@ -65,16 +65,18 @@ DevJobsHub is an application that allows recruiters to post job offers and compr
 - **JWT Authentication:** Users authenticate using JWT tokens
 <br>
 
-## Frontend - screenshots :camera: (currently there is only a desktop version)
-<img src="screenshots/1.png" width="1100">
+## Frontend - screenshots :camera:
 <img src="screenshots/2.png" width="1100">
+<img src="screenshots/1.png" width="1100">
+<img src="screenshots/8.png" width="1100">
+<img src="screenshots/9.png" width="1100">
 <img src="screenshots/3.png" width="1100">
+
 <img src="screenshots/4.png" width="1100">
 <img src="screenshots/5.png" width="1100">
 <img src="screenshots/6.png" width="1100">
-<img src="screenshots/7.png" width="1100">
-<img src="screenshots/8.png" width="1100">
-<img src="screenshots/9.png" width="1100">
+<!-- <img src="screenshots/7.png" width="1100"> -->
+
 <img src="screenshots/10.png" width="1100">
 <img src="screenshots/11.png" width="1100">
 
